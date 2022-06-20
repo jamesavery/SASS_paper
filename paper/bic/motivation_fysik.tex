@@ -1,39 +1,35 @@
 
-\section*{Motivation}
+\section{Background}
 
-\end{itemize}
+% ---------------------------------------------- %
+% Temporary working notes                        %
+% ---------------------------------------------- %
+%
+% traditional noise (need not be explained in detail):
+%   * ring artifacts
+%   * salt/pepper noise
+%
+% distortion (explained a bit more):
+%   * beam hardening
+%   * refration on implant
+%   * scattering effects
+%
+% formørkning (ydre kant af implantat)
+% forlysning (overflade af implantat)
+%
+% Phantom image of implant in air can be explained briefly
+%
+% red-yellow-blue colormap has been used
+%   - red = 0
+%   - soft yellow = 128
+%   - blue = 255
+% -but intensities are inverted in regards to absorption !
+% ---------------------------------------------- %
 
-in figure \ref{fig:flowchart} we see a simple overview of the whole process.
-      
-\begin{figure*}[!h]
-\centering
-\begin{tikzpicture}[>=latex']
-        \tikzset{block/.style= {draw, rectangle, align=center, minimum width=2cm,
-                                minimum height=1cm,draw=black,fill=gray!20, solid}}
-               
-        \node[block]                (box0) {Field computation\\(EDT + Diffusion)};
-        \node[block, right=of box0] (box1) {2D-histograms\\(from fields)};
-        \node[block, right=of box1] (box2) {Curves for\\material identification};
-        \node[block, right=of box2] (box3) {Probabilities};
-        \node[block, right=of box3] (box4) {Segmentation};
-
-        \path[draw,->,thick] (box0) edge[line width=0.5mm] (box1)
-                             (box1) edge[line width=0.5mm] (box2)
-        				     (box2) edge[line width=0.5mm] (box3)
-        					 (box3) edge[line width=0.5mm] (box4)
-                             ;
-\end{tikzpicture}
-\caption{Flowchart caption goes here.}
-\label{fig:flowchart}
-\end{figure*}
-
-\subsection*{Data}
-
-\subsubsection*{The physical samples}
+\subsection{The physical samples}
 
 The physical samples are prepared for SR$\mu$CT scanning by cutting out a portion of a larger
 12mm cylindrical sample. \aleksandar{Better to give a brief chronological tour of how the sample has been handled? Time scale also matters to mention in regards to growth.} The cut samples are 6.5mm cubes \aleksandar{more accurate measures?}. This contains the titanium dental implant (Astra Tech OsseoSpeed, ST Molndal, Sweden), which is 3.5mm in diameter and 8mm long. Along its length the lower 5.5mm has larger threads and is attached to recipient bone. The upper 2.5mm has smaller threads and is where newly formed bone is to be assessed. Sorrounding the bone and implant contact-region are cavities containing resin, air, blood vessels and other fibrous tissue. This is shown in figure \ref{fig:3viewsample}.
-
 
 \begin{figure}%[!t]
 \centering
@@ -45,7 +41,7 @@ The physical samples are prepared for SR$\mu$CT scanning by cutting out a portio
 Each material has a different density and thus absorption. The titanium implant has higher absorption than bone.
 Bone material then has higher absorption than its sorrounding tissue, vessels, air and resin.
 
-\subsubsection*{Data acquisition}
+\subsection{Data acquisition}
 
 It can be difficult to study and evaluate the bone structure and blood network without destroying or
 manipulating the sample. X-ray computed tomography is a widely used tool for non-intrusive medical
@@ -62,7 +58,7 @@ magnetic fields. Contrary to both CT and $\mu$CT, this approach requires a large
 
 \aleksandar{Was filtered backprojection used to do reconstruction, and who has done that? Was it done at ESRF?}
 
-\subsubsection*{Image data}
+\subsection{Image data}
 
 A single image sample contains voxels with of spatial resolution 1.875$\mu$m. The physical size of
 a sample is about 6.5mm, which makes the raw dimensions of a single image $(3480,3480,3384)$ pixels.
@@ -73,7 +69,7 @@ is further split into 4-6 sub-volumes through the height of the implant. This gi
 
 \aleksandar{Important to explain a bit about how the samples were cut during acquisition. How were the samples secured in order not to be shifted too much etc.}
 
-\section*{Physical effects, noise and artifacts}
+\subsection{Physical effects, noise and artifacts}
 
 Noise in tomography is unavoidable, and it makes segmentation harder. Matarials may be well separated from certain angles in the 3d-reconstructed image, but overlap from others. Some noise like that corrected by flat-field correction is very uniformly distributed across images. Some noise is however very spatially dependent on its sorrounding regions. Since we know the compositions of the materials being imaged, we can counter some of these effects during segmentation. The noise effects manifest themselves as numerical shifts in voxel-values as a function of their position. This is a direct result of a misrepresented attenuation along the axis the X-rays are passing. 
 
@@ -98,70 +94,31 @@ Forklare hvorfor vi ser mørke områder, særligt at det mørke lægger sig omkr
 men at det så aftager mod knoglen, for så at blive kraftigere og bredere helt ved knoglen..
 nok refraktion osv. \aleksandar{OBS: before talking about specific noise in our data, we should probably include one or more examples of noise that shows how the segmentation is made harder due to this noise.}
 
+% -------------------------------------------------------------------------------- %
 
-\section*{Solutions}
+\section{For Carl to include in method}
 
-\aleksandar{Work-in-progress}
+In figure \ref{fig:flowchart} we see a simple overview of the whole process.
+  
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}[>=latex']
+        \tikzset{block/.style= {draw, rectangle, align=center, minimum width=2cm,
+                                minimum height=1cm,draw=black,fill=gray!20, solid,
+                                inner sep=0.25cm}}
+               
+        \node[block]                (box0) {Field computation (EDT + Diffusion)};
+        \node[block, below=of box0] (box1) {2D-histograms (from fields)};
+        \node[block, below=of box1] (box2) {Curves for material identification};
+        \node[block, below=of box2] (box3) {Probabilities};
+        \node[block, below=of box3] (box4) {Segmentation};
 
-Individual materials are segmented from the full image, which is represented by their respective histograms.
-
-\begin{equation}
-H(x,v) = \sum_{m=1}^{n} g_{m}(x,v) + r(x,v)
-\end{equation}
-
-Where $g_m$ represents a histogram for materials $m\in\{1,n\}$, and $r(x,v)$ is incorrectly identified remainding region.
-
-We find the probability for a certain material as:
-
-\begin{equation}
-p(m|x,v) = \frac{g_{m}(x,v)}{H(x,v)}
-\end{equation}
-
-We then have a single distribution is given by a piecewise polynomial:
-
-\begin{equation}
-g_{m}(x,v) = a_{m}(x) e^{ -b_{m}(x) |v-c_{m}(x)|^{d_{m}(x)} }
-\end{equation}
-
-Where a is the height, b is the width, c is the centre and d is the exponent.
-
-If we were to look at the distributions for individual slices, we would get too much variance.
-Instead we would like to fit the individual coefficients to get a smooth function.
-
-\subsection*{Miscellaneous}
-
-We shall go through these subjects and explain what was done and how + why. We briefly explain how the method works.
-
-\begin{itemize}
- \item Volume matching
- \item Find implant mask
- \item EDT (Euclidean distance transform)
- \item Gauss
- \item Gauss + EDT
- \item Hist(x,y,z,r)
- \item Find lines / ridges
- \item Get distributions
- \item Beskrive processen under GUI trinvist
- \item Segment materials from distributions
- \item Bayesian combination of materials from their distributions
-\end{itemize}
-
-\subsection*{Probabilities}
-
-\aleksandar{Work-in-progress}
-
-Ud fra et 3d-billede (volumen), kan vi tælle os til de enkelte fordelinger
-
-p(I), p(I|x), p(I|y), p(I|z), p(I|r), hvor $r=\sqrt{(x-x_0)^2+(y-y_0)^2}$
-
-ved at finde peaks og fitte distributioner kan vi da finde approksimationer til
-
-p(c|I), p(c|I,x), p(c|I,y), p(c|I,z), p(c|I,r)
-
-hvor c er klasserne, fx knogle, blodåre, væv, ... 
-
-Vi vil gerne finde kombinationsfordelinger som kan klassificere voxels ved brug af mere information end kun intensiteten - blandt andet hvor voxelen befinder sig.
-
-Ud fra fx p(c|I,x) og p(c|I,y) og ... vil vi gerne approksimere p(c|I,x,y,z,r) uden at skulle repræsentere den eksplicit som et kæmpe volumen.
-
-Dette vil vi gøre ved at bruge betinget uafhængiged. \aleksandar{Evt inkludere bevis for at det er validt. Ellers så blot forklare hvordan sandsynlighederne sammensættes og bruges.}
+        \path[draw,->,thick] (box0) edge[line width=0.5mm] (box1)
+                             (box1) edge[line width=0.5mm] (box2)
+        				     (box2) edge[line width=0.5mm] (box3)
+        					 (box3) edge[line width=0.5mm] (box4)
+                             ;
+\end{tikzpicture}
+\caption{Flowchart caption goes here.}
+\label{fig:flowchart}
+\end{figure}
