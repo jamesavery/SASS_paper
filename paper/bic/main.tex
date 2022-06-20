@@ -55,9 +55,22 @@
 \usepackage{graphicx}
 
 \usepackage{hyperref}
+\usepackage[nameinlink]{cleveref}
+\crefname{lstlisting}{listing}{listings}
+\Crefname{lstlisting}{Listing}{Listings}
 
 \usepackage{tikz}
 \usetikzlibrary{positioning}
+\usepackage{listings}
+%\renewcommand{\ttdefault}{pcr}
+\lstset{
+  numbers=left,
+  captionpos=b,
+  keepspaces=true,
+  basicstyle=\scriptsize\ttfamily,
+  keywordstyle=\bfseries\ttfamily,
+  commentstyle=\color{gray}\ttfamily
+}
 
 \definecolor{newcolor}{rgb}{.8,.349,.1}
 

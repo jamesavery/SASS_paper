@@ -1,18 +1,60 @@
-\section{Method}
-Spatial correlation 2d histograms (den nemme, 1 2d hist)
+\section{Method}\label{sec:method}
+% Spatial correlation 2d histograms (den nemme, 1 2d hist)
+In this section, we will describe the method for exploiting spatial correlation based of the 2D-histograms of the tomographies. 
 
-\subsection{1-d hist}
-diskuter overlappende materialer
+\subsection{1-dimensional histograms}
+%diskuter overlappende materialer
+If we look at a 1D-histogram of a tomography, as shown in~\Cref{fig:1d-hist}, we see that it is hard to globally threshold which material belongs to which voxel intensity. 
+This is because the voxel intensity is not a globally defined value, as explained in~\Cref{sec:physics}, which means that the different materials cover ranges of intensities, which blend together in the histogram.
+Instead, we should exploit the spatial information in the tomography, as the intensities varies according based of off their positioning.  
+
+\begin{figure}
+    \centering
+    \carl{TODO 1D histogram of a tomography. Skal måske have nogle fordelinger "fittet" ind, så man kan se overlappet?}
+    \caption{1-dimensional histogram of a tomography. The x-axis depicts voxel intensity.}
+    \label{fig:1d-hist}
+\end{figure}
 
 \subsection{Correlation of the different angles}
-Show the correlation of x,y,z,r to histograms 2d
+%Show the correlation of x,y,z,r to histograms 2d
+In order to include spatial information, we consider \emph{expanding} a dimension to produce multiple 1-dimensional histograms.  
+Each histogram is computed by locking the dimension in question and produce 
+and combine these for each entry in the expanded axis into a new 2-dimensional histogram. 
+We consider expanding four different axes of the tomography: x, y, z and radius (r). 
+Each of them can be computed with a single pass over the entire tomography, as the code in~\Cref{lis:2dhists} shows. 
+%discuss the effects with references to the physics (previous section)
 
-discuss the effects with references to the physics (previous section)
+\begin{figure}
+    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for computing 2D histograms.,label=lis:2dhists]
+for z, y, x in indices:
+    v = voxels[z,y,x]
+    r = int(sqrt((x-cx)**2 + (y-cy)**2))
+    zhist[z,v] += 1
+    yhist[y,v] += 1
+    xhist[x,v] += 1
+    rhist[r,v] += 1
+    \end{lstlisting}
+\end{figure}
+
+The four expanded histograms can be seen in~\Cref{fig:2dhists}. 
+We can see that the different expansions divide the materials differently, based on where in the tomography we look.
+E.g. the top part of the \texttt{y} histogram only has a single distinquishable material, whereas the bottom part carries multiple clearly distinquished materials. 
+
+\begin{figure}
+    \centering
+    \carl{TODO four plots of the 2d histograms x, y, z, and r.}
+    \caption{2D histograms of the different dimension expansions.}
+    \label{fig:2dhists}
+\end{figure}
+
+\subsection{Removing unnecessary information.}
+\carl{Mention how we apply the implant and bone masks? Or should it be before, so that the x,y,z,r histograms are also 2 materials?}
 
 \subsection{EDT, diffusion}
-Show that the fields can perfectly seperate
+%Show that the fields can perfectly seperate
+%discuss all the way to implant contact
+While the four histograms further seperate the materials at different angles, they are not good at depicting the materials close to the implant.
 
-discuss all the way to implant contact
 
 EDT is good overall, but difficult close to the implant. 
 
