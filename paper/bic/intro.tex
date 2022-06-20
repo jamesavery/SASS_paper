@@ -1,0 +1,26 @@
+
+\section*{Introduction}
+
+\begin{itemize}
+ \item Hvad er det vi undersøger?
+     \begin{itemize}
+     	\item Overordnet: Imlantanter i knogler
+     	\item Vil gerne kunne analysere og evaluere kvaliteten af "growth" omkring implantatet for at kunne vurdere den underlæggende sundhed og success af operationen
+     	\item Vil gerne kunne afkorte tiden fra operation til analyse til evaluering, samtidigt med at kvaliteten af data er stabil til at der er højt evidensgrundlag
+     	\item kunne sige noget om knoglekvaliteten og kompositionen (tæthed, radius, ...)
+     	\item kontakt til implantat: dækket af knogle, blod (forbundet til blodnetværk)
+     \end{itemize}
+ \item Hvilke problemer indebærer det som skal løses?
+     \begin{itemize}
+     	\item Segmentation is hard and time-consuming to do on this type of data.
+     	\item contains noise that is hard to avoid from data acquisition
+     	\item often segmentation is done manually, so being able to automate this data is of great value for the field.
+     	\item Want to avoid using deep learning methods, but keep full transparency 
+     	\item Simpler mathematical methods can be implemented efficiently and consistently
+     \end{itemize}
+ \item Hvordan vil vi bære os ad med at løse problemerne?
+     \begin{itemize}
+     	\item Det er en forudsætning at vi tydeligt kan observere hvad der sker i bone-to-implant interfacet
+     	\item Den utrolig høje opløsning og kvaliteten af billeder fra SR-micro-CT vil give adgang til analyse og segmentering med høj nøjagtighed.
+     	\item Using the geometrical distributions and domain specific knowledge means that we know what to expect from the segmentation around all regions.
+     \end{itemize}
