@@ -1,0 +1,28 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=25mm]{geometry}  % defining paper margins
+\usepackage[numbers]{natbib} % bibtex
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{parskip} % instead of writing \\ and \noindent, we simply import the parskip library and new lines are formatted automatically
+\pagenumbering{gobble} % remove page-numbering
+
+
+
+% \usepackage{showframe} % for debugging
+\newcommand{\carl}[1]{\textcolor{orange}{[Carl: #1]}}
+\newcommand{\aleksandar}[1]{\textcolor{cyan}{[Aleksandar: #1]}}
+\newcommand{\james}[1]{\textcolor{red}{[James: #1]}}
+\definecolor{ForestGreen}{RGB}{34,139,34}
+\newcommand{\suggestion}[3]{\textcolor{ForestGreen}{[\textbf{Suggestion (#1):} '\sout{#2}' $\rightarrow$ '#3']}}
+
+\title{Spatial Analysis for SR$\mu$CT Segmentation}
+\date{}
+
+\begin{document}
+\maketitle
+
+\input{temp_A}
+
+\end{document}
