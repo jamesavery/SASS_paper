@@ -54,24 +54,46 @@ E.g. the top part of the \texttt{y} histogram only has a single distinquishable 
 %Show that the fields can perfectly seperate
 %discuss all the way to implant contact
 While the four histograms further seperate the materials at different angles, they are not good at depicting the materials close to the implant.
+\carl{I'm not really sure that's the reason for field histogramming? Isn't it more like for this simple case, it does a well enough job, as the bayesian approach would be the optimal?}
 
+In order to obtain spatial information based on the relation to the implant, we construct two \emph{field} representations: Euclidian Distance Transform (EDT) and Diffusion.
 
-EDT is good overall, but difficult close to the implant. 
+%EDT is good overall, but difficult close to the implant. 
+EDT computes each voxel as the euclidian distance to the implant. This makes for a generally good representation for all but the voxels that are close to the implant. This is mainly due to the fact that the voxels in the grooves of the implant gets the same value as the voxels next to the threads of the implant, as is shown in~\Cref{fig:edt-vs-diffusion}.
 
-Use diffusion to "zoom in" on the implant, as it is good close to the implant, but throws everything far away into the same bin
+%Use diffusion to "zoom in" on the implant, as it is good close to the implant, but throws everything far away into the same bin
+To zoom in on the implant, we utilize diffusion where the implant "glows" further accumulating the value when a voxel is surrounded by implant. This is shown in~\Cref{fig:edt-vs-diffusion}, where the voxels in the grooves are affected by multiple implant voxels. 
 
-Show that the distance to the implant in edt will be the same in the grooves of the screw compared to the threads of the screw. This is "fixed" with diffusion, as the grooves will be brigher as it is surrounded by more implant.
+\begin{figure}
+    \centering
+    \carl{TODO figure depicting EDT and Diffusion close to the implant, viewed in the xz plane.}
+    \caption{Depiction of the different field computations close to the implant in the xz plane. The EDT is depicted in blue, with the diffusion as green.}
+    \label{fig:edt-vs-diffusion}
+\end{figure}
+
+While Diffusion works well on voxels close to the implant, it assigns the same value to the voxels far from the implant. As such, an optimal solution is to use both the EDT and the diffusion field to better represent both voxels that are far away, as well as the ones that are close to the implant.
+
+%Show that the distance to the implant in edt will be the same in the grooves of the screw compared to the threads of the screw. This is "fixed" with diffusion, as the grooves will be brigher as it is surrounded by more implant.
 
 \subsection{Walkthrough of the method}
+This section will describe the steps of the method for going from tomography to material probability distributions. 
 
 \subsubsection{Overview}
-Coarse steps, explain the idea
+%Coarse steps, explain the idea
+The steps of the segmentation method are:
+\begin{enumerate}
+    \item Compute the EDT and Diffusion fields to give each voxel spatial information about its relation to the implant.
+    \item From the fields, compute 2D histograms to show how the voxel value relates to the field value.
+    \item Find the materials within the 2D histograms as curves using image processing techniques.
+    \item From the curves, compute probability distributions of each material.
+    \item Use these probability distributions to segment each voxel the tomography into the materials.
+\end{enumerate}
+These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
 
-steps -> flow chart
 \begin{figure}
     \centering
     \begin{tikzpicture}
-        \node[draw] (field) at (0,0) {Compute the fields};
+        \node[draw] (field) at (0,0) {Compute fields};
         \node[draw, below = of field] (hists) {Compute 2D histograms};
         \node[draw, below = of hists] (curvs) {Find Curves};
         \node[draw, below = of curvs] (probs) {Compute probabilities};
@@ -91,6 +113,7 @@ steps -> flow chart
 \end{figure}
 
 \subsubsection{Segmentation}
+Now we will list each step detailing the actual implementation for solving the problems.
 
 \begin{description}
     \item[Field-computations]
