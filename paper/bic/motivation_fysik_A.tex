@@ -1,106 +1,55 @@
-\section*{Flowchart}
-%
-%\begin{figure}[!h]
-%\centering
-%  \begin{tikzpicture}[
-%    node distance = 8mm and 16mm,
-%      start chain = A going below,
-%      base/.style = {draw, minimum width=32mm, minimum height=8mm,
-%                     align=center, on chain=A},
-% startstop/.style = {base, rectangle, rounded corners, fill=red!30},
-%   process/.style = {base, rectangle, fill=orange!30},
-%        io/.style = {base, trapezium, 
-%                     trapezium left angle=70, trapezium right angle=110,
-%                     fill=blue!30},
-%  decision/.style = {base, diamond, fill=green!30},
-%  every edge quotes/.style = {auto=right}]
-%                    ]
-%\node [startstop]       {Start};            % <-- A-1
-%\node [process]         {k $\leftarrow$ 0};
-%\node [io]              {Loop ?};
-%\node [decision]        {Yes or No ?};
-%\node [process]         {Print k};
-%\node [process]         {Stop};             % <-- A-6
-%%
-%\node [process,                             % <-- A-7
-%       right=of A-4]    {k $\leftarrow$ k + 1};
-%%%
-%\draw [arrows=-Stealth] 
-%    (A-1) edge["init"]          (A-2)
-%    (A-2) edge["start stop"]    (A-3)
-%    (A-3) edge["looping"]       (A-4)
-%    (A-4) edge["no"]            (A-5)
-%    (A-5) edge["exit"]          (A-6)
-%    (A-4) edge["yes"']          (A-7)       % <-- by ' is swapped label position
-%    (A-7) |- ($(A-2.south east)!0.5!(A-3.north east)$)
-%          -| ([xshift=7mm] A-3.north)
-%    ;
-%  \end{tikzpicture}
-%\caption{Flowchart caption goes here.}
-%\label{fig:flowchart}
-%\end{figure}
-
-%
-%\begin{figure}[!h]
-%\centering
-%\begin{tikzpicture}[>=latex']
-%        \tikzset{block/.style= {draw, rectangle, align=center, minimum width=2cm,
-%                                minimum height=1cm,draw=black,fill=gray!20, dashed}}
-%               
-%        \node [rblock] (box0) {Scanner};
-%        \node [block, right =1.6cm of box0] (box1) {Acquire images};
-%        \node [block, above = 1.0cm of box1] (boxC) {Calibration};
-%        \node [block, right =1.6cm of box1] (box2) {Upload raw data \\ to ERDA};
-%        \node [block, right =1.6cm of box2] (box3) {AXIS library \\ processing};
-%        \node [block, below right =2cm and -0.9cm of box0] (box4) {Custom CNN};
-%        \node [block, right =1.6cm of box4] (box5) {Training on \\ GPGPU};
-%        \node [block, right =1.6cm of box5] (box6) {Classification on \\ FPGA};
-%        \node [rblock, right =1.6cm of box6] (box7) {Output labels};
-%        \node [coordinate, below right =1cm and 1cm of box3] (right) {};  %% Coordinate on right and middle
-%        \node [coordinate,above left =1cm and 1cm of box4] (left) {};  %% Coordinate on left and middle
-%
-%        \path[draw,->,thick] (box0) edge[line width=0.5mm] (box1)
-%                             (box1) edge[line width=0.5mm] (box0)
-%        				     (box0) edge[line width=0.5mm] (boxC)
-%        					 (boxC) edge[line width=0.5mm] (box1)
-%                             (box1) edge[line width=0.5mm] (box2)
-%                             (box2) edge[line width=0.5mm] (box3)
-%                             (box3.east) -| (right)[line width=0.5mm] -- (left)[line width=0.5mm] |- (box4)
-%                             (box4) edge[line width=0.5mm] (box5)
-%                             (box5) edge[line width=0.5mm] (box6)
-%                             (box6) edge[line width=0.5mm] (box7)
-%                             ;
-%\end{tikzpicture}
-%\caption{Flowchart caption goes here.}
-%\label{fig:flowchart}
-%\end{figure}
-
-\newpage
 
 \section*{Motivation}
 
- - Hvad er det vi undersøger?
-    - Overordnet: Imlantanter i knogler
-       - Vil gerne kunne analysere og evaluere kvaliteten af "growth" omkring implantatet
-         for at kunne vurdere den underlæggende sundhed og success af operationen
-       - Vil gerne kunne afkorte tiden fra operation til analyse til evaluering, samtidigt
-         med at kvaliteten af data er stabil til at der er højt evidensgrundlag
-       - kunne sige noget om knoglekvaliteten og kompositionen (tæthed, radius, ...)
-       - kontakt til implantat: dækket af knogle, blod (forbundet til blodnetværk)
-         
- - Hvilke problemer indebærer det som skal løses?
-    - Segmentation is hard and time-consuming to do on this type of data.
-      - contains noise that is hard to avoid from data acquisition
-      - often segmentation is done manually, so being able to automate this data is of great value for the field.
-      - Want to avoid using deep learning methods, but keep full transparency 
-      - Simpler mathematical methods can be implemented efficiently and consistently
+\begin{itemize}
+ \item Hvad er det vi undersøger?
+     \begin{itemize}
+     	\item Overordnet: Imlantanter i knogler
+     	\item Vil gerne kunne analysere og evaluere kvaliteten af "growth" omkring implantatet for at kunne vurdere den underlæggende sundhed og success af operationen
+     	\item Vil gerne kunne afkorte tiden fra operation til analyse til evaluering, samtidigt med at kvaliteten af data er stabil til at der er højt evidensgrundlag
+     	\item kunne sige noget om knoglekvaliteten og kompositionen (tæthed, radius, ...)
+     	\item kontakt til implantat: dækket af knogle, blod (forbundet til blodnetværk)
+     \end{itemize}
+ \item Hvilke problemer indebærer det som skal løses?
+     \begin{itemize}
+     	\item Segmentation is hard and time-consuming to do on this type of data.
+     	\item contains noise that is hard to avoid from data acquisition
+     	\item often segmentation is done manually, so being able to automate this data is of great value for the field.
+     	\item Want to avoid using deep learning methods, but keep full transparency 
+     	\item Simpler mathematical methods can be implemented efficiently and consistently
+     \end{itemize}
+ \item Hvordan vil vi bære os ad med at løse problemerne?
+     \begin{itemize}
+     	\item Det er en forudsætning at vi tydeligt kan observere hvad der sker i bone-to-implant interfacet
+     	\item Den utrolig høje opløsning og kvaliteten af billeder fra SR-micro-CT vil give adgang til analyse og segmentering med høj nøjagtighed.
+     	\item Using the geometrical distributions and domain specific knowledge means that we know what to expect from the segmentation around all regions.
+     \end{itemize}
+\end{itemize}
 
- - Hvordan vil vi bære os ad med at løse problemerne?
-    - Det er en forudsætning at vi tydeligt kan observere hvad der sker i bone-to-implant interfacet
-    - Den utrolig høje opløsning og kvaliteten af billeder fra SR-micro-CT vil give adgang til
-      analyse og segmentering med høj nøjagtighed.
-    - Using the geometrical distributions and domain specific knowledge means that we know
-      what to expect from the segmentation around all regions.
+in figure \ref{fig:flowchart} we see a simple overview of the whole process.
+      
+\begin{figure*}[!h]
+\centering
+\begin{tikzpicture}[>=latex']
+        \tikzset{block/.style= {draw, rectangle, align=center, minimum width=2cm,
+                                minimum height=1cm,draw=black,fill=gray!20, solid}}
+               
+        \node[block]                (box0) {Field computation\\(EDT + Diffusion)};
+        \node[block, right=of box0] (box1) {2D-histograms\\(from fields)};
+        \node[block, right=of box1] (box2) {Curves for\\material identification};
+        \node[block, right=of box2] (box3) {Probabilities};
+        \node[block, right=of box3] (box4) {Segmentation};
+
+        \path[draw,->,thick] (box0) edge[line width=0.5mm] (box1)
+                             (box1) edge[line width=0.5mm] (box2)
+        				     (box2) edge[line width=0.5mm] (box3)
+        					 (box3) edge[line width=0.5mm] (box4)
+                             ;
+\end{tikzpicture}
+\caption{Flowchart caption goes here.}
+\label{fig:flowchart}
+\end{figure*}
+
 
 \subsection*{Data}
 
