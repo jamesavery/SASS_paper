@@ -26,6 +26,27 @@ Show that the distance to the implant in edt will be the same in the grooves of 
 Coarse steps, explain the idea
 
 steps -> flow chart
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \node[draw] (field) at (0,0) {Compute the fields};
+        \node[draw, below = of field] (hists) {Compute 2D histograms};
+        \node[draw, below = of hists] (curvs) {Find Curves};
+        \node[draw, below = of curvs] (probs) {Compute probabilities};
+        \node[draw, below = of probs] (segm) {Segment the voxels};
+        \node[draw, below = of segm] (bic) {Project close to implant using BIC};
+
+        \path[draw, ->] (field) -- (hists);
+        \path[draw, ->] (hists) -- (curvs);
+        \path[draw, ->] (curvs) -- (probs);
+        \path[draw, ->] (probs) -- (segm);
+        \path[draw, ->] (segm) -- (bic);
+    \end{tikzpicture}
+    \caption{Flowchart depicting the steps of the method. 
+    \carl{Skal nok labeles, så man nemt kan se hvilken section der beskriver det. Plus, teksten i kasserne nok også kan være mere flavorful!}
+    \carl{Kan måske arrangeres ligesom Davids ting oversigt? Giver måske kun mening hvis der var mere end bare segmentation -> bic}}
+    \label{fig:flowchart}
+\end{figure}
 
 \subsubsection{Segmentation}
 
