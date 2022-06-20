@@ -1,1 +1,1 @@
-../templates/MEDIMA-template/elsarticle.cls
+../../templates/MEDIMA-template/elsarticle.cls
