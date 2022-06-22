@@ -124,7 +124,7 @@ EDT
 
 For diffusion, rather than solving the diffusion equation, we approximate using multiple convolutions of a 3D-gaussian kernel.
 Instead of a single pass with a 3D-kernel, we apply 3 1D convolutions, one in each dimension, to the tomography, obtaining the same result as a regular 3D kernel.
-The pseudo code can be seen in~\Cref{lis:diffusion}
+The pseudo code can be seen in~\Cref{lis:diffusion}, with x, y, and z slices in~\Cref{fig:field-slices}
 
 \begin{figure}
     \begin{lstlisting}[language=Python,caption=Python-like pseudo code for the diffusion approximation.,label=lis:diffusion]
@@ -144,20 +144,83 @@ for rep in repitions:
     \end{lstlisting}
 \end{figure}
 
+\begin{figure}
+    \carl{TODO show x, y, and z slices of the EDT and Diffusion field. Either each field seperate or combined?}
+    \caption{Slices of the EDT field at different collapsed dimensions.}
+    \label{fig:field-slices}
+\end{figure}
+
 %EDT + Diffusion
 To obtain good seperation both close to the implant and far away, we combine the two fields into a single one.
 \carl{TODO how is this actually done? Or should it just be that both are used during segmentation, each contributing 50 \%? As in, let the probabilities for each of them "take over"}
 
-(remember to show images)
+\carl{(remember to show images)}
 
 \vspace{\baselineskip}
 \noindent\textbf{2D histograms} \\
 
+From these fields, we compute 2D histograms with the voxel value on the x-axis and field value on the y-axis.
+This allows us to see the distribution of voxel values, based off their relative position from the implant.
+The pseudo code can be seen in~\Cref{lis:field-hist} with a plot of the resulting histogram in~\Cref{fig:field-hist}.
+We see that the voxel intensities shift based off how close to the implant they are, which indicates that a global threshold would not be sufficient.
+
+\begin{figure}
+    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for computing the 2D field histograms.,label=lis:field-hist]
+for z, y, x in indices:
+    v = voxel[z,y,x]
+    f = field[z,y,x]
+    hist[f,v] += 1
+    \end{lstlisting}
+\end{figure}
+
+\begin{figure}
+    \carl{Example 2D field histogram.}
+    \caption{2D field histogram. Note that there are two clearly seperated curves, which make up the different materials.}
+    \label{fig:field-hist}
+\end{figure}
+
 \vspace{\baselineskip}
 \noindent\textbf{Isolate the materials} \\
 
+The next step is to isolate the different materials spatially, which we do through the histogram.
+As mentioned, we have two clearly defined curves making up the two materials.
+To extract and label these curves, we apply the following image processing steps:
+\begin{itemize}
+    \item Gaussian smooth row
+    \item Find peaks in row
+    \item Scatter peaks as new mask
+    \item Dilate
+    \item Erode
+    \item Find contours larger than threshold
+\end{itemize}
+Each contour becomes its own material, which is then labeled as material 1 and 2 respectively.
+
+\begin{figure}
+    \carl{intermediate images of all of the steps?}
+    \caption{Curve finding intermediate steps.}
+    \label{fig:curves}
+\end{figure}
+
 \vspace{\baselineskip}
 \noindent\textbf{Compute the probability distributions} \\
+
+From the curves we found, we want to translate it into a probability distribution for the segmentation.
+\carl{James knows how}
+
+\vspace{\baselineskip}
+\noindent\textbf{Perform segmentation}
+
+The final step of the segmentation process is to utilize the probabilities for segmentation.
+This process is fairly straightforward, as each voxel is looked up in the probability distribution, which carries the same shape as the field histogram.
+
+\begin{figure}
+    \begin{lstlisting}
+for z, y, x in indices:
+    v = voxel[z,y,x]
+    f = field[z,y,x]
+    result[z,y,x] = prob[f,v]
+    \end{lstlisting}
+\end{figure}
 
 \subsubsection{BIC computations}
 
