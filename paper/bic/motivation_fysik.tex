@@ -47,7 +47,9 @@ magnetic fields. Contrary to both CT and $\mu$CT, this approach requires a large
 and is not standard medical or laboratory equipment. The added complexity means that SR$\mu$CT can
 offer an even better spatial resolution of up to 0.1 $\mu$m. The resulting beams are high in
 brilliance and collimation which gives a very clear signal. Its mono-energetic nature also means
-that images are not subject to artifacts from beam-hardening. The data presented here has been
+that images are not subject to artifacts from beam-hardening.
+\carl{\textbackslash label\{initial-beam-claim\}}
+The data presented here has been
 acquired at the ID19 beam line at the European Synchrotron Radiation Facility (ESRF) in Grenoble,
 France, and has previously \aleksandar{ref to former article} been reconstructed using the Python
 framework PyHST \citep{pyhst}.
@@ -63,7 +65,7 @@ $(3456,3456,810)$ pixels per sub-volume, where the last axis gets stacked for a 
 a bit about how the samples were cut during acquisition. How were the samples secured in order not
 to be physically shifted too much etc.}
 
-\subsection{Physical effects, noise and artifacts}
+\subsection{Physical effects, noise and artifacts}\label{sec:physics}
 
 Noise in tomography is unavoidable, and it makes segmentation harder because it further obscures
 the boundaries between materials. Matarials may be well separated from certain angles in the
@@ -104,7 +106,7 @@ crystal \citep{ringartifacts}.
 \subsection{Projection artifacts}
 
 Bright streaks with strong edges are seen from the sharp corners of the titanium implant. When
-doing back projection, the symmetrybreaking is seen as smeared lines across the sample. This
+doing back projection, the \suggestion{carl}{symmetrybreaking}{symmetry breaking} is seen as smeared lines across the sample. This
 can occur from the high pass filter used during filtered back projection, which exaggerates the
 differences between adjacent elements \citep{ctnoise}.
 
@@ -123,8 +125,9 @@ to account for noise and smaller imperfections during reconstruction \aleksandar
 Despite the practially mono-energetic rays from SR$\mu$CT, the source initially generates a
 polychromatic spectrum. During monochromatisation this spectrum can still contain corrupted harmonic
 components \citep{srnoise}. This leads to two distinct effects typically seen from beam-hardening.
+\carl{Should be emphasized more. \textbackslash ref\{initial-beam-claim\} claims that there are no beam-hardening effects, and I think this reads as "well, yes, but no"}
 
-\subsubsection{dark and bright streaks}
+\subsubsection{Dark and bright streaks}
 
 Streaking artifacts occur at the dense implant region, but also in the transition from bone to softer
 tissue. This effect is mostly seen in regions of large heterogeneity. When X-ray beams pass at angles
@@ -169,3 +172,6 @@ effects seem to be handled already...}
 For SR$\mu$CT a high photon flux allows for very short exposure times \citep{srexptime}.
 This can help counter noise from suboptimal counting statistics\citep{srnoise}.
 This is for example the case for Poisson noise.
+
+\carl{Maybe a subsection describing how the old paper falls short close to the implant? I'm sure it'll be in the introduction as well, but shouldn't it also be explained in detail here? Maybe just a more detailed walkthrough of how they did it, and why it didn't work?}
+\carl{Point to how the implant and bone/tissue masks are made in the "second" paper?}

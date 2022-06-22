@@ -22,7 +22,9 @@ Each histogram is computed by locking the dimension in question and produce
 and combine these for each entry in the expanded axis into a new 2-dimensional histogram.
 We consider expanding four different axes of the tomography: x, y, z and radius (r).
 Each of them can be computed with a single pass over the entire tomography, as the code in~\Cref{lis:2dhists} shows.
+
 %discuss the effects with references to the physics (previous section)
+\carl{ref til section 2.4}
 
 \begin{figure}
     \begin{lstlisting}[language=Python,caption=Python-like pseudo code for computing 2D histograms.,label=lis:2dhists]
@@ -77,6 +79,7 @@ While Diffusion works well on voxels close to the implant, it assigns the same v
 
 \subsection{Walkthrough of the method}
 This section will describe the steps of the method for going from tomography to material probability distributions.
+\carl{flavortext}
 
 \subsubsection{Overview}
 %Coarse steps, explain the idea
@@ -119,6 +122,7 @@ Now we will list each step detailing the actual implementation for segmentation.
 
 \vspace{\baselineskip}
 \noindent\textit{\textbf{1. Field computations}}
+\carl{mention implant mask}
 
 EDT
 
@@ -205,7 +209,7 @@ Each contour becomes its own material, which is then labeled as material 1 and 2
 \noindent\textbf{Compute the probability distributions} \\
 
 From the curves we found, we want to translate it into a probability distribution for the segmentation.
-\carl{James knows how}
+\james{TODO hilsen carl}
 
 \vspace{\baselineskip}
 \noindent\textbf{Perform segmentation}
@@ -214,7 +218,7 @@ The final step of the segmentation process is to utilize the probabilities for s
 This process is fairly straightforward, as each voxel is looked up in the probability distribution, which carries the same shape as the field histogram.
 
 \begin{figure}
-    \begin{lstlisting}
+    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for the final segmentation.,label=lis:segmentation]
 for z, y, x in indices:
     v = voxel[z,y,x]
     f = field[z,y,x]
@@ -223,6 +227,8 @@ for z, y, x in indices:
 \end{figure}
 
 \subsubsection{BIC computations}
+
+\james{TODO hilsen carl}
 
 \subsection{Results of the field segmentation}
 
