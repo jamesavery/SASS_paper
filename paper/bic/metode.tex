@@ -1,6 +1,7 @@
 \section{Method}\label{sec:method}
 % Spatial correlation 2d histograms (den nemme, 1 2d hist)
 In this section, we will describe the method for exploiting spatial correlation based of the 2D-histograms of the tomographies.
+We will start by motivating the problem, then give an overview of how we solve the problem, with the final detailed walkthrough of each step of the overall workflow.
 
 \subsection{1-dimensional histograms}
 %diskuter overlappende materialer
@@ -22,6 +23,7 @@ Each histogram is computed by locking the dimension in question and produce
 and combine these for each entry in the expanded axis into a new 2-dimensional histogram.
 We consider expanding four different axes of the tomography: x, y, z and radius (r).
 Each of them can be computed with a single pass over the entire tomography, as the code in~\Cref{lis:2dhists} shows.
+\carl{Which is better?~\Cref{lis:2dhists} or~\Cref{alg:2dhists}. I know the algorithm has more information, but it could easily be added to the listing as well.}
 
 %discuss the effects with references to the physics (previous section)
 \carl{ref til section 2.4}
@@ -37,6 +39,30 @@ for z, y, x in indices:
     rhist[r,v] += 1
     \end{lstlisting}
 \end{figure}
+
+\begin{algorithm}
+    \caption{2-dimensional histograms. Allocation also implies zero initialization.}
+    \label{alg:2dhists}
+    \begin{algorithmic}
+        \Function {2D\_hist} {$voxels[n_z,n_y,n_x],c_x,c_y,n_{bins},v_{min},v_{max}$}
+            \State $n_r \gets \left\lfloor\sqrt{\left\lfloor \frac{n_x}{2} \right\rfloor^2 + \left\lfloor \frac{n_y}{2} \right\rfloor^2}\right\rfloor+1$
+            \State \textbf{allocate} $h_z[n_z,n_{bins}], h_y[n_y,n_{bins}]$
+            \State \textbf{allocate} $h_x[n_x,n_{bins}], h_r[n_r,n_{bins}]$
+            \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
+                \State $v \gets voxels[z,y,x]$
+                \If {$v_{min} \leq v \leq v_{max}$}
+                    \State $v_{i} \gets (n_{bins}-1) \cdot \frac{v - v_{min}}{v_{max} - v_{min}}$
+                    \State $r \gets \left\lfloor\sqrt{(x-c_x)^2 + (y-c_y)^2}\right\rfloor$
+                    \State $h_z[z,v_{i}]{+}{+}$
+                    \State $h_y[y,v_{i}]{+}{+}$
+                    \State $h_x[x,v_{i}]{+}{+}$
+                    \State $h_r[r,v_{i}]{+}{+}$
+                \EndIf
+            \EndFor
+            \Return $h_z,h_y,h_z,h_r$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 
 The four expanded histograms can be seen in~\Cref{fig:2dhists}.
 We can see that the different expansions divide the materials differently, based on where in the tomography we look.
