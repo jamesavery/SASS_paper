@@ -302,14 +302,36 @@ From the curves we found, we want to translate it into a probability distributio
 The final step of the segmentation process is to utilize the probabilities for segmentation.
 This process is fairly straightforward, as each voxel is looked up in the probability distribution, which carries the same shape as the field histogram.
 
-\begin{figure}
-    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for the final segmentation.,label=lis:segmentation]
-for z, y, x in indices:
-    v = voxel[z,y,x]
-    f = field[z,y,x]
-    result[z,y,x] = prob[f,v]
-    \end{lstlisting}
-\end{figure}
+%\begin{figure}
+%    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for the final segmentation.,label=lis:segmentation]
+%for z, y, x in indices:
+%    v = voxel[z,y,x]
+%    f = field[z,y,x]
+%    result[z,y,x] = prob[f,v]
+%    \end{lstlisting}
+%\end{figure}
+
+\begin{algorithm}
+    \caption{Final segmentation from the probability distributions.}
+    \label{alg:segment}
+    \begin{algorithmic}
+        \Function {Segment} {$voxels[n_z,n_y,n_x], p[f_{bins},v_{bins}],$ \newline $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
+            \State \textbf{allocate} $result[n_z,n_y,n_x]$
+            \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
+                \State $v \gets voxels[z,y,x]$
+                \If {$v_{min} \leq v \leq v_{max}$}
+                    \State $f \gets voxels[z,y,x]$
+                    \If {$f_{min} \leq f \leq f_{max}$}
+                        \State $v_i \gets (v_{bins} - 1) - \frac{v - v_{min}}{v_{max} - v_{min}}$
+                        \State $f_i \gets (f_{bins} - 1) - \frac{f - f_{min}}{f_{max} - f_{min}}$
+                        \State $result[z,y,x] \gets p[f_i, v_i]$
+                    \EndIf
+                \EndIf
+            \EndFor
+            \Return $result$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 
 \subsubsection{BIC computations}
 
