@@ -184,8 +184,8 @@ The pseudo code can be seen in~\Cref{alg:diffusion}, with x, y, and z slices in~
         \Function {Diffusion} {$voxels[n_z*n_y*n_x], repitions, kernel[2*k+1]$}
             \State $S \gets [n_y * n_x, n_x, 1]$
             \State $N \gets [n_z, n_y, n_x]$
-            \State \textbf{allocate} $tmp_0[n_z*n_y*n_z], tmp_1[n_z*n_y*n_x]$
-            \State $tmp_0[:] \gets voxels[:]$
+            \State \textbf{allocate} $buf_0[n_z*n_y*n_z], buf_1[n_z*n_y*n_x]$
+            \State $buf_0[:] \gets voxels[:]$
             \For {$rep$ \textbf{in} $repitions$}
                 \For {$dim$ \textbf{in} $dimensions$}
                     \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
@@ -195,13 +195,13 @@ The pseudo code can be seen in~\Cref{alg:diffusion}, with x, y, and z slices in~
                         \State $i_{global} \gets z*S[0] + y*S[1] + x*S[2]$
                         \For {$i$ \textbf{in} $i_{start}:i_{end}$}
                             \State $i_{offset} \gets i_{global} + i*S[dim]$
-                            \State $tmp_1[index] \gets tmp_0[i_{offset}] * kernel[i+k]$
+                            \State $buf_1[index] \gets buf_0[i_{offset}] * kernel[i+k]$
                         \EndFor
                     \EndFor
-                    \State $tmp_0[:] \gets tmp_1[:]$
+                    \State $buf_0[:] \gets buf_1[:]$
                 \EndFor
             \EndFor
-            \Return $tmp_0$
+            \Return $buf_0$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -223,17 +223,40 @@ To obtain good seperation both close to the implant and far away, we combine the
 
 From these fields, we compute 2D histograms with the voxel value on the x-axis and field value on the y-axis.
 This allows us to see the distribution of voxel values, based off their relative position from the implant.
-The pseudo code can be seen in~\Cref{lis:field-hist} with a plot of the resulting histogram in~\Cref{fig:field-hist}.
+The pseudo code can be seen in~\Cref{alg:field-hist} with a plot of the resulting histogram in~\Cref{fig:field-hist}.
 We see that the voxel intensities shift based off how close to the implant they are, which indicates that a global threshold would not be sufficient.
 
-\begin{figure}
-    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for computing the 2D field histograms.,label=lis:field-hist]
-for z, y, x in indices:
-    v = voxel[z,y,x]
-    f = field[z,y,x]
-    hist[f,v] += 1
-    \end{lstlisting}
-\end{figure}
+%\begin{figure}
+%    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for computing the 2D field histograms.,label=lis:field-hist]
+%for z, y, x in indices:
+%    v = voxel[z,y,x]
+%    f = field[z,y,x]
+%    hist[f,v] += 1
+%    \end{lstlisting}
+%\end{figure}
+
+\begin{algorithm}
+    \caption{Field 2D histograms.}
+    \label{alg:field-hist}
+    \begin{algorithmic}
+        \Function {Field\_hist} {$voxels[n_z,n_y,n_x], field[n_z,n_y,n_x],$ \newline $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
+            \State \textbf{allocate} $h[v_{bins},f_{bins}]$
+            \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
+                \State $v \gets voxels[z,y,x]$
+                \If {$v_{min} \leq v \leq v_{max}$}
+                    \State $f \gets voxels[z,y,x]$
+                    \If {$f_{min} \leq f \leq f_{max}$}
+                        \State $v_i \gets (v_{bins} - 1) - \frac{v - v_{min}}{v_{max} - v_{min}}$
+                        \State $f_i \gets (f_{bins} - 1) - \frac{f - f_{min}}{f_{max} - f_{min}}$
+                        \State $h[f_i,v_i]{+}{+}$
+                    \EndIf
+                \EndIf
+            \EndFor
+            \Return $h$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\carl{look at indenting the function arguments in~\Cref{alg:field-hist}}
 
 \begin{figure}
     \includegraphics[width=\linewidth]{figures/fb-edt-bone_region3.png}
