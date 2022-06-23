@@ -271,16 +271,33 @@ We see that the voxel intensities shift based off how close to the implant they 
 
 The next step is to isolate the different materials spatially, which we do through the histogram.
 As mentioned, we have two clearly defined curves making up the two materials.
-To extract and label these curves, we apply the following image processing steps:
-\begin{itemize}
-    \item Gaussian smooth row
-    \item Find peaks in row
-    \item Scatter peaks as new mask
-    \item Dilate
-    \item Erode
-    \item Find contours larger than threshold
-\end{itemize}
+To extract and label these curves, we apply the algorithm described in~\Cref{alg:material}.
 Each contour becomes its own material, which is then labeled as material 1 and 2 respectively.
+
+\begin{algorithm}
+    \caption{Material isolation.}
+    \label{alg:material}
+    \begin{algorithmic}
+        \Function {Materials} {$h[f_{bins},v_{bins},\sigma, peak_{min}, k_x, k_y, i_{dilate},$ \newline $i_{erode}, t]$}
+            \State \textbf{allocate} $l[f_{bins},v_{bins}, ps[f_{bins},v_{bins}$]
+            \For {$row$ \textbf{in} $0{:}f_{bins}$}
+                \State $r \gets gaussian\_smooth(h[row,:], \sigma)$
+                \State $p \gets find\_peaks(r, peak_{min})$
+                \State $ps[p] \gets 1$
+            \EndFor
+            \State $kernel = cross\_kernel((k_x, k_y))$
+            \State $d \gets dilate(ps, i_{dilate}, kernel)$
+            \State $e \gets erode(d, i_{erode}, kernel)$
+            \State $cs \gets find\_contours(e)$
+            \For {$i$ \textbf{in} $0{:}|cs|$}
+                \If {$size(cs[i]) > t$}
+                    \State $l \gets draw\_contour(l, cs[i], i+1)$
+                \EndIf
+            \EndFor
+            \Return $l$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 
 \begin{figure}
     \includegraphics[width=\linewidth]{figures/curves_edt.png}
