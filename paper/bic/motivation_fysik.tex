@@ -4,19 +4,19 @@
 \subsection{Physical samples}
 
 The physical samples are prepared for SR$\mu$CT scanning by cutting out a portion from a larger
-12mm cylindrical sample. \aleksandar{Better to give a brief chronological tour of how the sample
-has been handled?} The cut samples are 6.5mm cubes \aleksandar{more accurate measures?}. This
-contains the titanium dental implant (Astra Tech OsseoSpeed, ST Molndal, Sweden), which is 3.5mm
-in diameter and 8mm long. Along its length the lower 5.5mm has larger threads and is attached to
-recipient bone. The upper 2.5mm has smaller threads and is where newly formed bone is to be
-assessed. Sorrounding the bone and implant contact-region are cavities containing resin, air,
-blood vessels and other fibrous tissue.
+12mm cylindrical sample. \aleksandar{Why? We should include a brief chronological tour of how the
+sample has been handled from before until now?} The cut samples are cubes of size
+(6.478mm, 6.478mm, 6.146mm) in the x,y,z direction respectively. This contains the titanium dental
+implant (Astra Tech OsseoSpeed, ST Molndal, Sweden), which is 3.5mm in diameter and 8mm long. Along
+its length the lower 5.5mm has larger threads and is attached to recipient bone. The upper 2.5mm
+has smaller threads and is where newly formed bone is to be assessed. Sorrounding the bone and
+implant contact-region are cavities containing resin, air, blood vessels and other fibrous tissue.
 
 \begin{figure}
 \centering
-\includegraphics[width=\columnwidth]{figures/770c_pag-full-xy-1x.png}
-\includegraphics[width=\columnwidth]{figures/770c_pag-full-yz-1x.png}
-\includegraphics[width=\columnwidth]{figures/770c_pag-full-xz-1x.png}
+\includegraphics[width=0.96\columnwidth]{figures/770c_pag-full-xy-1x.png}
+\includegraphics[width=0.96\columnwidth]{figures/770c_pag-full-yz-1x.png}
+\includegraphics[width=0.96\columnwidth]{figures/770c_pag-full-xz-1x.png}
 \caption{Full sample seen as cross sections in XY, YZ, XZ planes respectively. A voxel has size of
 1.875$\mu$m. Red voxels are numerically low, while blue are high.}
 \label{fig:3viewsample}
@@ -58,14 +58,15 @@ framework PyHST \citep{pyhst}.
 
 Each image sample contains voxels with a spatial resolution 1.875$\mu$m. The full physical size of
 a sample is about 6.5mm, which makes the raw dimensions of a single image $(3480,3480,3384)$ pixels.
-For computational purposes, this has been cropped to be divisible by $2^5=32$. A full image sample
-is further split into 4-6 sub-volumes through the height of the implant. This gives a size of
-$(3456,3456,810)$ pixels per sub-volume, where the last axis gets stacked for a full volume.
-\aleksandar{OBS: 846 i rå størelse, 810 er efter volume-matching.} \aleksandar{Important to explain
-a bit about how the samples were cut during acquisition. How were the samples secured in order not
-to be physically shifted too much etc.}
+For computational purposes, this has been cropped to be divisible by a power $2^N$ or more
+specifically $2^5=32$ in our case. A full image sample is further split into 4-6 sub-volumes through
+the height of the implant. This gives a size of $(3456,3456,810)$ pixels per sub-volume, where the
+last axis gets stacked for a full volume. \aleksandar{OBS: 846 i rå størelse, 810 er efter
+volume-matching. -- Should ideally also explain a bit about how the samples were cut during
+acquisition. How were the samples secured in order not to be physically shifted too much etc.}
 
-\subsection{Physical effects, noise and artifacts}\label{sec:physics}
+\subsection{Physical effects, noise and artifacts}
+\label{sec:physics}
 
 Noise in tomography is unavoidable, and it makes segmentation harder because it further obscures
 the boundaries between materials. Matarials may be well separated from certain angles in the
@@ -76,20 +77,31 @@ being imaged, we can counter some of these effects during segmentation. The nois
 themselves as numerical shifts in voxel-values as a function of their position. This is a direct
 result of a misrepresented attenuation along the axis the X-rays are passing.
 
+This orientation dependency illustrates how voxel intensity values are not globally fixed. How a
+certain material is represented in intensity, is highly dependent on its position relative to
+neighbouring regions. Especially since this also determines the amount and type of derived noise. 
+The same material with the same density, can thus be represented at multiple varying intensities
+within the same sample.
+
 \begin{figure*}
 \centering
 \includegraphics[width=\textwidth]{figures/770c_pag-bic-xy-1x.png}
-\caption{Unscaled version of XY-slice.}
+\caption{Here we see a 1mm x 2mm region of an unscaled image slice in the XY dimension. It highlights
+some of the imperfections and noise present in the data. We especially see artifacts within and
+around the titanium implant. \aleksandar{Make label ticks smaller. Preferably same size as regular
+text.}}
 \label{fig:xy-slice}
 \end{figure*}
 
-In \cref{fig:xy-slice} and \cref{fig:yz-slice} we see zoomed in sections of the XY and YZ planes
+In \cref{fig:xy-slice} and \cref{fig:yz-slice} we see zoomed in regions of the XY and YZ planes
 of the same sample as shown in \cref{fig:3viewsample}.
 
 \begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{figures/770c_pag-bic-yz-1x.png}
-\caption{Unscaled version of YZ slice.}
+\caption{Here we see a 1.5mm x 1.5mm region of an unscaled image slice in the YZ dimension. This
+hightlights noise and voxexl effects around the newly formed bone in the micro threaded part of
+the titanium implant.}
 \label{fig:yz-slice}
 \end{figure}
 
@@ -133,16 +145,12 @@ Streaking artifacts occur at the dense implant region, but also in the transitio
 tissue. This effect is mostly seen in regions of large heterogeneity. When X-ray beams pass at angles
 containing multiple dense obstacles, the beam is hardened more. Then for angles with fewer dense
 obstacles the energy spectrum is preserved better. This produced the dark and bright streaks seen in
-\cref{fig:xy-slice}
+\cref{fig:xy-slice}.
 
 For a hardened beam, softer x-rays are absorbed instead of successfully penetrating the object,
 and will not contribute to image formation. High density structures such as the titanium implant
 break the isotropy, making the projected X-ray mean energy spectrum dependent on incident orientation
 \citep{srnoise}.
-
-\aleksandar{Forklare hvorfor vi ser mørke områder, særligt at det mørke lægger sig omkring implantatet,
-men at det så aftager mod knoglen, for så at blive kraftigere og bredere helt ved knoglen..}
-\cref{fig:yz-slice}
 
 \subsubsection{Cupping effect}
 
