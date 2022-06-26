@@ -108,19 +108,25 @@ While Diffusion works well on voxels close to the implant, it assigns the same v
 
 \subsection{Walkthrough of the method}
 This section will describe the steps of the method for going from tomography to material probability distributions.
-\carl{flavortext}
+%\carl{flavortext}
 
 \subsubsection{Overview}
 %Coarse steps, explain the idea
 The steps of the segmentation method are:
 \begin{enumerate}
     \item Compute the EDT and Diffusion fields to give each voxel spatial information about its relation to the implant.
-    \item From the fields, compute 2D histograms to show how the voxel value relates to the field value.
-    \item Find the materials within the 2D histograms as curves using image processing techniques.
-    \item From the curves, compute probability distributions of each material.
-    \item Use these probability distributions to segment each voxel the tomography into the materials.
-    \item Project the voxels close to the implant onto an image.
+    \item Compute frequency distributions of voxel values as functions of field values
+      as 2D histograms.
+    \item Find the materials within the 2D histograms as ridges, using image processing techniques.
+    \item From the ridges, compute initial approximate frequence distributions of each material,
+      which are then optimized to fit the 2D histograms. From the optimized distributions, we derive
+      probability distributions for material classification.
 \end{enumerate}
+The computed distributions approximate the conditional probabilities $P(m|v,x)$ that a particular voxel
+is material $m$ given that it has value $v$ and field value $x$. 
+
+\james{TODO: Forklar bedre. Adskil ny segmenteringsmetode og anvendelse til BIC}
+
 These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
 
 \begin{figure}
@@ -130,24 +136,26 @@ These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
         \node[draw, below = of field] (hists) {Compute 2D histograms};
         \node[draw, below = of hists] (curvs) {Find Curves};
         \node[draw, below = of curvs] (probs) {Compute probabilities};
-        \node[draw, below = of probs] (segm) {Segment the voxels};
-        \node[draw, below = of segm] (bic) {Project close to implant using BIC};
+        \node[draw, below = of probs] (segm)  {Segment the voxels};
+        \node[draw, below = of segm]  (blood) {Compute blood network};
+        \node[draw, below = of blood] (bic)   {Compute bone- and blood-implant contact};
 
         \path[draw, ->] (field) -- (hists);
         \path[draw, ->] (hists) -- (curvs);
         \path[draw, ->] (curvs) -- (probs);
         \path[draw, ->] (probs) -- (segm);
-        \path[draw, ->] (segm) -- (bic);
+        \path[draw, ->] (segm) -- (blood);        
+        \path[draw, ->] (blood) -- (bic);
     \end{tikzpicture}
     \caption{Flowchart depicting the steps of the method.
-    \carl{Skal nok labeles, så man nemt kan se hvilken section der beskriver det. Plus, teksten i kasserne nok også kan være mere flavorful!}
+%    \carl{Skal nok labeles, så man nemt kan se hvilken section der beskriver det. Plus, teksten i kasserne nok også kan være mere flavorful!}
     \carl{Kan måske arrangeres ligesom Davids ting oversigt? Giver måske kun mening hvis der var mere end bare segmentation -> bic}}
     \label{fig:flowchart}
 \end{figure}
 
 \subsubsection{Segmentation}
 Now we will list each step detailing the actual implementation for segmentation. The steps for segmentation are steps 1-5.
-\carl{better flavortext}
+%\carl{better flavortext}
 
 \vspace{\baselineskip}
 \noindent\textit{\textbf{1. Field computations}}
@@ -310,8 +318,7 @@ Each contour becomes its own material, which is then labeled as material 1 and 2
 \vspace{\baselineskip}
 \noindent\textbf{Compute the probability distributions} \\
 
-From the curves we found, we want to translate it into a probability distribution for the segmentation.
-\james{TODO hilsen carl}
+The curves are next use to restrict the model
 
 \vspace{\baselineskip}
 \noindent\textbf{Perform segmentation}
@@ -350,9 +357,11 @@ This process is fairly straightforward, as each voxel is looked up in the probab
     \end{algorithmic}
 \end{algorithm}
 
-\subsubsection{BIC computations}
 
-\james{TODO hilsen carl}
 
 \subsection{Results of the field segmentation}
 
+
+\subsubsection{Visualizing bone-implant contact and blood-implant contact
+
+}
