@@ -22,23 +22,9 @@ In order to include spatial information, we consider \textit{expanding} a dimens
 Each histogram is computed by locking the dimension in question and produce the 1D histogram, combining these for each entry in the expanded axis into a new 2-dimensional histogram.
 We consider expanding four different axes of the tomography: x, y, z and radius (r).
 Each of them can be computed with a single pass over the entire tomography, as the code in~\Cref{alg:2dhists} shows.
-%\carl{Which is better?~\Cref{lis:2dhists} or~\Cref{alg:2dhists}. I know the algorithm has more information, but it could easily be added to the listing as well.}
 
 %discuss the effects with references to the physics (previous section)
 \carl{ref til section 2.4}
-
-% Kept for historical reasons.
-%\begin{figure}
-%    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for computing 2D histograms.,label=lis:2dhists]
-%for z, y, x in indices:
-%    v = voxels[z,y,x]
-%    r = int(sqrt((x-cx)**2 + (y-cy)**2))
-%    zhist[z,v] += 1
-%    yhist[y,v] += 1
-%    xhist[x,v] += 1
-%    rhist[r,v] += 1
-%    \end{lstlisting}
-%\end{figure}
 
 \begin{algorithm}
     \caption{2-dimensional histograms. Allocation also implies zero initialization.}
@@ -108,7 +94,7 @@ While Diffusion works well on voxels close to the implant, it assigns the same v
 
 \subsection{Walkthrough of the method}
 This section will describe the steps of the method for going from tomography to material probability distributions.
-%\carl{flavortext}
+\carl{flavortext}
 
 \subsubsection{Overview}
 %Coarse steps, explain the idea
@@ -148,14 +134,14 @@ These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
         \path[draw, ->] (blood) -- (bic);
     \end{tikzpicture}
     \caption{Flowchart depicting the steps of the method.
-%    \carl{Skal nok labeles, så man nemt kan se hvilken section der beskriver det. Plus, teksten i kasserne nok også kan være mere flavorful!}
+    \carl{Skal nok labeles, så man nemt kan se hvilken section der beskriver det. Plus, teksten i kasserne nok også kan være mere flavorful!}
     \carl{Kan måske arrangeres ligesom Davids ting oversigt? Giver måske kun mening hvis der var mere end bare segmentation -> bic}}
     \label{fig:flowchart}
 \end{figure}
 
 \subsubsection{Segmentation}
 Now we will list each step detailing the actual implementation for segmentation. The steps for segmentation are steps 1-5.
-%\carl{better flavortext}
+\carl{flavortext}
 
 \vspace{\baselineskip}
 \noindent\textit{\textbf{1. Field computations}}
@@ -166,24 +152,6 @@ EDT
 For diffusion, rather than solving the diffusion equation, we approximate using multiple convolutions of a 3D-gaussian kernel.
 Instead of a single pass with a 3D-kernel, we apply 3 1D convolutions, one in each dimension, to the tomography, obtaining the same result as a regular 3D kernel.
 The pseudo code can be seen in~\Cref{alg:diffusion}, with x, y, and z slices in~\Cref{fig:field-slices}
-
-%\begin{figure}
-%    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for the diffusion approximation.,label=lis:diffusion]
-%S = [Ny*Nx, Nx, 1]
-%N = [Nz, Ny, Nx]
-%for rep in repitions:
-%    for dim in dimensions:
-%        for z, y, x in indices:
-%            X = [z,y,x]
-%            is = -min(k, X[dim])
-%            ie = min(k, N[dim]-X[dim]-1)
-%            idx = z*S[0] + y*S[1] + x*S[2]
-%            for i in range(is,ie):
-%                in_idx = idx + i*S[dim]
-%                output[idx] +=
-%                    voxels[in_idx] * kernel[i+k]
-%    \end{lstlisting}
-%\end{figure}
 
 \begin{algorithm}
     \caption{Diffusion approximation.}
@@ -233,15 +201,6 @@ From these fields, we compute 2D histograms with the voxel value on the x-axis a
 This allows us to see the distribution of voxel values, based off their relative position from the implant.
 The pseudo code can be seen in~\Cref{alg:field-hist} with a plot of the resulting histogram in~\Cref{fig:field-hist}.
 We see that the voxel intensities shift based off how close to the implant they are, which indicates that a global threshold would not be sufficient.
-
-%\begin{figure}
-%    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for computing the 2D field histograms.,label=lis:field-hist]
-%for z, y, x in indices:
-%    v = voxel[z,y,x]
-%    f = field[z,y,x]
-%    hist[f,v] += 1
-%    \end{lstlisting}
-%\end{figure}
 
 \begin{algorithm}
     \caption{Field 2D histograms.}
@@ -325,15 +284,6 @@ Each contour becomes its own material, which is then labeled as material 1 and 2
 The final step of the segmentation process is to utilize the probabilities for segmentation.
 This process is fairly straightforward, as each voxel is looked up in the probability distribution, which carries the same shape as the field histogram.
 
-%\begin{figure}
-%    \begin{lstlisting}[language=Python,caption=Python-like pseudo code for the final segmentation.,label=lis:segmentation]
-%for z, y, x in indices:
-%    v = voxel[z,y,x]
-%    f = field[z,y,x]
-%    result[z,y,x] = prob[f,v]
-%    \end{lstlisting}
-%\end{figure}
-
 \begin{algorithm}
     \caption{Final segmentation from the probability distributions.}
     \label{alg:segment}
@@ -355,8 +305,6 @@ This process is fairly straightforward, as each voxel is looked up in the probab
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
-
-
 
 \subsection{Results of the field segmentation}
 
