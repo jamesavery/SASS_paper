@@ -1,0 +1,86 @@
+\newcommand{\xx}{\mathbf{x}}
+% \newcommand{\fval}{f(\xx)}
+% \newcommand{\fval}{f}
+\newcommand{\fval}{x}
+\newcommand{\lab}{\mathrm{label}}
+Our goal is to obtain good conditional probability distributions $P(m|v,\xx)$
+that model the likelihood of a voxel having material type $m$ as a function
+both on its value $v$ and its position $\xx$ in space. For the probabilities
+conditioned on the field values (distance or diffusion field), we model
+the probability distributions $P(m|v,f(\xx))$ conditioned on
+voxel- and field values. We want to make sure that these distribution
+functions vary smoothly across space (or as a function of field values),
+to ensure that we can identify the materials correctly across the entire
+image: i.e., even though the frequency distributions look completely different
+close to the titanium implant compared to the middle region or sample surface,
+we can track the unbroken, smooth deformation to assign a global material
+identity.
+
+To this end, we first {\em model the frequency distributions} using the
+2D histograms. Given that we are modeling materials $m=1,\ldots,M$,
+we write the full 2D histogram as a sum of distributions
+$g_m(\fval,v)$ modeling the described part, and an undescribed
+residual $r(\xx,v)$.
+\begin{equation}
+  \label{eq:hist}
+  H(\fval,v) = \sum_{m=1}^M g_m(\fval,v) + r(\fval,v)
+\end{equation}
+The residual is constrained to be non-negative, i.e., we must not explain
+more voxels than the image contains.
+The distribution functions can be chosen in any way that approximately
+model the observed frequencies: we first used Gaussians with passable success,
+but found that they dropped off too rapidly. We instead found excellent results
+with the next-simplest model, leaving the exponential power free:
+\begin{equation}
+  \label{eq:dist-form}
+  g_m(\fval,v) = a_m(\fval) e^{-b_m(\fval) |v-c_m(\fval)|^d_m(\fval)
+\end{equation}
+where for each field value $\fval$
+$a(\fval)$ is the distribution height at the center $v=c(\fval)$,
+$b(\fval)$ is the exponential falloff rate, and $d(\fval)$ is
+the exponential power ($d=2$ yields a Gaussian, $d=1$ a simple exponential).
+In practice we found $1.5\le d \le 2$ to best match the actual frequency
+distribution decay rates.
+
+Using the ridges found in Section \ref{sec:ridges}, we generate good starting
+guesses and constraints for the distribution parameters
+$a,b,c,d$:
+For each field-value $\fval$ (corresponding to a row in the 2D histogram),
+we initialize the starting approximation as:
+\begin{equation}
+  \label{eq:starting-guesses}
+  \begin{split}
+    c_m(\fval) &= \argmax_{\stackrel{v}{\lab[\fval,v] = m}} H(\fval,v)    \\    
+    a_m(\fval) &= H(\fval,c_m(\fval))\\
+    b_m(\fval) &= 3/\mathrm{width}_m(\fval)^2 \\
+    d_m(\fval) &= 2
+  \end{split}
+\end{equation}
+where we use half the distance to the center of ridge $m+1$ as the width
+$\mathrm{width_m}(\fval)$, using the relation that $b = 3/w^d$ yields
+a $5\percent$ cutoff at $w$ when $1\le d \le 2$. This approximation
+already yields a good approximation. Thus, the subsequent
+optimization using the constrained quasi-Newton optimization method L-BFGS-B\cite{BFGS}
+converges rapidly to an excellent fit. Each 1D histogram row is first optimized
+independently in parallel: The resulting numerical functions
+$a_m(\fval),\ldots,d_m(\fval)$ are then converted into piecewise cubic
+functions using a least squares-based algorithm that ensures continuity
+and differentiability across the piecewise segments. This lets us interpolate across
+outliers due to noise, but equally important:
+extrapolate our models smoothly into the regions very close to the implant, where
+we don't have enough voxels to produce good statistics.
+
+We finally obtain the {\em conditional probabilities} from the material frequency distribution
+models $g_m$ as:
+\begin{equation}
+  \label{eq:Pm}
+  P(m|v,f(\xx)) = \frac{g_m(v,f(\xx))}{H(v,f(\xx))} 
+\end{equation}
+(well-defined where $H(v,\fval) > 0$, zero outside this region as $0\le g_m \le H$).
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
