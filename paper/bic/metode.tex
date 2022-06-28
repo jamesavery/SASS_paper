@@ -95,12 +95,12 @@ EDT computes each voxel as the euclidian distance to the implant. This makes for
 %Use diffusion to "zoom in" on the implant, as it is good close to the implant, but throws everything far away into the same bin
 To zoom in on the implant, we utilize diffusion where the implant "glows" further accumulating the value when a voxel is surrounded by implant. This is shown in~\Cref{fig:edt-vs-diffusion}, where the voxels in the grooves are affected by multiple implant voxels.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=.7\linewidth]{figures/edt-diffusion.png}
-    \caption{High-quality render of the different field computations close to the implant in the YZ plane. The EDT is depicted in blue, where we see that $p_1$ and $p_2$ has the same distance. Diffusion is depicted in green, where we see multiple arrows contributing to the value of $p_1$. \carl{TODO: actual render.}}
-    \label{fig:edt-vs-diffusion}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=.7\linewidth]{figures/edt-diffusion.png}
+%     \caption{High-quality render of the different field computations close to the implant in the YZ plane. The EDT is depicted in blue, where we see that $p_1$ and $p_2$ has the same distance. Diffusion is depicted in green, where we see multiple arrows contributing to the value of $p_1$. \carl{TODO: actual render.}}
+%     \label{fig:edt-vs-diffusion}
+% \end{figure}
 
 While Diffusion works well on voxels close to the implant, it assigns the same value to the voxels far from the implant. As such, an optimal solution is to use both the EDT and the diffusion field to better represent both voxels that are far away, as well as the ones that are close to the implant.
 
@@ -308,8 +308,8 @@ Each contour becomes its own material, which is then labeled as material 1 and 2
 \end{algorithm}
 
 \begin{figure}
-    \includegraphics[width=\linewidth]{figures/curves_edt.png}
-    \includegraphics[width=\linewidth]{figures/curves_diffusion.png}
+    \includegraphics[width=0.5\linewidth]{figures/curves_edt.png}%
+    \includegraphics[width=0.5\linewidth]{figures/curves_diffusion.png}
     \carl{intermediate images of all of the steps?}
     \caption{Curve finding intermediate steps. Top is EDT, bottom is Diffusion.}
     \label{fig:curves}
@@ -361,7 +361,75 @@ This process is fairly straightforward, as each voxel is looked up in the probab
 
 \subsection{Results of the field segmentation}
 
+\subsubsection{Sub-classification of soft tissue}
 
-\subsubsection{Visualizing bone-implant contact and blood-implant contact
+With a separation of soft tissue and bone in hand, we 
+map out the blood vessel network using connected components analysis. 
+The osteocytes are selected by volume and shape: for every connected
+component in the feasible volume range, its principal axis and best
+ellipsoid is computed and checked against the potential osteocyte shape.
 
-}
+\subsection{Visualizing bone-implant contact and blood-implant contact}
+
+Using a Euclidean Distance Transform (EDT) from the implant, restricted to the
+bone region, we can simply mask the voxels that are within a thin shell
+of distances, $d_min < d(x,y,z) \le d_max$. We choose $d_min = 0$ and
+$d_max = 10\mu m$.
+We then simply sum over the masked voxels of each tissue type to obtain
+and divide by the total to obtain the tissue-to-implant contact per area.
+However, this only yields a single number, and it is difficult to verify
+its fidelity.
+
+\subsubsection{Histology-comparison}
+
+\begin{figure}
+  \centering
+  \begin{tabular}{c}
+    \includegraphics[width=\linewidth]{figures/770c_pag-bic-xy-1x} \\
+    \includegraphics[width=\linewidth]{figures/770c_pag-bic-P01-xy-1x}
+  \end{tabular}
+  \caption{TBW}
+  \label{fig:histology-comparison1}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{tabular}{c}
+    \includegraphics[width=\linewidth]{figures/770c_pag-full-P01-yz-1x} \\
+    \includegraphics[width=\linewidth]{figures/770c_pag-bic-P01-yz-1x}
+  \end{tabular}
+  \caption{TBW}
+  \label{fig:histology-comparison2}
+\end{figure}
+
+\subsubsection{Cylindrical projection of implant contact-surface}
+
+In this subsection, we show how to map the tissue-to-implant contact
+surface for visual inspection. The challenge is that the equidistant
+region forms a curved surface that cannot simply be flattened. Instead,
+we project the voxels onto a cylinder, as shown on Figure \ref{fig:cylinder1}.
+
+\begin{figure}
+  \centering
+  \begin{tabular}{cc}
+    (a) & \begin{tabular}{c}\includegraphics[width=.8\linewidth]{figures/implant-FoR_prime-circle}\end{tabular} \\
+    (b) & \begin{tabular}{c}\includegraphics[width=0.4\linewidth]{figures/implant-FoR_cylinder-y}%
+  \includegraphics[width=0.5\linewidth]{figures/implant-FoR_cylinder-z2}\end{tabular}
+  \end{tabular}
+  \caption{
+    (a) The implant is divided into 100 segments along its principal axis,
+    and for each segment, the circumscribed circle is computed. 
+    (b) The best overall cylindrical fit for the implant is computed using
+    least squares. The implant contact are projected onto this cylinder,
+    and can now be shown in a flat plot.}
+  \label{fig:cylinder1}
+\end{figure}
+
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
