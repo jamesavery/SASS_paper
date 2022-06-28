@@ -2,7 +2,7 @@
 % \newcommand{\fval}{f(\xx)}
 % \newcommand{\fval}{f}
 \newcommand{\fval}{x}
-\newcommand{\lab}{\mathrm{label}}
+\newcommand{\lab}{\mathrm{L}}
 Our goal is to obtain good conditional probability distributions $P(m|v,\xx)$
 that model the likelihood of a voxel having material type $m$ as a function
 both on its value $v$ and its position $\xx$ in space. For the probabilities
@@ -50,7 +50,7 @@ we initialize the starting approximation as:
 \begin{equation}
   \label{eq:starting-guesses}
   \begin{split}
-    c_m(\fval) &= \argmax_{\stackrel{v}{\lab[\fval,v] = m}} H(\fval,v)    \\    
+    c_m(\fval) &= \mathop{\mathtt{argmax}}_{v \text{ with }\lab[\fval,v] = m} H(\fval,v)    \\    
     a_m(\fval) &= H(\fval,c_m(\fval))\\
     b_m(\fval) &= 3/\mathrm{width}_m(\fval)^2 \\
     d_m(\fval) &= 2
