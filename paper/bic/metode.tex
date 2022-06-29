@@ -19,14 +19,11 @@ This is because the voxel intensity is not a globally defined value, as~\Cref{se
 To reduce the complexity of the segmentation process, we preprocess the data by removing redundant information.
 From our work in another paper, we are able to obtain two masks: an implant mask and a bone mask.
 
-Since the intensety of the implant material is radically different from the rest of the sample, obtaining the rough implant mask through global thresholding is trivial, as the orange line in~\Cref{fig:1d-hist} shows.
-This mask is then refined along with the internal gaps closed, giving us the implant mask. 
-Using this mask, we are also able to remove the air making up half of the sample cylinder (depicted in the XY and YZ cross sections of~\Cref{fig:3viewsample}), as the implant mask can show us the orientation of the implant. This removes the leftmost peak from the 
+Since the intensity of the implant material is radically different from the rest of the sample, obtaining the rough implant mask through global thresholding is trivial, as the orange line in~\Cref{fig:1d-hist} shows.
+This mask is then refined, along with the internal gaps closed, giving us the implant mask. 
+Using this mask, we are also able to remove the air making up half of the sample cylinder (depicted above the implant in the XY and to the left of the implant in the YZ cross sections of~\Cref{fig:3viewsample}), as the implant mask can show us the orientation of the implant. This squashes the leftmost peak from the histogram, leaving the two peaks marked by the red and green lines as being the most defined. 
 
-
-In order to remove the gaps within the implant, we apply a closing morphology filter. The implant mask is then used to compute the principal axes from the implant in order to compute what is considered air and what is considered resin. From this information, we obtain the bone mask. These two masks are applied throughout the steps to filter out noise in the tomography.
-
-\carl{Til James: er denne beskrivelse ok? Jeg prøvede at springe nemt henover det.}
+As we are only interested in the voxels inside the bone, and that we know that the bone is the most prominent material left, we perform another coarse segmentation, by thresholding in between the two large distributions, choosing everything to the right of this threshold as the bone mask. These voxels are morphologically closed, to also consume the internal gaps of the bone region, which makes up the soft tissue inside the bone. The implant and bone region masks applied throughout the following steps to filter out noise in the tomography.
 
 \subsection{Exploiting spatial information}
 As described in~\Cref{sec:physics}, the intensities vary according to their positioning, leading us to utilize spatial information in the tomography. 
