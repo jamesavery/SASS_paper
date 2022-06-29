@@ -21,7 +21,7 @@ From our previous work, we are able to obtain two masks: an implant mask and a b
 
 Since the material of the implant is radically different from the rest of the sample, obtaining the implant mask through global thresholding is trivial. In order to remove the gaps within the implant, we apply a closing morphology filter. The implant mask is then used to compute the principal axes from the implant in order to compute what is considered air and what is considered resin. From this information, we obtain the bone mask. These two masks are applied throughout the steps to filter out noise in the tomography.
 
-\james{Er denne beskrivelse ok? Jeg prøvede at springe nemt henover det.}
+\carl{Til James: er denne beskrivelse ok? Jeg prøvede at springe nemt henover det.}
 
 \subsection{Exploiting spatial information}
 As described in~\Cref{sec:physics}, the intensities vary according to their positioning, leading us to utilize spatial information in the tomography. 
