@@ -11,17 +11,17 @@ This is because the voxel intensity is not a globally defined value, as~\Cref{se
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{figures/1d_hist.pdf}
-    \caption{1-dimensional histogram of the voxel intensities of a tomography. The red line is the soft tissue peak, the green line is the bone peak, and the orange line is the coarse implant threshold.}
+    \caption{1-dimensional histogram of the voxel values of a tomography. The blue line is air peak, the red line is the soft tissue peak, the green line is the bone peak, and the orange line is the implant peak.}
     \label{fig:1d-hist}
 \end{figure}
 
 \subsection{Preprocessing}\label{sec:preprocess}
 To reduce the complexity of the segmentation process, we preprocess the data by removing redundant information.
-From our work in another paper, we are able to obtain two masks: an implant mask and a bone mask.
+From our work in another paper, we are able to obtain two masks: an \textit{implant mask} and a \textit{bone mask}.
 
-Since the intensity of the implant material is radically different from the rest of the sample, obtaining the rough implant mask through global thresholding is trivial, as the orange line in~\Cref{fig:1d-hist} shows.
+Since the values of the implant material is radically different from the rest of the sample, obtaining the rough implant mask through global thresholding is trivial, as the orange line in~\Cref{fig:1d-hist} shows.
 This mask is then refined, along with the internal gaps closed, giving us the implant mask. 
-Using this mask, we are also able to remove the air making up half of the sample cylinder (depicted above the implant in the XY and to the left of the implant in the YZ cross sections of~\Cref{fig:3viewsample}), as the implant mask can show us the orientation of the implant. This squashes the leftmost peak from the histogram, leaving the two peaks marked by the red and green lines as being the most defined. 
+Using this mask, we are also able to remove the air making up half of the sample cylinder (depicted above the implant in the XY and to the left of the implant in the YZ cross sections of~\Cref{fig:3viewsample}), as the implant mask can show us the orientation of the implant. This squashes the blue peak from the histogram, leaving the two peaks marked by the red and green lines as being the most defined. 
 
 As we are only interested in the voxels inside the bone, and that we know that the bone is the most prominent material left, we perform another coarse segmentation, by thresholding in between the two large distributions, choosing everything to the right of this threshold as the bone mask. These voxels are morphologically closed, to also consume the internal gaps of the bone region, which makes up the soft tissue inside the bone. The implant and bone region masks applied throughout the following steps to filter out noise in the tomography.
 
