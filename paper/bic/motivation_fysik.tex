@@ -5,9 +5,13 @@ In this section, we will briefly go through the physical composition of our samp
 the data is acquired. Then we will look at the noise sources typical for this type of data, and
 show the effects noise has on regions around the implant and biological tissue.
 
-\subsection{Physical samples}
+\subsection{Data set}
+\james{TODO: Else, vil du skrive noget fornuftigt om gedeforsøget, og hvordan
+  biopsierne blev prepareret, osv.? Dertil hvad du end finder fornuftigt, at vi får med.}
 
-The physical samples are prepared for SR$\mu$CT scanning by cutting out a portion from a larger
+\subsubsection{Physical samples}
+
+The physical samples were prepared for SR$\mu$CT scanning by cutting out a portion from a larger
 12mm cylindrical sample. The cut samples are cubes of size (6.478mm, 6.478mm, 6.146mm) in the
 x,y,z direction respectively. This contains the titanium dental implant (Astra Tech OsseoSpeed,
 ST Molndal, Sweden), which is 3.5mm in diameter and 8mm long. Along its length the lower 5.5mm
@@ -31,7 +35,8 @@ implant shown in blue has higher absorption than bone. Bone material shown in li
 higher absorption than its sorrounding dark orange colored regions containing blood vessels
 tissue, air and resin.
 
-\subsection{Data acquisition}
+\subsubsection{Data acquisition}
+
 
 It can be difficult to study and evaluate the bone structure and blood network without destroying
 or manipulating the sample. X-ray computed tomography is a widely used tool for non-intrusive medical
@@ -61,7 +66,7 @@ The data presented here has been acquired at the ID19 beam line at the European 
 Radiation Facility (ESRF) in Grenoble, France, and has previously \citep{sporring} been
 reconstructed using the Python framework PyHST \citep{pyhst}. The images are acquired at 50 KeV.
 
-\subsection{Image data}
+\subsubsection{Image data}
 
 Each image sample contains voxels with a spatial resolution 1.875$\mu$m. The full physical size of
 a sample is about 6.5mm, which makes the raw dimensions of a single image $(3480,3480,3384)$ pixels.
@@ -190,6 +195,7 @@ errnoeously looks to be dense peripheral regions at the edges.
 
 \subsubsection{Phase contrast}
 
+\aleksandar{TODO: Glem ikke denne paragraf!}
 The effect of ... is very similar in effect to beam hardening.
 
 Fringes at the edges of the

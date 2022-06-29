@@ -16,18 +16,25 @@ Lauridsen et al.~\cite{torsten2018} quantified the uncertainty of 2D histology f
 plane for histological analysis incurred a significant uncertainty in the results, whereas the full volumetric analysis of SR$\mu$CT tomograms did not.
 
 Further, the high brilliance and collimation of synchrotron radiation yields particularly faithful 3D images, as the common distortive X-ray effects
-in hospital-grade setups such as beam hardening and \james{TODO: Hvad er den næstmest almindelige effekt?} is minimized. The high fidelity
+in hospital-grade setups such as beam hardening and projection artefacts are minimized. The high fidelity
 makes SR$\mu$CT attractive for conducting advanced medical image analyses with trustworthy results.
 
 However, while image distortion effects are much reduced compared to mainstream X-ray tomography, they are not eliminated, and numerical
 analysis and computations on the images must still be conducted carefully. Boundary
-effects near sample surfaces, ring artefacts, and especially distortion near high-contrast transitions make accurate tissue classification
+effects near sample surfaces, ring artefacts, and especially distortion near high-contrast transitions, make accurate tissue classification
 difficult in regions where this distortion is significant. Neldam et al.~\cite{sporring} found that, while they could accurately classify
 bone tissue in the middle regions of the tomograms, they were not able to obtain good bone-to-implant contact evaluation (BIC), as evidenced
 by poor correlation with histological analysis of the same samples.
 
 \james{Her følger paragraf fra Else om, hvorfor BIC er vigtigt for at evaluere regenereret knogle.}
 
+The present work presents a computational method which automatically discovers probabilistic models for the distortions incurred by the physical effects in
+high-resolution X-ray CT such as SR$\mu$CT in order to reverse them and produce accurate tissue classification even in regions where these effects are significant.
+It exploits two properties, which are needed to hold for the method to work:
+i) very high resolution is used to build statistical models as functions of space, and ii) that the effects to be coutnered vary continuously
+over space, so that we can track how voxel frequency distributions are distorted through space. We apply the method to the same dataset
+of micrometer-resulution SR$\mu$CT bone tomograms studied in \cite{torsten2018} and in \cite{sporring}, to achieve faithful tissue classification
+all the way to the titanium implant surface.
 
 
 
