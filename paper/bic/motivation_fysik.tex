@@ -119,7 +119,7 @@ the titanium implant.}
 
 Both planes display a broad selection of the various type of noise sources found in the data.
 
-\subsection{Ring artifacts}
+\subsubsection{Ring artifacts}
 
 Looking at the XY-slice in \cref{fig:xy-slice} we see clear concentric ring artifacts emanating from
 the center of the sample, and at strong edges of the titanium implant. It propagates strongly through
@@ -128,14 +128,25 @@ arising from imperfections in the scanner setup. These types of artifacts can ty
 uncalibrated or defect adjacent detector elements. For synchrotron radiation sources it can also
 occur from shifts and vibrations in the monochromator crystal \citep{ringartifacts}.
 
-\subsection{Projection artifacts}
+\subsubsection{Projection artifacts}
 
 Bright streaks with strong edges are seen from the sharp corners of the titanium implant. When
 doing back projection, the symmetry breaking is seen as smeared lines across the sample. This
 can occur from the high pass filter used during filtered back projection, which exaggerates the
 differences between adjacent elements \citep{ctnoise}.
 
-\subsubsection{Beam hardening}\label{sec:beam-hardening}
+\subsubsection{Compton scattering}
+
+Lower energy rays contribute mostly with noise from scattering effects. A ray will propagate through
+a material, get scattered and diffract from its initial trajectory. This gives a misrepresentation
+of the attenuation along its initial trajectory. The artefacts seen from scattering are similar in
+nature to those formed by beam hardening. This is because both effectively reduce the measured
+attenuation. For energy levels of above 50KeV relevant for the data presented here, Compton
+scattering is the dominating type \citep{compton}. The scattering occurs due to photon-electron
+interaction between X-ray beam and the material it passes through. Like beam-hardening, scattering
+will cause dark streaks across the image, where attenuation was highest.
+
+\subsection{Beam hardening}\label{sec:beam-hardening}
 
 Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artifacts around high
 density regions. This effect is called beam-hardening \citep{beamhardening}, and occurs when rays
@@ -175,24 +186,15 @@ passing the middle will traverse more material compared to the edges, the beam i
 towards the center and intensity becomes lower as a result. This can manifest itself in what
 errnoeously looks to be dense peripheral regions at the edges.
 
-\subsubsection{Detector impulse response}
+\subsubsection{Phase contrast}
 
 The effect of ... is very similar in effect to beam hardening.
 
-\aleksandar{Fringes at the edges of the
-titanium implant due to phase-contrast effects (see srnoise ref), Partial volume artifacts which
-are dependent on the voxel size and are mentioned briefly by Neldam et al.}
+Fringes at the edges of the
+titanium implant due to phase-contrast effects (see \citep{srnoise}),
 
-\subsubsection{Compton scattering}
-
-Lower energy rays contribute mostly with noise from scattering effects. A ray will propagate through
-a material, get scattered and diffract from its initial trajectory. This gives a misrepresentation
-of the attenuation along its initial trajectory. The artefacts seen from scattering are similar in
-nature to those formed by beam hardening. This is because both effectively reduce the measured
-attenuation. For energy levels of above 50KeV relevant for the data presented here, Compton
-scattering is the dominating type \citep{compton}. The scattering occurs due to photon-electron
-interaction between X-ray beam and the material it passes through. Like beam-hardening, scattering
-will cause dark streaks across the image, where attenuation was highest.
+Partial volume artifacts which are dependent on the voxel size and are
+mentioned briefly by Neldam et al.
 
 %%% Local Variables:
 %%% mode: latex
