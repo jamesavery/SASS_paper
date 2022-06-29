@@ -178,36 +178,36 @@ These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
 \begin{figure}
     \centering
     \begin{tikzpicture}
-        %\node (voxels) at (0,2) {tomography};
-        %\node[anchor=east] (implant) at (-1,1) {implant mask};
-        %\node[anchor=west] (bone) at (1,1) {bone mask};
-        %\draw[draw] (implant.north west) rectangle (bone.south east);
+        \fill[red!40] (-4,.5) rectangle (4,-1.5);
+        \fill[blue!40] (-4,-1.5) rectangle (4,-4.5);
+        \fill[yellow!40] (-4,-4.5) rectangle (4,-6.5);
+        \node[rotate=90, anchor=north] (field) at (-4,-.5) {Fields};
+        \node[rotate=90, anchor=north] (segment) at (-4,-3) {Segmentation};
+        \node[rotate=90, anchor=north] (bicc) at (-4,-5.5) {BIC};
 
-        \node[draw] (field) at (0,0) {1. Compute fields};
-        \node[draw, below = of field] (hists) {2. Compute 2D histograms};
-        \node[draw, below = of hists] (curvs) {3. Find Ridges};
-        \node[draw, below = of curvs] (probs) {4. Compute probabilities};
-        \node[draw, below = of probs] (segm)  {5. Segment the voxels};
-        \node[draw, below = of segm]  (blood) {6. Compute blood network};
-        \node[draw, below = of blood] (bic)   {7. Compute bone- and blood-implant contact};
+        \node       (prep)  at (0, 1) {Preprocessing};
+        \node[draw, fill=black!10, rounded corners] (field) at (0, 0) {1. Compute fields};
+        \node[draw, fill=black!10, rounded corners] (hists) at (0,-1) {2. Compute 2D histograms};
+        \node[draw, fill=black!10, rounded corners] (curvs) at (0,-2) {3. Find Ridges};
+        \node[draw, fill=black!10, rounded corners] (probs) at (0,-3) {4. Compute probabilities};
+        \node[draw, fill=black!10, rounded corners] (segm)  at (0,-4) {5. Segment the voxels};
+        \node[draw, fill=black!10, rounded corners] (blood) at (0,-5) {6. Compute blood network};
+        \node[draw, fill=black!10, rounded corners] (bic)   at (0,-6) {7. Compute bone- and blood-implant contact};
 
-        %\path[draw, ->] (voxels) -- (field);
-        %\path[draw, ->] (implant) -| ([shift={(-.5,0)}]field.north);
-        %\path[draw, ->] (bone) -| ([shift={(.5,0)}]field.north);
+        \path[draw, ->] (prep)  -- (field);
         \path[draw, ->] (field) -- (hists);
         \path[draw, ->] (hists) -- (curvs);
         \path[draw, ->] (curvs) -- (probs);
         \path[draw, ->] (probs) -- (segm);
-        \path[draw, ->] (segm) -- (blood);        
+        \path[draw, ->] (segm)  -- (blood);        
         \path[draw, ->] (blood) -- (bic);
     \end{tikzpicture}
-    \caption{Flowchart depicting the steps of the method.
-    \carl{Kan måske arrangeres ligesom Davids ting oversigt? Giver måske kun mening hvis der var mere end bare segmentation -> bic}}
+    \caption{Flowchart depicting the steps of the method.}
     \label{fig:flowchart}
 \end{figure}
 
 \subsubsection{Segmentation}
-The segmentation is computed in steps 1-5. For each step we will describe the process, showing the algorithm where applicable, along with the the intermediate results. 
+The overall segmentation is computed in steps 1-5. For each step we will describe the process, showing the algorithm where applicable, along with the the intermediate results. 
 
 \vspace{\baselineskip}
 \noindent\textit{\textbf{Step 1: Field computations}}
