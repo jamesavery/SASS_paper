@@ -26,14 +26,14 @@ Using this mask, we are also able to remove the air making up half of the sample
 As we are only interested in the voxels inside the bone, and that we know that the bone is the most prominent material left, we perform another coarse segmentation, by thresholding in between the two large distributions, choosing everything to the right of this threshold as the bone mask. These voxels are morphologically closed, to also consume the internal gaps of the bone region, which makes up the soft tissue inside the bone. The implant and bone region masks applied throughout the following steps to filter out noise in the tomography.
 
 \subsection{Exploiting spatial information}
-As described in~\Cref{sec:physics}, the intensities vary according to their positioning, leading us to utilize spatial information in the tomography. 
+As described in~\Cref{sec:physics}, the voxel values vary according to their positioning, leading us to utilize spatial information in the tomography. 
 %Show the correlation of x,y,z,r to histograms 2d
-In order to include spatial information, we consider \textit{expanding} a dimension to produce multiple 1D histograms.
-Each histogram is computed by locking the dimension in question and produce the 1D histogram, combining these for each entry in the expanded axis into a new 2-dimensional histogram.
-Specifically, we consider the radius ($r$) dimension from the center of the implant, as the intensities vary the most closest to the implant. 
-The algorithm for computing the 2-dimensional histogram for the radius can be seen in~\Cref{alg:2dhists} with the resulting histograms plotted in~\Cref{fig:2dhists}.
+In order to include spatial information, we consider \textit{expanding} a dimension to produce multiple 1D histograms into a combined 2-dimensional histogram.
+Each 2D histogram is computed by locking the dimension in question and produce the 1D histograms.
+Specifically, we consider the radius ($r$) dimension from the center of the implant, as the voxel values vary the most closest to the implant. 
+The algorithm for computing the 2-dimensional histogram for the radius can be seen in~\Cref{alg:2dhists} with the resulting 2D histogram plotted in~\Cref{fig:2dhists}.
 From this plot, we see two prominent distributions that change along the $r$ axis.
-However, close to the implant (as $r$ goes towards 0), the intensities starts overlapping indicating the need for another solution.
+However, this is not an accurate representation, as the edges of the implant is not uniformly spread across the longest axis of the implant, meaning that the radius does not represent the distance from the implant in high resolutions. This is shown in~\Cref{fig:edt-vs-diffusion}, where we see that a radius of constant value from the center has varying distance to the implant.
 
 \carl{discuss the effects with references to the physics (previous section). Kunne jeg godt bruge hjælp til.}
 
@@ -100,11 +100,18 @@ In order to obtain spatial information based on the relation to the implant, we 
 EDT computes each voxel as the euclidian distance to the implant. 
 This makes for a generally good representation for all but the voxels that are close to the implant.
 The shortcoming near the implant is mainly due to the fact that the voxels in the grooves of the implant has the same distance, and thus gets the same value, as the voxels next to the threads of the implant, as is shown in~\Cref{fig:edt-vs-diffusion}.
-This is not entirely accurate, as the implant produces a "glowing" effect similar to beam-hardening, as discussed in~\Cref{sec:beam-hardening}.
+As discussed in~\Cref{sec:beam-hardening}, the implant produces a "glowing" effect, which should be corrected by having higher field values for voxels surrounded by implant.
 
 %Use diffusion to "zoom in" on the implant, as it is good close to the implant, but throws everything far away into the same bin
 To get better correction close to the implant, we utilize diffusion where the implant "glows" further accumulating the value when a voxel is surrounded by implant.
 This is shown in~\Cref{fig:edt-vs-diffusion}, where the voxels in the grooves are affected by multiple implant voxels.
+A slice of the resulting diffusion field can be seen in~\Cref{fig:field-slice}.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{figures/770c_pag-gauss-yz.png}
+    \caption{A slice of the diffusion field in the YZ plane.}
+    \label{fig:field-slice}
+\end{figure}
 
 \begin{figure}
     \vspace{-1.5cm}
@@ -239,14 +246,8 @@ The algorithm can be seen in~\Cref{alg:diffusion}, with x, y, and z slices in~\C
     \end{algorithmic}
 \end{algorithm}
 
-\begin{figure}
-    \carl{TODO show x, y, and z slices of the EDT and Diffusion field. Either each field seperate or combined?}
-    \caption{Slices of the EDT field at different collapsed dimensions.}
-    \label{fig:field-slices}
-\end{figure}
-
 %EDT + Diffusion
-To obtain good seperation both close to the implant and far away, we combine the two fields into a single one as shown in~\Cref{alg:field-comb}. The slices are shown in~\Cref{fig:field-slices}.
+To obtain good seperation both close to the implant and far away, we combine the two fields into a single one as shown in~\Cref{alg:field-comb}.
 
 \begin{algorithm}
     \caption{Field combination}
