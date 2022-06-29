@@ -1,12 +1,11 @@
 \section{Method}\label{sec:method}
 % Spatial correlation 2d histograms (den nemme, 1 2d hist)
 In this section, we will describe the method for exploiting spatial correlation based of the 2D-histograms of the tomographies.
-We will start by motivating the problem, then give an overview of how we solve the problem, with the final detailed walkthrough of each step of the overall workflow.
+We will start by motivating the problem, then give an overview of how we solve the problem, with a final detailed walkthrough of each step of the overall workflow.
 
 \subsection{1-dimensional histograms}
 %diskuter overlappende materialer
-If we look at a 1D-histogram of the voxel intensity of a tomography, as shown in~\Cref{fig:1d-hist}, then even though we are able to distinguish different distributions, we see that there is a large overlap leading to global thresholding being infeasible, at least for the "central" distributions.
-\carl{At least = jeg prøver på at hinte ovenover her til implant og bone maskerne.} 
+If we look at a 1D-histogram of the voxel intensity of a tomography, as shown in~\Cref{fig:1d-hist}, then even though we are able to distinguish different distributions, we see that there is a large overlap leading to global thresholding being infeasible, at least for the distributions towards the center.
 This is because the voxel intensity is not a globally defined value, as~\Cref{sec:physics} explains, which means that the different materials cover ranges of intensities, which blend together in the histogram.
 
 \begin{figure}
@@ -16,13 +15,13 @@ This is because the voxel intensity is not a globally defined value, as~\Cref{se
     \label{fig:1d-hist}
 \end{figure}
 
-\subsection{Preprocessing}
+\subsection{Preprocessing}\label{sec:preprocess}
 To reduce the complexity of the segmentation process, we preprocess the data by removing redundant information.
-\carl{nævn at de nemme af dem er nemme at fjerne.}
-The first step is to find is the implant. 
-As the implant voxels are radically more intense compared to the rest of the tomography, we can apply global thresholding to find the implant.
-\carl{Mention how we apply the implant and bone masks}
-\james{TODO}
+From our previous work, we are able to obtain two masks: an implant mask and a bone mask.
+
+Since the material of the implant is radically different from the rest of the sample, obtaining the implant mask through global thresholding is trivial. In order to remove the gaps within the implant, we apply a closing morphology filter. The implant mask is then used to compute the principal axes from the implant in order to compute what is considered air and what is considered resin. From this information, we obtain the bone mask. These two masks are applied throughout the steps to filter out noise in the tomography.
+
+\james{Er denne beskrivelse ok? Jeg prøvede at springe nemt henover det.}
 
 \subsection{Exploiting spatial information}
 As described in~\Cref{sec:physics}, the intensities vary according to their positioning, leading us to utilize spatial information in the tomography. 
@@ -34,7 +33,7 @@ The algorithm for computing the 2-dimensional histogram for the radius can be se
 From this plot, we see two prominent distributions that change along the $r$ axis.
 However, close to the implant (as $r$ goes towards 0), the intensities starts overlapping indicating the need for another solution.
 
-\carl{discuss the effects with references to the physics (previous section).}
+\carl{discuss the effects with references to the physics (previous section). Kunne jeg godt bruge hjælp til.}
 
 % Kept for historical reasons.
 %\begin{algorithm}
@@ -84,8 +83,8 @@ However, close to the implant (as $r$ goes towards 0), the intensities starts ov
     %\includegraphics[width=.49\linewidth]{figures/zb-bone_region3.png}
     %\includegraphics[width=.49\linewidth]{figures/yb-bone_region3.png}
     %\includegraphics[width=.49\linewidth]{figures/xb-bone_region3.png}
-    \includegraphics[width=\linewidth]{figures/rb-bone_region3.png}
-    \carl{Axes ticks, color scheme}
+    %\includegraphics[width=\linewidth]{figures/rb-bone_region3.png}
+    \includegraphics[width=\linewidth]{figures/rb-bone_region3.pdf}
     \caption{2D radius histogram. The y-axis depicts radius, with the x-axis being voxel intensity.}
     \label{fig:2dhists}
 \end{figure}
@@ -97,8 +96,8 @@ In order to obtain spatial information based on the relation to the implant, we 
 
 %EDT is good overall, but difficult close to the implant.
 EDT computes each voxel as the euclidian distance to the implant. 
-This makes for a generally good representation for all but the voxels that are close to the implant. 
-This is mainly due to the fact that the voxels in the grooves of the implant gets the same value as the voxels next to the threads of the implant, as is shown in~\Cref{fig:edt-vs-diffusion}.
+This makes for a generally good representation for all but the voxels that are close to the implant.
+The shortcoming near the implant is mainly due to the fact that the voxels in the grooves of the implant has the same distance, and thus gets the same value, as the voxels next to the threads of the implant, as is shown in~\Cref{fig:edt-vs-diffusion}.
 This is not entirely accurate, as the implant produces a "glowing" effect similar to beam-hardening, as discussed in~\Cref{sec:beam-hardening}.
 
 %Use diffusion to "zoom in" on the implant, as it is good close to the implant, but throws everything far away into the same bin
@@ -108,32 +107,30 @@ This is shown in~\Cref{fig:edt-vs-diffusion}, where the voxels in the grooves ar
 % \begin{figure}
 %     \centering
 %     \includegraphics[width=.7\linewidth]{figures/edt-diffusion.png}
-%     \caption{High-quality render of the different field computations close to the implant in the YZ plane. The EDT is depicted in blue, where we see that $p_1$ and $p_2$ has the same distance. Diffusion is depicted in green, where we see multiple arrows contributing to the value of $p_1$. \carl{TODO: actual render.}}
+%     \caption{High-quality render of the different field computations close to the implant in the YZ plane. The EDT is depicted in blue, where we see that $p_1$ and $p_2$ has the same distance. Diffusion is depicted in green, where we see multiple arrows contributing to the value of $p_1$.
 %     \label{fig:edt-vs-diffusion}
 % \end{figure}
+\aleksandar{Havde du fået lavet en nice edt vs diffusion plot? hilsen carl}
 
 While Diffusion works well on voxels close to the implant, it assigns the same value to the voxels far from the implant. 
 As such, an optimal solution is to use both the EDT and the diffusion field to better represent both voxels that are far away, as well as the ones that are close to the implant.
-This is achieved by adding the two 2D-histograms together, producing a final combined histogram.
-\carl{skal den sidste linje nævnes her?}
+We achieve this by adding the two fields together, producing a final combined field.
 
 %Show that the distance to the implant in edt will be the same in the grooves of the screw compared to the threads of the screw. This is "fixed" with diffusion, as the grooves will be brigher as it is surrounded by more implant.
 
 \subsection{Walkthrough of the method}
-This section will describe the steps of the method for going from tomography to material probability distributions.
+This section will describe the steps of the method in detail for going from tomography to material probability distributions.
 \carl{flavortext}
 
 \subsubsection{Overview}
 %Coarse steps, explain the idea
-The steps of the segmentation method are:
+The coarse steps of the segmentation method are:
 \begin{enumerate}
     \item Compute the EDT and Diffusion fields to give each voxel spatial information about its relation to the implant.
-    \item Compute frequency distributions of voxel values as functions of field values
-      as 2D histograms.
+    \item Compute frequency distributions of voxel values as functions of field values as 2D histograms.
     \item Find the materials within the 2D histograms as ridges, using image processing techniques.
-    \item From the ridges, compute initial approximate frequence distributions of each material,
-      which are then optimized to fit the 2D histograms. From the optimized distributions, we derive
-      probability distributions for material classification.
+    \item From the ridges, compute initial approximate frequence distributions of each material, which are then optimized to fit the 2D histograms. 
+    \item From the optimized distributions, we derive probability distributions for material classification.
 \end{enumerate}
 The computed distributions approximate the conditional probabilities $P(m|v,x)$ that a particular voxel
 is material $m$ given that it has value $v$ and field value $x$. 
@@ -145,14 +142,22 @@ These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
 \begin{figure}
     \centering
     \begin{tikzpicture}
-        \node[draw] (field) at (0,0) {Compute fields};
-        \node[draw, below = of field] (hists) {Compute 2D histograms};
-        \node[draw, below = of hists] (curvs) {Find Curves};
-        \node[draw, below = of curvs] (probs) {Compute probabilities};
-        \node[draw, below = of probs] (segm)  {Segment the voxels};
-        \node[draw, below = of segm]  (blood) {Compute blood network};
-        \node[draw, below = of blood] (bic)   {Compute bone- and blood-implant contact};
+        %\node (voxels) at (0,2) {tomography};
+        %\node[anchor=east] (implant) at (-1,1) {implant mask};
+        %\node[anchor=west] (bone) at (1,1) {bone mask};
+        %\draw[draw] (implant.north west) rectangle (bone.south east);
 
+        \node[draw] (field) at (0,0) {1. Compute fields};
+        \node[draw, below = of field] (hists) {2. Compute 2D histograms};
+        \node[draw, below = of hists] (curvs) {3. Find Ridges};
+        \node[draw, below = of curvs] (probs) {4. Compute probabilities};
+        \node[draw, below = of probs] (segm)  {5. Segment the voxels};
+        \node[draw, below = of segm]  (blood) {6. Compute blood network};
+        \node[draw, below = of blood] (bic)   {7. Compute bone- and blood-implant contact};
+
+        %\path[draw, ->] (voxels) -- (field);
+        %\path[draw, ->] (implant) -| ([shift={(-.5,0)}]field.north);
+        %\path[draw, ->] (bone) -| ([shift={(.5,0)}]field.north);
         \path[draw, ->] (field) -- (hists);
         \path[draw, ->] (hists) -- (curvs);
         \path[draw, ->] (curvs) -- (probs);
@@ -161,19 +166,16 @@ These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
         \path[draw, ->] (blood) -- (bic);
     \end{tikzpicture}
     \caption{Flowchart depicting the steps of the method.
-    \carl{Skal nok labeles, så man nemt kan se hvilken section der beskriver det. Plus, teksten i kasserne nok også kan være mere flavorful!}
     \carl{Kan måske arrangeres ligesom Davids ting oversigt? Giver måske kun mening hvis der var mere end bare segmentation -> bic}}
     \label{fig:flowchart}
 \end{figure}
 
 \subsubsection{Segmentation}
-Now we will list each step detailing the actual implementation for segmentation. The steps for segmentation are steps 1-5.
-\carl{flavortext}
+The segmentation is computed in steps 1-5. For each step we will describe the process, showing the algorithm where applicable, along with the the intermediate results. 
 
 \vspace{\baselineskip}
 \noindent\textit{\textbf{1. Field computations}}
-\carl{mention implant mask}
-
+Both fields are computed from the implant mask, as described in~\Cref{sec:preprocess}.
 EDT is computed using the Python package \texttt{edt}~\cite{pypi-edt}. It takes the implant mask and sets every non-set voxel to be the euclidian distance to the nearest implant voxel.
 
 For diffusion, rather than solving the diffusion equation, we approximate using multiple convolutions of a 3D-gaussian kernel.
@@ -215,26 +217,35 @@ The algorithm can be seen in~\Cref{alg:diffusion}, with x, y, and z slices in~\C
 \end{figure}
 
 %EDT + Diffusion
-To obtain good seperation both close to the implant and far away, we combine the two fields into a single one.
-This is done by adding together the two fields 
-\carl{TODO how is this actually done? Or should it just be that both are used during segmentation, each contributing 50 \%? As in, let the probabilities for each of them "take over"}
+To obtain good seperation both close to the implant and far away, we combine the two fields into a single one as shown in~\Cref{alg:field-comb}. The slices are shown in~\Cref{fig:field-slices}.
 
-\carl{(remember to show images)}
+\begin{algorithm}
+    \caption{Field combination}
+    \label{alg:field-comb}
+    \begin{algorithmic}
+        \Function {field\_combine} {$f_{edt}, f_{dif}$}
+            \State $r \gets f_{dif} - \frac{f_{edt}}{\max (f_{edt})}$
+            \State $r \gets r - \min (f_{dif})$
+            \State $r \gets \frac{r}{\max (f_{dif})}$
+
+            \Return $r$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 
 \vspace{\baselineskip}
 \noindent\textbf{2D histograms} \\
 
-From these fields, we compute 2D histograms with the voxel value on the x-axis and field value on the y-axis.
+From the combined fields we compute a 2D histogram with the field value on the y-axis and the voxel intensity on the x-axis. 
 This allows us to see the distribution of voxel values, based off their relative position from the implant.
-The pseudo code can be seen in~\Cref{alg:field-hist} with a plot of the resulting histogram in~\Cref{fig:field-hist}.
-We see that the voxel intensities shift based off how close to the implant they are, which indicates that a global threshold would not be sufficient.
+The algorithm for the field histogram can be seen in~\Cref{alg:field-hist} with a plot of the resulting histogram in~\Cref{fig:field-hist}.
+We see that the voxel intensities shift based off how close to the implant clearly showing two seperable distributions.
 
 \begin{algorithm}
     \caption{Field 2D histograms.}
     \label{alg:field-hist}
     \begin{algorithmic}
         \Function {Field\_hist} {$voxels[n_z,n_y,n_x], field[n_z,n_y,n_x],$ \newline $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
-            \State \textbf{allocate} $h[v_{bins},f_{bins}]$
             \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
                 \State $v \gets voxels[z,y,x]$
                 \If {$v_{min} \leq v \leq v_{max}$}
@@ -253,33 +264,34 @@ We see that the voxel intensities shift based off how close to the implant they 
 \carl{look at indenting the function arguments in~\Cref{alg:field-hist}}
 
 \begin{figure}
-    \includegraphics[width=\linewidth]{figures/fb-edt-bone_region3.png}
-    \includegraphics[width=\linewidth]{figures/fb-gauss-bone_region3.png}
-    \carl{color scheme, axes.}
-    \caption{2D field histogram. Note that there are two clearly seperated curves, which make up the different materials. Top is EDT, bottom is Diffusion.}
+    %\includegraphics[width=\linewidth]{figures/fb-edt-bone_region3.png}
+    \includegraphics[width=\linewidth]{figures/fb-gauss+edt-bone_region3.pdf}
+    \caption{2D field histogram. Note that there are two clearly seperated ridges, which make up the different materials.}
     \label{fig:field-hist}
 \end{figure}
 
 \vspace{\baselineskip}
 \noindent\textbf{Isolate the materials} \\
+The next step is to isolate the different materials spatially, which is done through the field histogram.
+For our first attempt, we applied otsu's threshold to each each row in the 2D histogram. 
+While this provided good results for two clearly defined distributions, it started to fail both because of lack of samples or because the histogram did not contain two distributions, which is an assumption of the otsu threshold. 
+These two effects occurred in the edges (both closest and furthest), which would bleed into the later steps of the segmentation process. 
 
-The next step is to isolate the different materials spatially, which we do through the histogram.
-As mentioned, we have two clearly defined curves making up the two materials.
-To extract and label these curves, we apply the algorithm described in~\Cref{alg:material}.
-Each contour becomes its own material, which is then labeled as material 1 and 2 respectively.
+Our next solution was to rather than finding the threshold value in between the distributions, we started finding the distributions by finding the ridges of the 2D histogram. 
+We do this by applying a series of image processing techniques, which~\Cref{alg:material} describes.
+Each of the resultiong contours become their own material, which are then labeled as material 1 and 2 respectively for this particular sample. For samples that would contain more than two distributions, the same algorithm should apply, as long as the distributions does not overlap. 
 
 \begin{algorithm}
     \caption{Material isolation.}
     \label{alg:material}
     \begin{algorithmic}
-        \Function {Materials} {$h[f_{bins},v_{bins},\sigma, peak_{min}, k_x, k_y, i_{dilate},$ \newline $i_{erode}, t]$}
-            \State \textbf{allocate} $l[f_{bins},v_{bins}, ps[f_{bins},v_{bins}$]
+        \Function {Materials} {$h[f_{bins},v_{bins}],\sigma, peak_{min}, k_x, k_y, i_{dilate},$ \newline $i_{erode}, t$}
             \For {$row$ \textbf{in} $0{:}f_{bins}$}
                 \State $r \gets gaussian\_smooth(h[row,:], \sigma)$
                 \State $p \gets find\_peaks(r, peak_{min})$
                 \State $ps[p] \gets 1$
             \EndFor
-            \State $kernel = cross\_kernel((k_x, k_y))$
+            \State $kernel = cross\_kernel(k_x, k_y)$
             \State $d \gets dilate(ps, i_{dilate}, kernel)$
             \State $e \gets erode(d, i_{erode}, kernel)$
             \State $cs \gets find\_contours(e)$
@@ -294,10 +306,11 @@ Each contour becomes its own material, which is then labeled as material 1 and 2
 \end{algorithm}
 
 \begin{figure}
-    \includegraphics[width=0.5\linewidth]{figures/curves_edt.png}%
-    \includegraphics[width=0.5\linewidth]{figures/curves_diffusion.png}
+    %\includegraphics[width=0.5\linewidth]{figures/curves_edt.png}%
+    %\includegraphics[width=0.5\linewidth]{figures/curves_diffusion.png}
+    \includegraphics[width=\linewidth]{figures/ridges_gauss+edt-bone_region3.pdf}
     \carl{intermediate images of all of the steps?}
-    \caption{Curve finding intermediate steps. Top is EDT, bottom is Diffusion.}
+    \caption{Detected ridges from the combined field histogram.}
     \label{fig:curves}
 \end{figure}
 
@@ -316,7 +329,6 @@ This process is fairly straightforward, as each voxel is looked up in the probab
     \label{alg:segment}
     \begin{algorithmic}
         \Function {Segment} {$voxels[n_z,n_y,n_x], p[f_{bins},v_{bins}],$ \newline $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
-            \State \textbf{allocate} $result[n_z,n_y,n_x]$
             \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
                 \State $v \gets voxels[z,y,x]$
                 \If {$v_{min} \leq v \leq v_{max}$}
@@ -347,8 +359,8 @@ ellipsoid is computed and checked against the potential osteocyte shape.
 
 Using a Euclidean Distance Transform (EDT) from the implant, restricted to the
 bone region, we can simply mask the voxels that are within a thin shell
-of distances, $d_min < d(x,y,z) \le d_max$. We choose $d_min = 0$ and
-$d_max = 10\mu m$.
+of distances, $d_{min} < d(x,y,z) \le d_{max}$. We choose $d_{min} = 0$ and
+$d_{max} = 10\mu m$.
 We then simply sum over the masked voxels of each tissue type to obtain
 and divide by the total to obtain the tissue-to-implant contact per area.
 However, this only yields a single number, and it is difficult to verify
