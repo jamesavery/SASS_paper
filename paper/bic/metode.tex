@@ -234,7 +234,7 @@ To obtain good seperation both close to the implant and far away, we combine the
 \end{algorithm}
 
 \vspace{\baselineskip}
-\noindent\textbf{2D histograms} \\
+\noindent\textbf{2. 2D histograms} \\
 
 From the combined fields we compute a 2D histogram with the field value on the y-axis and the voxel intensity on the x-axis. 
 This allows us to see the distribution of voxel values, based off their relative position from the implant.
@@ -271,7 +271,7 @@ We see that the voxel intensities shift based off how close to the implant clear
 \end{figure}
 
 \vspace{\baselineskip}
-\noindent\textbf{Isolate the materials} \\
+\noindent\textbf{3. Isolate the materials} \\
 The next step is to isolate the different materials spatially, which is done through the field histogram.
 For our first attempt, we applied otsu's threshold to each each row in the 2D histogram. 
 While this provided good results for two clearly defined distributions, it started to fail both because of lack of samples or because the histogram did not contain two distributions, which is an assumption of the otsu threshold. 
@@ -315,11 +315,11 @@ Each of the resultiong contours become their own material, which are then labele
 \end{figure}
 
 \vspace{\baselineskip}
-\noindent\textbf{Compute models for material probability distributions} \\
+\noindent\textbf{4. Compute models for material probability distributions} \\
 \input{prob.tex}
 
 \vspace{\baselineskip}
-\noindent\textbf{Perform segmentation}
+\noindent\textbf{5. Perform segmentation}
 
 The final step of the segmentation process is to utilize the probabilities for segmentation.
 This process is fairly straightforward, as each voxel is looked up in the probability distribution, which carries the same shape as the field histogram.
