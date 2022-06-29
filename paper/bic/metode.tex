@@ -109,13 +109,40 @@ This is not entirely accurate, as the implant produces a "glowing" effect simila
 To get better correction close to the implant, we utilize diffusion where the implant "glows" further accumulating the value when a voxel is surrounded by implant.
 This is shown in~\Cref{fig:edt-vs-diffusion}, where the voxels in the grooves are affected by multiple implant voxels.
 
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=.7\linewidth]{figures/edt-diffusion.png}
-%     \caption{High-quality render of the different field computations close to the implant in the YZ plane. The EDT is depicted in blue, where we see that $p_1$ and $p_2$ has the same distance. Diffusion is depicted in green, where we see multiple arrows contributing to the value of $p_1$.
-%     \label{fig:edt-vs-diffusion}
-% \end{figure}
-\aleksandar{Havde du fået lavet en nice edt vs diffusion plot? hilsen carl}
+\begin{figure}
+    \vspace{-1.5cm}
+    \centering
+    \begin{tikzpicture}[scale=2.0]
+        \draw[gray,line width=5pt] (0,0)
+        .. controls (1,3) and (2,-3) .. (3,0)
+        \foreach \p in {0,5,...,100} {
+          node[sloped,inner sep=0cm,above,pos=\p*0.01,
+          anchor=south,
+          minimum height=1.0cm,minimum width=1.0cm]
+          (N \p){}
+        }
+        \foreach \p in {0,5,...,100} {
+          node[midway,above,inner sep=0cm,above,pos=\p*0.01,
+          anchor=south,
+          minimum height=1.0cm,minimum width=1.0cm]
+          (N2 \p){}
+        }
+        ;
+        \foreach \p in {0,5,...,100} {
+          \draw[-latex,ForestGreen] (N \p.south) -- (N \p.north);
+          \draw[-latex,blue,densely dotted] (N2 \p.south) -- (N2 \p.north);
+        }
+        \draw[red, line width=0.5mm] (0.65,1.20) circle (0.25cm);
+        \node at (0.65,1.60) {$p_2$};
+        \draw[red, line width=0.5mm] (2.35,-0.5) circle (0.25cm);
+        \node at (2.35,-1.10) {$p_1$};
+        \draw[black, line width=0.5mm] (-0.5,1.8) -- (3.0,1.8);
+        \node at (2.35,1.60) {radius};
+      \end{tikzpicture}
+      \vspace{-3.5cm}
+    \caption{Visualization of the different field computations close to the implant in the YZ plane. The EDT is depicted in green, where we see that $p_1$ and $p_2$ has the same distance. Diffusion is depicted in blue, where we see multiple arrows contributing to the value of $p_1$.}
+    \label{fig:edt-vs-diffusion}
+\end{figure}
 
 While Diffusion works well on voxels close to the implant, it assigns the same value to the voxels far from the implant. 
 As such, an optimal solution is to use both the EDT and the diffusion field to better represent both voxels that are far away, as well as the ones that are close to the implant.
