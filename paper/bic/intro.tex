@@ -2,11 +2,34 @@
 \section{Introduction}
 \label{sec:intro}
 
-\carl{Maybe a subsection describing how the old paper falls short close to the implant? I'm sure
-it'll be in the introduction as well, but shouldn't it also be explained in detail here? Maybe
-just a more detailed walkthrough of how they did it, and why it didn't work?}
 
-\aleksandar{Rykket fra motivation her til, efter kort diskussion med Carl.}
+\subsection{Image data}
+
+The most common method for analysing bone samples is to extract histologies and examine their two-dimensional structure with light microscopy.
+This method has several drawbacks. First and foremost, it is destructive: in addition to the obvious issue that the histology must be cut
+from the full sample, the sawing process can contaminate soft tissue with bone dust, or leave surface scratches that complicates automatic image analysis.
+Secondly, histology by its nature only gives a two-dimensional slice of the full three-dimensional picture. The most important biological structures
+are inherently three-dimensional, and limiting analysis to 2D severely restricts the types of questions we can answer. 
+
+Synchrotron Radiation micro-tomography (SR$\mu$CT) offers a non-destructive high-quality alternative to histology for detailed analysis of bone biopsies.
+Lauridsen et al.~\cite{torsten2018} quantified the uncertainty of 2D histology for four common bone analyses, and found that the choice of sampling
+plane for histological analysis incurred a significant uncertainty in the results, whereas the full volumetric analysis of SR$\mu$CT tomograms did not.
+
+Further, the high brilliance and collimation of synchrotron radiation yields particularly faithful 3D images, as the common distortive X-ray effects
+in hospital-grade setups such as beam hardening and \james{TODO: Hvad er den næstmest almindelige effekt?} is minimized. The high fidelity
+makes SR$\mu$CT attractive for conducting advanced medical image analyses with trustworthy results.
+
+However, while image distortion effects are much reduced compared to mainstream X-ray tomography, they are not eliminated, and numerical
+analysis and computations on the images must still be conducted carefully. Boundary
+effects near sample surfaces, ring artefacts, and especially distortion near high-contrast transitions make accurate tissue classification
+difficult in regions where this distortion is significant. Neldam et al.~\cite{sporring} found that, while they could accurately classify
+bone tissue in the middle regions of the tomograms, they were not able to obtain good bone-to-implant contact evaluation (BIC), as evidenced
+by poor correlation with histological analysis of the same samples.
+
+\james{Her følger paragraf fra Else om, hvorfor BIC er vigtigt for at evaluere regenereret knogle.}
+
+
+
 
 % \begin{itemize}
 %  \item Vi undersøger:
