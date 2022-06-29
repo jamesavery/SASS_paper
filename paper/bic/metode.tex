@@ -5,21 +5,26 @@ We will start by motivating the problem, then give an overview of how we solve t
 
 \subsection{1-dimensional histograms}
 %diskuter overlappende materialer
-If we look at a 1D-histogram of the voxel intensity of a tomography, as shown in~\Cref{fig:1d-hist}, then even though we are able to distinguish different distributions, we see that there is a large overlap leading to global thresholding being infeasible, at least for the distributions towards the center.
+If we look at a 1D-histogram of the voxel intensity of a tomography, as shown in~\Cref{fig:1d-hist}, then even though we are able to distinguish different distributions, we see that there is a large overlap leading to global thresholding being infeasible, at least for the distributions in the lower half of the histogram.
 This is because the voxel intensity is not a globally defined value, as~\Cref{sec:physics} explains, which means that the different materials cover ranges of intensities, which blend together in the histogram.
 
 \begin{figure}
     \centering
-    \carl{TODO 1D histogram of a tomography. Skal måske have nogle fordelinger "fittet" ind, så man kan se overlappet?}
-    \caption{1-dimensional histogram of the voxel intensities of a tomography.}
+    \includegraphics[width=\linewidth]{figures/1d_hist.pdf}
+    \caption{1-dimensional histogram of the voxel intensities of a tomography. The red line is the soft tissue peak, the green line is the bone peak, and the orange line is the coarse implant threshold.}
     \label{fig:1d-hist}
 \end{figure}
 
 \subsection{Preprocessing}\label{sec:preprocess}
 To reduce the complexity of the segmentation process, we preprocess the data by removing redundant information.
-From our previous work, we are able to obtain two masks: an implant mask and a bone mask.
+From our work in another paper, we are able to obtain two masks: an implant mask and a bone mask.
 
-Since the material of the implant is radically different from the rest of the sample, obtaining the implant mask through global thresholding is trivial. In order to remove the gaps within the implant, we apply a closing morphology filter. The implant mask is then used to compute the principal axes from the implant in order to compute what is considered air and what is considered resin. From this information, we obtain the bone mask. These two masks are applied throughout the steps to filter out noise in the tomography.
+Since the intensety of the implant material is radically different from the rest of the sample, obtaining the rough implant mask through global thresholding is trivial, as the orange line in~\Cref{fig:1d-hist} shows.
+This mask is then refined along with the internal gaps closed, giving us the implant mask. 
+Using this mask, we are also able to remove the air making up half of the sample cylinder (depicted in the XY and YZ cross sections of~\Cref{fig:3viewsample}), as the implant mask can show us the orientation of the implant. This removes the leftmost peak from the 
+
+
+In order to remove the gaps within the implant, we apply a closing morphology filter. The implant mask is then used to compute the principal axes from the implant in order to compute what is considered air and what is considered resin. From this information, we obtain the bone mask. These two masks are applied throughout the steps to filter out noise in the tomography.
 
 \carl{Til James: er denne beskrivelse ok? Jeg prøvede at springe nemt henover det.}
 
