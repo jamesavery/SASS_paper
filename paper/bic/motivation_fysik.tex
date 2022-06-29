@@ -46,7 +46,9 @@ can provide much higher spatial resolution on the micrometre scale \citep{srexpt
 
 This work focuses on data acquired by Synchrotron Radiation micro-CT (SR$\mu$CT). For this imaging
 technique, electrons are accelerated to ultra-relativistic speeds in trajectories directed by strong
-magnetic fields. Contrary to both CT and $\mu$CT, this approach requires a large particle accelerator,
+magnetic fields. The resulting X-ray beam provides a high photon flux allows for very short exposure
+times \citep{srexptime}. This can help counter Poisson noise from suboptimal photon count \citep{srnoise}.
+Contrary to both CT and $\mu$CT, this approach requires a large particle accelerator,
 and is not standard medical or laboratory equipment. The added complexity means that SR$\mu$CT can
 offer an even better spatial resolution of up to 0.1 $\mu$m. The resulting beams are high in
 brilliance and collimation which gives a very clear signal. Artifacts from beam-hardening are
@@ -63,19 +65,18 @@ Each image sample contains voxels with a spatial resolution 1.875$\mu$m. The ful
 a sample is about 6.5mm, which makes the raw dimensions of a single image $(3480,3480,3384)$ pixels.
 For computational purposes, this has been cropped to be divisible by a power $2^N$ or more
 specifically $2^5=32$ was used in our case. Depending on its initial size, a full image sample is
-further split into 4-6 sub-volumes through the height of the implant. This gives a size of
+further scanned into 4-6 sub-volumes through the height of the implant. This gives a size of
 $(3456,3456,846)$ pixels per sub-volume, where the last axis gets stacked for a full volume. Before
 being stacked, we need to volume match any overlapping regions. The overlaps are only shifted in the
 last dimension. This made it possible to find the best overlap by simply minimizing the pixel-wise
 eucledian distance between the volumes. The size of the shifted volumes goes from $846 \rightarrow 810$.
 
-In image \cref{fig:3viewsample} (YZ and XZ planes) we can actually see the edge artifacts from the
-volume matched subvolumes.
-
-\aleksandar{Edge artifacts from volume matching is probably a good idea to include. It can
-be seen on the images, and contributes to the misrepresentation of voxels. Also motivate why
-it was cut into subvolumes to begin with. Also how this was done before acquisition.
-How were the samples secured in order not to be physically shifted too much etc.}
+In image \cref{fig:3viewsample} (YZ and XZ planes) we can clearly see darker edges around the border
+of the volume matched subvolumes at their overlaps. This creates an offset which is strongly seen
+within the implant, but the large contrast due to very high density, makes this easier to ignore.
+Even worse is the contribution of misrepresented voxels in the transitional regions where bone and
+tissue contains these jagged edges. This can especially be seen when plotting regions as a function
+of radius \aleksandar{As seen in image...}
 
 \subsection{Physical effects, noise and artifacts}
 \label{sec:physics}
@@ -100,8 +101,7 @@ within the same sample.
 \includegraphics[width=\textwidth]{770c_pag-bic-xy-1x.png}
 \caption{Here we see a 1mm x 2mm region of an unscaled image slice in the XY dimension. It highlights
 some of the imperfections and noise present in the data. We especially see artifacts within and
-around the titanium implant. \aleksandar{Make label ticks smaller. Preferably same size as regular
-text.}}
+around the titanium implant.}
 \label{fig:xy-slice}
 \end{figure*}
 
@@ -122,10 +122,11 @@ Both planes display a broad selection of the various type of noise sources found
 \subsection{Ring artifacts}
 
 Looking at the XY-slice in \cref{fig:xy-slice} we see clear concentric ring artifacts emanating from
-the center of the sample. Compared to the other artifacts mentioned, this effect is arising from
-imperfections in the scanner setup. It can be from uncalibrated or defect adjacent detector elements.
-For synchrotron radiation sources it can also occur from shifts and vibrations in the monochromator
-crystal \citep{ringartifacts}.
+the center of the sample, and at strong edges of the titanium implant. It propagates strongly through
+the large region of air behind the implant. Compared to the other artifacts mentioned, this effect is
+arising from imperfections in the scanner setup. These types of artifacts can typically come from
+uncalibrated or defect adjacent detector elements. For synchrotron radiation sources it can also
+occur from shifts and vibrations in the monochromator crystal \citep{ringartifacts}.
 
 \subsection{Projection artifacts}
 
@@ -178,6 +179,10 @@ errnoeously looks to be dense peripheral regions at the edges.
 
 The effect of ... is very similar in effect to beam hardening.
 
+\aleksandar{Fringes at the edges of the
+titanium implant due to phase-contrast effects (see srnoise ref), Partial volume artifacts which
+are dependent on the voxel size and are mentioned briefly by Neldam et al.}
+
 \subsubsection{Compton scattering}
 
 Lower energy rays contribute mostly with noise from scattering effects. A ray will propagate through
@@ -189,20 +194,6 @@ scattering is the dominating type \citep{compton}. The scattering occurs due to 
 interaction between X-ray beam and the material it passes through. Like beam-hardening, scattering
 will cause dark streaks across the image, where attenuation was highest.
 
-\subsection{Other}
-
-\aleksandar{Do we want to include: Undersampling and Poisson noise? Fringes at the edges of the
-titanium implant due to phase-contrast effects (see srnoise ref), Partial volume artifacts which
-are dependent on the voxel size and are mentioned briefly by Neldam et al.}
-
-For SR$\mu$CT a high photon flux allows for very short exposure times \citep{srexptime}.
-This can help counter Poisson noise from suboptimal photon count \citep{srnoise}.
-
-
-\carl{Maybe a subsection describing how the old paper falls short close to the implant? I'm sure
-it'll be in the introduction as well, but shouldn't it also be explained in detail here? Maybe
-just a more detailed walkthrough of how they did it, and why it didn't work?}
-\carl{Point to how the implant and bone/tissue masks are made in the "second" paper?}
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"
