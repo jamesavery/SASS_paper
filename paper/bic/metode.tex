@@ -133,18 +133,18 @@ A slice of the resulting diffusion field can be seen in~\Cref{fig:field-slice}.
         }
         ;
         \foreach \p in {0,5,...,100} {
-          \draw[-latex,ForestGreen] (N \p.south) -- (N \p.north);
-          \draw[-latex,blue,densely dotted] (N2 \p.south) -- (N2 \p.north);
+          \draw[-latex,ForestGreen, very thick] (N \p.south) -- (N \p.north);
+          \draw[-latex,blue,densely dotted, very thick] (N2 \p.south) -- (N2 \p.north);
         }
         \draw[red, line width=0.5mm] (0.65,1.20) circle (0.25cm);
         \node at (0.65,1.60) {$p_2$};
         \draw[red, line width=0.5mm] (2.35,-0.5) circle (0.25cm);
         \node at (2.35,-1.10) {$p_1$};
-        \draw[black, line width=0.5mm] (-0.5,1.8) -- (3.0,1.8);
+        \draw[black, line width=0.5mm, dotted] (-0.5,1.8) -- (3.0,1.8);
         \node at (2.35,1.60) {radius};
       \end{tikzpicture}
       \vspace{-3.5cm}
-    \caption{Visualization of the different field computations close to the implant in the YZ plane. The EDT is depicted in green, where we see that $p_1$ and $p_2$ has the same distance. Diffusion is depicted in blue, where we see multiple arrows contributing to the value of $p_1$.}
+    \caption{Visualization of the different field computations close to the implant threading in the YZ plane. The EDT is depicted in blue, where we see that $p_1$ and $p_2$ have the same distance. Diffusion is depicted in green, where we see multiple arrows contributing to the value of $p_1$.}
     \label{fig:edt-vs-diffusion}
 \end{figure}
 
