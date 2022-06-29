@@ -222,7 +222,7 @@ The algorithm can be seen in~\Cref{alg:diffusion}, an XZ slice in~\Cref{fig:fiel
     \caption{Diffusion approximation.}
     \label{alg:diffusion}
     \begin{algorithmic}
-        \Function {Diffusion} {$voxels[n_z*n_y*n_x], repitions, kernel[2*k+1]$}
+        \Function {Diffusion} {$voxels[n_z*n_y*n_x]$, $repitions$, \newline \indent \indent $kernel[2*k+1]$}
             \State $S \gets [n_y * n_x, n_x, 1]$
             \State $N \gets [n_z, n_y, n_x]$
             \State $buf_0[:] \gets voxels[:]$
@@ -247,21 +247,28 @@ The algorithm can be seen in~\Cref{alg:diffusion}, an XZ slice in~\Cref{fig:fiel
 \end{algorithm}
 
 %EDT + Diffusion
-To obtain good seperation both close to the implant and far away, we combine the two fields into a single one as shown in~\Cref{alg:field-comb}.
+To obtain good seperation both close to the implant and far away, we combine the two fields into a single one as shown in~\Cref{eq:field-comb}.
 
-\begin{algorithm}
-    \caption{Field combination}
-    \label{alg:field-comb}
-    \begin{algorithmic}
-        \Function {field\_combine} {$f_{edt}, f_{dif}$}
-            \State $r \gets f_{dif} - \frac{f_{edt}}{\max (f_{edt})}$
-            \State $r \gets r - \min (f_{dif})$
-            \State $r \gets \frac{r}{\max (f_{dif})}$
+%\begin{algorithm}
+%    \caption{Field combination}
+%    \label{alg:field-comb}
+%    \begin{algorithmic}
+%        \Function {field\_combine} {$f_{edt}, f_{dif}$}
+%            \State $r \gets f_{dif} - \frac{f_{edt}}{\max (f_{edt})}$
+%            \State $r \gets r - \min (f_{dif})$
+%            \State $r \gets \frac{r}{\max (f_{dif})}$
+%
+%            \Return $r$
+%        \EndFunction
+%    \end{algorithmic}
+%\end{algorithm}
 
-            \Return $r$
-        \EndFunction
-    \end{algorithmic}
-\end{algorithm}
+\begin{equation}
+    \label{eq:field-comb}
+    \begin{split}
+        f_{combined} &= \frac{f_{diffusion} - \frac{f_{edt}}{\max (f_{edt})} \min (f_{diffusion})}{\max (f_{diffusion})}
+    \end{split}
+\end{equation}
 
 \vspace{\baselineskip}
 \noindent\textbf{Step 2: 2D histograms} \\
@@ -275,7 +282,7 @@ We see that the voxel values shift based off how close to the implant clearly sh
     \caption{Field 2D histograms.}
     \label{alg:field-hist}
     \begin{algorithmic}
-        \Function {Field\_hist} {$voxels[n_z,n_y,n_x], field[n_z,n_y,n_x],$ \newline $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
+        \Function {Field\_hist} {$voxels[n_z,n_y,n_x]$, $field[n_z,n_y,n_x]$, $v_{bins}$, \indent \indent $v_{min}$, $v_{max}$, $f_{bins}$, $f_{min}$, $f_{max}$}
             \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
                 \State $v \gets voxels[z,y,x]$
                 \If {$v_{min} \leq v \leq v_{max}$}
@@ -315,7 +322,7 @@ Each of the resultiong contours become their own material, which are then labele
     \caption{Material isolation.}
     \label{alg:material}
     \begin{algorithmic}
-        \Function {Materials} {$h[f_{bins},v_{bins}],\sigma, peak_{min}, k_x, k_y, i_{dilate},$ \newline $i_{erode}, t$}
+        \Function {Materials} {$h[f_{bins}$, $v_{bins}]$, $\sigma$, $peak_{min}$, $k_x$, $k_y$, \newline \indent \indent $i_{dilate}$,$i_{erode}$, $t$}
             \For {$row$ \textbf{in} $0{:}f_{bins}$}
                 \State $r \gets gaussian\_smooth(h[row,:], \sigma)$
                 \State $p \gets find\_peaks(r, peak_{min})$
@@ -358,7 +365,7 @@ This process is fairly straightforward, as each voxel is looked up in the probab
     \caption{Final segmentation from the probability distributions.}
     \label{alg:segment}
     \begin{algorithmic}
-        \Function {Segment} {$voxels[n_z,n_y,n_x], p[f_{bins},v_{bins}],$ \newline $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
+        \Function {Segment} {$voxels[n_z,n_y,n_x], p[f_{bins},v_{bins}],$ \newline \indent \indent $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
             \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
                 \State $v \gets voxels[z,y,x]$
                 \If {$v_{min} \leq v \leq v_{max}$}
