@@ -10,7 +10,7 @@ This is because the voxel value is not globally defined, as~\Cref{sec:physics} e
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{figures/1d_hist.pdf}
+    \includegraphics[width=\linewidth]{1d_hist.pdf}
     \caption{1-dimensional histogram of the voxel values of a tomography. The blue line is air peak, the red line is the soft tissue peak, the green line is the bone peak, and the orange line is the implant peak.}
     \label{fig:1d-hist}
 \end{figure}
@@ -82,11 +82,11 @@ However, this is not an accurate representation, as the edges of the implant is 
 
 \begin{figure}
     \centering
-    %\includegraphics[width=.49\linewidth]{figures/zb-bone_region3.png}
-    %\includegraphics[width=.49\linewidth]{figures/yb-bone_region3.png}
-    %\includegraphics[width=.49\linewidth]{figures/xb-bone_region3.png}
-    %\includegraphics[width=\linewidth]{figures/rb-bone_region3.png}
-    \includegraphics[width=\linewidth]{figures/rb-bone_region3.pdf}
+    %\includegraphics[width=.49\linewidth]{zb-bone_region3.png}
+    %\includegraphics[width=.49\linewidth]{yb-bone_region3.png}
+    %\includegraphics[width=.49\linewidth]{xb-bone_region3.png}
+    %\includegraphics[width=\linewidth]{rb-bone_region3.png}
+    \includegraphics[width=\linewidth]{rb-bone_region3.pdf}
     \caption{2D radius histogram. The y-axis depicts radius, with the x-axis being voxel value.}
     \label{fig:2dhists}
 \end{figure}
@@ -108,7 +108,7 @@ This is shown in~\Cref{fig:edt-vs-diffusion}, where the voxels in the grooves ar
 A slice of the resulting diffusion field can be seen in~\Cref{fig:field-slice}.
 
 \begin{figure}
-    \includegraphics[width=\linewidth]{figures/770c_pag-gauss-yz.png}
+    \includegraphics[width=\linewidth]{770c_pag-gauss-yz.png}
     \caption{A slice of the diffusion field in the YZ plane.}
     \label{fig:field-slice}
 \end{figure}
@@ -300,8 +300,8 @@ We see that the voxel values shift based off how close to the implant clearly sh
 \end{algorithm}
 
 \begin{figure}
-    %\includegraphics[width=\linewidth]{figures/fb-edt-bone_region3.png}
-    \includegraphics[width=\linewidth]{figures/fb-gauss+edt-bone_region3.pdf}
+    %\includegraphics[width=\linewidth]{fb-edt-bone_region3.png}
+    \includegraphics[width=\linewidth]{fb-gauss+edt-bone_region3.pdf}
     \caption{2D field histogram. Note that there are two clearly seperated ridges, which make up the different materials.}
     \label{fig:field-hist}
 \end{figure}
@@ -342,9 +342,9 @@ Each of the resultiong contours become their own material, which are then labele
 \end{algorithm}
 
 \begin{figure}
-    %\includegraphics[width=0.5\linewidth]{figures/curves_edt.png}%
-    %\includegraphics[width=0.5\linewidth]{figures/curves_diffusion.png}
-    \includegraphics[width=\linewidth]{figures/ridges_gauss+edt-bone_region3.pdf}
+    %\includegraphics[width=0.5\linewidth]{curves_edt.png}%
+    %\includegraphics[width=0.5\linewidth]{curves_diffusion.png}
+    \includegraphics[width=\linewidth]{ridges_gauss+edt-bone_region3.pdf}
     \james{will produce overall plot with probabilities}
     \caption{Detected ridges from the combined field histogram.}
     \label{fig:curves}
@@ -407,8 +407,8 @@ its fidelity.
 \begin{figure}
   \centering
   \begin{tabular}{c}
-    \includegraphics[width=\linewidth]{figures/770c_pag-bic-xy-1x} \\
-    \includegraphics[width=\linewidth]{figures/770c_pag-bic-P01-xy-1x}
+    \includegraphics[width=\linewidth]{770c_pag-bic-xy-1x} \\
+    \includegraphics[width=\linewidth]{770c_pag-bic-P01-xy-1x}
   \end{tabular}
   \caption{TBW}
   \label{fig:histology-comparison1}
@@ -417,8 +417,8 @@ its fidelity.
 \begin{figure}
   \centering
   \begin{tabular}{c}
-    \includegraphics[width=\linewidth]{figures/770c_pag-full-P01-yz-1x} \\
-    \includegraphics[width=\linewidth]{figures/770c_pag-bic-P01-yz-1x}
+    \includegraphics[width=\linewidth]{770c_pag-full-P01-yz-1x} \\
+    \includegraphics[width=\linewidth]{770c_pag-bic-P01-yz-1x}
   \end{tabular}
   \caption{TBW}
   \label{fig:histology-comparison2}
@@ -434,9 +434,9 @@ we project the voxels onto a cylinder, as shown on Figure \ref{fig:cylinder1}.
 \begin{figure}
   \centering
   \begin{tabular}{cc}
-    (a) & \begin{tabular}{c}\includegraphics[width=.8\linewidth]{figures/implant-FoR_prime-circle}\end{tabular} \\
-    (b) & \begin{tabular}{c}\includegraphics[width=0.4\linewidth]{figures/implant-FoR_cylinder-y}%
-  \includegraphics[width=0.5\linewidth]{figures/implant-FoR_cylinder-z2}\end{tabular}
+    (a) & \begin{tabular}{c}\includegraphics[width=.8\linewidth]{implant-FoR_prime-circle}\end{tabular} \\
+    (b) & \begin{tabular}{c}\includegraphics[width=0.4\linewidth]{implant-FoR_cylinder-y}%
+  \includegraphics[width=0.5\linewidth]{implant-FoR_cylinder-z2}\end{tabular}
   \end{tabular}
   \caption{
     (a) The implant is divided into 100 segments along its principal axis,
