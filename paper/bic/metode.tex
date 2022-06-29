@@ -5,8 +5,8 @@ We will start by motivating the problem, then give an overview of how we solve t
 
 \subsection{1-dimensional histograms}
 %diskuter overlappende materialer
-If we look at a 1D-histogram of the voxel intensity of a tomography, as shown in~\Cref{fig:1d-hist}, then even though we are able to distinguish different distributions, we see that there is a large overlap leading to global thresholding being infeasible, at least for the distributions in the lower half of the histogram.
-This is because the voxel intensity is not a globally defined value, as~\Cref{sec:physics} explains, which means that the different materials cover ranges of intensities, which blend together in the histogram.
+If we look at a 1D-histogram of the voxel value of a tomography, as shown in~\Cref{fig:1d-hist}, then even though we are able to distinguish different distributions, we see that there is a large overlap leading to global thresholding being infeasible, at least for the distributions in the lower half of the histogram.
+This is because the voxel value is not globally defined, as~\Cref{sec:physics} explains, which means that the different materials cover ranges of values that blend together in the histogram.
 
 \begin{figure}
     \centering
@@ -87,7 +87,7 @@ However, this is not an accurate representation, as the edges of the implant is 
     %\includegraphics[width=.49\linewidth]{figures/xb-bone_region3.png}
     %\includegraphics[width=\linewidth]{figures/rb-bone_region3.png}
     \includegraphics[width=\linewidth]{figures/rb-bone_region3.pdf}
-    \caption{2D radius histogram. The y-axis depicts radius, with the x-axis being voxel intensity.}
+    \caption{2D radius histogram. The y-axis depicts radius, with the x-axis being voxel value.}
     \label{fig:2dhists}
 \end{figure}
 
@@ -266,10 +266,10 @@ To obtain good seperation both close to the implant and far away, we combine the
 \vspace{\baselineskip}
 \noindent\textbf{2. 2D histograms} \\
 
-From the combined fields we compute a 2D histogram with the field value on the y-axis and the voxel intensity on the x-axis. 
+From the combined fields we compute a 2D histogram with the field value on the y-axis and the voxel value on the x-axis. 
 This allows us to see the distribution of voxel values, based off their relative position from the implant.
 The algorithm for the field histogram can be seen in~\Cref{alg:field-hist} with a plot of the resulting histogram in~\Cref{fig:field-hist}.
-We see that the voxel intensities shift based off how close to the implant clearly showing two seperable distributions.
+We see that the voxel values shift based off how close to the implant clearly showing two seperable distributions.
 
 \begin{algorithm}
     \caption{Field 2D histograms.}
