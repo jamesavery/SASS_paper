@@ -216,7 +216,7 @@ EDT is computed using the Python package \texttt{edt}~\cite{pypi-edt}. It takes 
 
 For diffusion, rather than solving the diffusion equation, we approximate using multiple convolutions of a 3D-gaussian kernel.
 Furthermore, instead of a single pass with a 3D-kernel, we apply 3 1D convolutions, one in each dimension, to the tomography, obtaining the same result as a regular 3D-gaussian kernel.
-The algorithm can be seen in~\Cref{alg:diffusion}, with x, y, and z slices in~\Cref{fig:field-slices}
+The algorithm can be seen in~\Cref{alg:diffusion}, an XZ slice in~\Cref{fig:field-slice}.
 
 \begin{algorithm}
     \caption{Diffusion approximation.}
