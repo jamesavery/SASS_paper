@@ -1,6 +1,10 @@
 \section{Background}
 \label{sec:background}
 
+In this section, we will briefly go through the physical composition of our samples, and at how
+the data is acquired. Then we will look at the noise sources typical for this type of data, and
+show the effects noise has on regions around the implant and biological tissue.
+
 \subsection{Physical samples}
 
 The physical samples are prepared for SR$\mu$CT scanning by cutting out a portion from a larger
@@ -46,24 +50,29 @@ technique, electrons are accelerated to ultra-relativistic speeds in trajectorie
 magnetic fields. Contrary to both CT and $\mu$CT, this approach requires a large particle accelerator,
 and is not standard medical or laboratory equipment. The added complexity means that SR$\mu$CT can
 offer an even better spatial resolution of up to 0.1 $\mu$m. The resulting beams are high in
-brilliance and collimation which gives a very clear signal. Its mono-energetic nature also means
-that X-ray artifacts are reduced, in particular beam-hardening is minimized.
+brilliance and collimation which gives a very clear signal. Its mono-energetic characteristics also
+means that X-ray artifacts are reduced, in particular beam-hardening is minimized.
 %\carl{\textbackslash label\{initial-beam-claim\}}
-The data presented here has been
-acquired at the ID19 beam line at the European Synchrotron Radiation Facility (ESRF) in Grenoble,
-France, and has previously \aleksandar{ref to former article} been reconstructed using the Python
-framework PyHST \citep{pyhst}.
+The data presented here has been acquired at the ID19 beam line at the European Synchrotron
+Radiation Facility (ESRF) in Grenoble, France, and has previously \citep{sporring} been
+reconstructed using the Python framework PyHST \citep{pyhst}.
 
 \subsection{Image data}
 
 Each image sample contains voxels with a spatial resolution 1.875$\mu$m. The full physical size of
 a sample is about 6.5mm, which makes the raw dimensions of a single image $(3480,3480,3384)$ pixels.
 For computational purposes, this has been cropped to be divisible by a power $2^N$ or more
-specifically $2^5=32$ in our case. A full image sample is further split into 4-6 sub-volumes through
-the height of the implant. This gives a size of $(3456,3456,810)$ pixels per sub-volume, where the
-last axis gets stacked for a full volume. \aleksandar{OBS: 846 i rå størelse, 810 er efter
-volume-matching. -- Should ideally also explain a bit about how the samples were cut during
-acquisition. How were the samples secured in order not to be physically shifted too much etc.}
+specifically $2^5=32$ was used in our case. A full image sample is further split into 4-6 sub-volumes
+through the height of the implant. This gives a size of $(3456,3456,846)$ pixels per sub-volume,
+where the last axis gets stacked for a full volume. Before being stacked, we need to volume match
+any overlapping regions. The overlaps are only shifted in the last dimension. This made it possible
+to find the best overlap by simply minimizing the pixel-wise eucledian distance between the volumes.
+The size of the shifted volumes goes from $846 \rightarrow 810$.
+
+\aleksandar{Edge artifacts from volume matching is probably a good idea to include. It can
+be seen on the images, and contributes to the misrepresentation of voxels. Also motivate why
+it was cut into subvolumes to begin with. Also how this was done before acquisition.
+How were the samples secured in order not to be physically shifted too much etc.}
 
 \subsection{Physical effects, noise and artifacts}
 \label{sec:physics}
@@ -125,20 +134,23 @@ differences between adjacent elements \citep{ctnoise}.
 \subsubsection{Beam hardening}\label{sec:beam-hardening}
 
 Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artifacts around high
-density regions. This effect is called beam-hardening \aleksandar{ref}, and occurs when rays with
-lower energy are attenuated more frequently, thus shifting the remaining photons to a higher
-effective average photon energy. This offsets the local contrast, by overestimating
-the attenuation, leaving lighter spots on the image. Many types of artifacts will typically be
-present in these setups, but most are taken into account by calibration using phantoms and
-pre-hardening the beam before it reaches the sample. Pre-hardening of the beam is done using
-filters that attenuate the softest rays. Due to its common usage, a large quantity of correction software exists
-to account for noise and smaller imperfections during reconstruction. \aleksandar{ref}.
+density regions. This effect is called beam-hardening \citep{beamhardening}, and occurs when rays
+with lower energy are attenuated more frequently, thus shifting the remaining photon energy to a
+higher effective average value. This offsets the local contrast, by overestimating the attenuation,
+leaving lighter spots on the image. Many types of artifacts will typically be present in these
+setups, but most are taken into account by calibration using phantoms and pre-hardening the beam
+before it reaches the sample. Pre-hardening of the beam is done using filters that attenuate the
+softest rays. Due to its common usage, various metal artifact reduction (MAR) software exists to
+account for noise and imperfections during reconstruction \citep{mar1}\citep{mar2}.
 
 Despite the practially mono-energetic rays from SR$\mu$CT, the source initially generates a
 polychromatic spectrum. During monochromatisation this spectrum can still contain corrupted harmonic
-components \citep{srnoise}. This leads to two distinct effects typically seen from beam-hardening.
+components \citep{srnoise}. This contributes to induce two distinct effects typically seen as a
+result of beam-hardening. Those are in particular streaks and and cupping artifacts from high
+density regions.
 
-%\carl{Should be emphasized more. \textbackslash ref\{initial-beam-claim\} claims that there are no beam-hardening effects, and I think this reads as "well, yes, but no"}
+%\carl{Should be emphasized more. \textbackslash ref\{initial-beam-claim\} claims that there are no
+% beam-hardening effects, and I think this reads as "well, yes, but no"}
 
 \subsubsection{Dark and bright streaks}
 
@@ -182,7 +194,9 @@ For SR$\mu$CT a high photon flux allows for very short exposure times \citep{sre
 This can help counter noise from suboptimal counting statistics\citep{srnoise}.
 This is for example the case for Poisson noise.
 
-\carl{Maybe a subsection describing how the old paper falls short close to the implant? I'm sure it'll be in the introduction as well, but shouldn't it also be explained in detail here? Maybe just a more detailed walkthrough of how they did it, and why it didn't work?}
+\carl{Maybe a subsection describing how the old paper falls short close to the implant? I'm sure
+it'll be in the introduction as well, but shouldn't it also be explained in detail here? Maybe
+just a more detailed walkthrough of how they did it, and why it didn't work?}
 \carl{Point to how the implant and bone/tissue masks are made in the "second" paper?}
 %%% Local Variables:
 %%% mode: latex
