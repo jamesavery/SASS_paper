@@ -502,7 +502,7 @@ the potential osteocyte shape.
     \includegraphics[width=\linewidth]{770c_pag-bic-xy-1x} \\
     \includegraphics[width=\linewidth]{770c_pag-bic-P01-xy-1x}
   \end{tabular}
-  \caption{XY slices of the original tomography (top), and the classified (bottom). The voxels are coloured according to the modeled probability functions $P(m|x,\fval)$ between 0 and 1: completely red voxels have $P(0|x,\fval) = 1$, completely yellow voxels have $P(1|x,\fval) = 1$, and uncertain voxels become progressively gray.
+  \caption{XY slices of the original tomography (top), and the classified (bottom). The voxels are coloured according to the modeled probability functions $P(m|x,\fval)$ between 0 and 1: completely red voxels have $P(0|v,\fval) = 1$, completely yellow voxels have $P(1|v,\fval) = 1$, and uncertain voxels become progressively gray.
   }
   \label{fig:histology-comparison1}
 \end{figure}
@@ -534,7 +534,18 @@ the success of the automatic classification.
 
 Figures \ref{fig:histology-comparison1} and \ref{fig:histology-comparison2} show the same 2D slices
 as were shown in Figures \ref{fig:3viewsample} and \ref{fig:slices}, allowing us to visually inspect
-them side by side. We can see that the automatic
+them side by side. The voxels are coloured according to the segmentation confidence, with
+degree of red proportional to the modeled probability $P(0|v,\fval)$ and degree of yellow proportional
+to $P(1|v,\fval)$. Grey voxels indicate low model probabilities of both: either due to the voxel belongiong
+to another material, or simply low computed confidence of the model.
+By comparing against Figures \ref{fig:histology-comparison1} and \ref{fig:histology-comparison2},
+we see that the computed classification matches the human classification everywhere where it
+is possible to visually distinguish the voxels. However, in a thin 1-voxel border
+to the implant, we cannot verify the segmentation, as the voxel values are so blended together
+with the implant voxel values that they become indistinguishable. A further strengthening of the analysis
+is needed in order to reach this layer. It is possible that the information is irretrievably lost, or perhaps it
+can be retrieved through a deconvolution - or simply a more precise version of the present analysis.
+
 
 % \subsubsection{Cylindrical projection of implant contact-surface}
 
