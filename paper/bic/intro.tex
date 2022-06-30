@@ -1,80 +1,51 @@
-
 \section{Introduction}
 \label{sec:intro}
 
 
 \subsection{Image data}
 
-The most common method for analysing bone samples is to extract histologies and examine their two-dimensional structure with light microscopy.
-This method has several drawbacks. First and foremost, it is destructive: in addition to the obvious issue that the histology must be cut
-from the full sample, the sawing process can contaminate soft tissue with bone dust, or leave surface scratches that complicates automatic image analysis.
-Secondly, histology by its nature only gives a two-dimensional slice of the full three-dimensional picture. The most important biological structures
-are inherently three-dimensional, and limiting analysis to 2D severely restricts the types of questions we can answer. 
+The most common method for analysing bone samples is to extract histologies and examine their
+two-dimensional structure with light microscopy. This method has several drawbacks. First and
+foremost, it is destructive: In addition to the obvious issue that the histology must be cut
+from the full sample, the sawing process can contaminate soft tissue with bone dust, or leave
+surface scratches that complicates automatic image analysis. Secondly, histology by its nature
+only gives a two-dimensional slice of the full three-dimensional picture. The most important
+biological structures are inherently three-dimensional, and limiting analysis to 2D severely
+restricts the types of questions we can answer.
 
-Synchrotron Radiation micro-tomography (SR$\mu$CT) offers a non-destructive high-quality alternative to histology for detailed analysis of bone biopsies.
-Lauridsen et al.~\cite{torsten2018} quantified the uncertainty of 2D histology for four common bone analyses, and found that the choice of sampling
-plane for histological analysis incurred a significant uncertainty in the results, whereas the full volumetric analysis of SR$\mu$CT tomograms did not.
+Synchrotron Radiation micro-tomography (SR$\mu$CT) offers a non-destructive high-quality
+alternative to histology for detailed analysis of bone biopsies. Lauridsen et al.~\cite{torsten2018}
+quantified the uncertainty of 2D histology for four common bone analyses, and found that the
+choice of sampling plane for histological analysis incurred a significant uncertainty in the
+results, whereas the full volumetric analysis of SR$\mu$CT tomograms did not.
 
-Further, the high brilliance and collimation of synchrotron radiation yields particularly faithful 3D images, as the common distortive X-ray effects
-in hospital-grade setups such as beam hardening and projection artefacts are minimized. The high fidelity
-makes SR$\mu$CT attractive for conducting advanced medical image analyses with trustworthy results.
+Further, the high brilliance and collimation of synchrotron radiation yields particularly
+faithful 3D images, as the common distortive X-ray effects in hospital-grade setups such
+as beam hardening and projection artefacts are minimized. The high fidelity makes SR$\mu$CT
+attractive for conducting advanced medical image analyses with trustworthy results.
 
-However, while image distortion effects are much reduced compared to mainstream X-ray tomography, they are not eliminated, and numerical
-analysis and computations on the images must still be conducted carefully. Boundary
-effects near sample surfaces, ring artefacts, and especially distortion near high-contrast transitions, make accurate tissue classification
-difficult in regions where this distortion is significant. Neldam et al.~\cite{sporring} found that, while they could accurately classify
-bone tissue in the middle regions of the tomograms, they were not able to obtain good bone-to-implant contact evaluation (BIC), as evidenced
-by poor correlation with histological analysis of the same samples.
+However, while image distortion effects are much reduced compared to mainstream X-ray tomography,
+they are not eliminated, and numerical analysis and computations on the images must still be
+conducted carefully. Boundary effects near sample surfaces, ring artefacts, and especially
+distortion near high-contrast transitions, make accurate tissue classification difficult in
+regions where this distortion is significant. Neldam et al.~\cite{sporring} found that, while
+they could accurately classify bone tissue in the middle regions of the tomograms, they were
+not able to obtain good bone-to-implant contact evaluation (BIC), as evidenced by poor correlation
+with histological analysis of the same samples.
 
 \james{Her følger paragraf fra Else om, hvorfor BIC er vigtigt for at evaluere regenereret knogle.}
 
-The present work presents a computational method which automatically discovers probabilistic models for the distortions incurred by the physical effects in
-high-resolution X-ray CT such as SR$\mu$CT in order to reverse them and produce accurate tissue classification even in regions where these effects are significant.
-It exploits two properties, which are needed to hold for the method to work:
-i) very high resolution is used to build statistical models as functions of space, and ii) that the effects to be coutnered vary continuously
-over space, so that we can track how voxel frequency distributions are distorted through space. We apply the method to the same dataset
-of micrometer-resulution SR$\mu$CT bone tomograms studied in \cite{torsten2018} and in \cite{sporring}, to achieve faithful tissue classification
-all the way to the titanium implant surface.
+The present work presents a computational method which automatically discovers probabilistic
+models for the distortions incurred by the physical effects in high-resolution X-ray CT such
+as SR$\mu$CT in order to reverse them and produce accurate tissue classification even in regions
+where these effects are significant. It exploits two properties, which are needed to hold for
+the method to work: i) Very high resolution is used to build statistical models as functions
+of space, and ii) that the effects to be countered vary continuously over space, so that we can
+track how voxel frequency distributions are distorted through space. We apply the method to the
+same dataset of micrometer-resulution SR$\mu$CT bone tomograms studied in \cite{torsten2018}
+and in \cite{sporring}, to achieve faithful tissue classification all the way to the titanium
+implant surface.
 
-
-
-% \begin{itemize}
-%  \item Vi undersøger:
-%      \begin{itemize}
-%      	\item Overordnet: Imlantantkontakt i knogler
-%      	\item Vil gerne kunne analysere og evaluere kvaliteten af "growth" omkring implantatet for at kunne vurdere den underlæggende sundhed og success af operationen
-%      	\item Vil gerne kunne afkorte tiden fra operation til analyse til evaluering, samtidigt med at kvaliteten af data er stabil til at der er højt evidensgrundlag
-%      	\item kunne sige noget om knoglekvaliteten og kompositionen
-%      	\item kontakt til implantat: dækket af knogle, blod (forbundet til blodnetværk)
-%      \end{itemize}
-%  \item Til det skal løses:
-%      \begin{itemize}
-% 	\item SR$\mu$CT enables this approach due to the quality and resolution of data
-%      	\item Segmentation is hard and time-consuming to do on this type of data.
-%      	\item contains noise that is hard to avoid from data acquisition
-%      	\item often segmentation is done manually, so being able to automate this data is of great value for the field.
-%      	\item Want to avoid using deep learning methods, but keep full determinism and transparency 
-%      	\item Simpler mathematical methods can be implemented efficiently and consistently
-%      \end{itemize}
-%  \item Hvordan vil vi bære os ad med at løse problemerne?
-%      \begin{itemize}
-%      	\item Det er en forudsætning at vi tydeligt kan observere hvad der sker i bone-to-implant interfacet
-%      	\item Den utrolig høje opløsning og kvaliteten af billeder fra SR-micro-CT giver adgang til analyse og segmentering med høj nøjagtighed.
-% %     	\item Ved brug 
-%      \end{itemize}
-% \end{itemize}
-
-
-
-
-% What is it we want to investigate?
-%...
-
-% What are the challenges?
-%...
-
-% How will we solve these challenges?
-%...
 
 %%% Local Variables:
 %%% mode: latex
