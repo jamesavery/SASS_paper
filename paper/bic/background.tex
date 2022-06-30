@@ -41,7 +41,7 @@ The physical samples were prepared for SR$\mu$CT scanning by cutting out a porti
 $(x,y,z)$ direction respectively. This contains the titanium dental implant (Astra Tech OsseoSpeed,
 ST Molndal, Sweden), which is 3.5mm in diameter and 8mm long. Along its length the lower 5.5mm
 has larger threads and is attached to recipient bone. The upper 2.5mm has smaller threads and
-is where newly formed bone is to be assessed. Sorrounding the bone and implant contact-region
+is where newly formed bone is to be assessed. Surrounding the bone and implant contact-region
 are cavities containing resin, air, blood vessels and other fibrous tissue.
 
 \begin{figure}
@@ -57,13 +57,13 @@ of 1.875$\mu$m. Red voxels are numerically low, while blue voxels are high.}
 A cut sample is shown in three different cross sectional views in \Cref{fig:3viewsample}. Each
 material has a unique density and thus absorption. The titanium implant shown in blue has a
 higher absorption level than bone. Bone material shown in light orange has higher absorption
-than its sorrounding dark orange colored regions containing blood vessels tissue, air and resin.
+than its surrounding dark orange colored regions containing blood vessels tissue, air and resin.
 
 \subsubsection{Data acquisition}
 
 It can be difficult to study and evaluate the bone structure and blood network without destroying
 or manipulating the sample. X-ray computed tomography is a widely used tool for non-intrusive medical
-imaging. By exposing a subject to X-rays, we can map the linear attentuation coffecient of the passing
+imaging. By exposing a subject to X-rays, we can map the linear attenuation coefficient of the passing
 rays. Each ray is attenuated relatively to the density and composition of the material it passes.
 By rotating either the scanner or the sample we can get a full 3D image representation of the inner
 structure of the sample. Each volumetric pixel (voxel) then represents the X-ray attenuation at its
@@ -81,14 +81,14 @@ accelerator, and is not standard medical or laboratory equipment. However, SR$\m
 even better spatial resolution of up to 0.1 $\mu$m, and much higher image quality due to fewer
 distortive X-ray effects. The resulting beams are high in brilliance and collimation, which gives
 a very clear signal. Artifacts from beam-hardening are minimized due to synchrotron radiation
-X-rays being characeterised by their practially mono-energetic spectrum.
+X-rays being characeterised by their practically mono-energetic spectrum.
 
 The tomograms prestened here have been acquired at the ID19 beam line at the European Synchrotron
 Radiation Facility (ESRF) in Grenoble, France. They were reconstructed\citep{sporring} at the
 ID19 beamline. A standard filtered back-projection algorithm was applied via the ESRF in-house developed
 software PyHST\citep{pyhst}. PyHST was applied to improve reconstruction quality, hence reducing ring
 artefacts, and to reduce the required data volume if necessary~\cite{MIRONE201441}. The
-size of the reconstructed tomogram was $2048 \times 2048 \times 1024$ voxels. The segmentation was
+size of the reconstructed tomograms was $2048 \times 2048 \times 1024$ voxels. The segmentation was
 performed using VG Studio Max 2.1 (Volume Graphics GHBM, Heidelberg, Germany) also at the ESRF in
 Grenoble, France. The tomograms were acquired at 50 KeV.
 
@@ -115,10 +115,10 @@ tissue contains these jagged edges.
 \label{sec:physics}
 
 Noise in tomography is unavoidable, and it makes segmentation harder because it further obscures
-the boundaries between materials. Matarials may be well separated from certain angles in the
+the boundaries between materials. Materials may be well separated from certain angles in the
 3d-reconstructed image, but overlap from others. Some noise like that corrected by flat-field
 correction is very uniformly distributed across images. Some noise is however very spatially
-dependent on its sorrounding regions. Knowing the composition and positioning of the materials
+dependent on its surrounding regions. Knowing the composition and positioning of the materials
 being imaged, we can counter some of these effects during segmentation. The noise effects manifest
 themselves as numerical shifts in voxel-values as a function of their position. This is a direct
 result of a misrepresented attenuation along the axis the X-rays are passing.
@@ -152,8 +152,8 @@ Both planes display a broad selection of the various type of noise sources found
     To better see the distortion effects, we zoom in on sub-regions of the slices shown in
     \Cref{fig:3viewsample}. Our visual systems automatically correct for most of the distortions,
     as they appear similar to illumination effects. However, even some distance from the implant,
-    blod vessel voxels have higher values than bone voxels further out. As we approach the implant,
-    the value-shifts accellerates and becomes highly non-linear.
+    blood vessel voxels have higher values than bone voxels further out. As we approach the implant,
+    the value-shifts accelerates and becomes highly non-linear.
     (a) A 1mm$\times$2mm region of an image slice in the XY-plane.
     % It highlights some of the imperfections and noise present in the data.
     (b) A 1.5mm x 1.5mm region of an image slice in the YZ-plane in the micro threaded part of
@@ -186,14 +186,14 @@ a material, get scattered and diffract from its initial trajectory. This gives a
 of the attenuation along its initial trajectory. The artefacts seen from scattering are similar in
 nature to those formed by beam hardening. This is because both effectively reduce the measured
 attenuation. For energy levels of above 50KeV relevant for the data presented here, Compton
-scattering is the dominating type \citep{compton}. The scattering occurs due to photon-electron
+scattering is the dominating type \citep{Compton}. The scattering occurs due to photon-electron
 interaction between X-ray beam and the material it passes through. Like beam-hardening, scattering
 will cause dark streaks across the image, where attenuation was highest.
 
 \subsection{Beam hardening}\label{sec:beam-hardening}
 
 Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artefacts around high
-density regions. This effect is called beam-hardening \citep{beamhardening}, and occurs when rays
+density regions. This effect is called beam-hardening \citep{beam-hardening}, and occurs when rays
 with lower energy are attenuated more frequently, thus shifting the remaining photon energy to a
 higher effective average value. This offsets the local contrast, by overestimating the attenuation,
 leaving lighter spots on the image. Many types of artefacts will typically be present in these
@@ -202,8 +202,8 @@ before it reaches the sample. Pre-hardening of the beam is done using filters th
 softest rays. Due to its common usage, various metal artefact reduction (MAR) software exists to
 account for noise and imperfections during reconstruction \citep{mar1}\citep{mar2}.
 
-Despite the practially mono-energetic rays from SR$\mu$CT, the source initially generates a
-polychromatic spectrum. During monochromatisation the resulting spectrum can still contain
+Despite the practically mono-energetic rays from SR$\mu$CT, the source initially generates a
+poly-chromatic spectrum. During monochromatisation the resulting spectrum can still contain
 corrupted harmonic components. Only a few percent corruption is enough to produce strong
 artefacts, although monochromatisation is typically done in multiple layers \citep{srnoise}.
 It can not trivially be rejected that some noise does occur from poly-energetic incident radiation.
@@ -228,7 +228,7 @@ break the isotropy, making the projected X-ray mean energy spectrum dependent on
 A common artefact that occurs when beams pass more homogeneous cylindrical objects. Since beams
 passing the middle will traverse more material compared to the edges, the beam is hardened more
 towards the center and intensity becomes lower as a result. This can manifest itself in what
-errnoeously looks to be dense peripheral regions at the edges.
+erroneously looks to be dense peripheral regions at the edges.
 
 \subsection{Phase contrast}
 
