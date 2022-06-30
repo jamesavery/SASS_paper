@@ -28,12 +28,12 @@ masks: an \textit{implant mask} and a \textit{bone mask}.
 
 Since the values of the implant material is radically different from the rest of the sample, obtaining
 the rough implant mask through global thresholding is trivial, as the orange line in~\Cref{fig:1d-hist}
-shows. This mask is then refined, along with the internal gaps being closed, giving us the implant mask. 
+shows. This mask is then refined, along with the internal gaps being closed, giving us the implant mask.
 Using this mask, we are also able to remove the air making up half of the sample cylinder. This is depicted
 in~\Cref{fig:3viewsample}, above the implant and to the left of the implant in the XY and YZ cross
 sections respectively. Finally the implant mask can show us the orientation of the implant. This squashes
 the blue peak from the histogram, leaving the two peaks marked by the red and green lines as being
-the most defined. 
+the most defined.
 
 As we are only interested in the voxels inside the bone, and we know that bone is the most prominent
 material left, we perform another coarse segmentation. This is done by thresholding between the two
@@ -193,11 +193,11 @@ The coarse steps of the segmentation method are:
     \item Compute the EDT and Diffusion fields to give each voxel spatial information about its relation to the implant.
     \item Compute frequency distributions of voxel values as functions of field values as 2D histograms.
     \item Find the materials within the 2D histograms as ridges, using image processing techniques.
-    \item From the ridges, compute initial approximate frequency distributions of each material, which are then optimized to fit the 2D histograms. 
+    \item From the ridges, compute initial approximate frequency distributions of each material, which are then optimized to fit the 2D histograms.
     \item From the optimized distributions, we derive probability distributions for material classification.
 \end{enumerate}
 The computed distributions approximate the conditional probabilities $P(m|v,x)$ that a particular voxel
-belongs to material $m$ given that it has value $v$ and field value $x$. 
+belongs to material $m$ given that it has value $v$ and field value $x$.
 
 \james{TODO: Forklar bedre. Adskil ny segmenteringsmetode og anvendelse til BIC}
 
@@ -227,7 +227,7 @@ These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
         \path[draw, ->] (hists) -- (curvs);
         \path[draw, ->] (curvs) -- (probs);
         \path[draw, ->] (probs) -- (segm);
-        \path[draw, ->] (segm)  -- (blood);        
+        \path[draw, ->] (segm)  -- (blood);
         \path[draw, ->] (blood) -- (bic);
     \end{tikzpicture}
     \caption{Flowchart depicting the steps of the method.}
@@ -236,7 +236,7 @@ These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
 
 \subsubsection{Segmentation}
 The overall segmentation is computed in steps 1-5. For each step we will describe the process, showing
-the algorithm where applicable, along with the the intermediate results. 
+the algorithm where applicable, along with the the intermediate results.
 
 \vspace{\baselineskip}
 \noindent\textit{\textbf{Step 1: Field computations}}
@@ -347,7 +347,7 @@ For our first attempt, we applied Otsu's threshold to each each row in the 2D-hi
 provided good results for two well defined distributions, it eventually began to fail. This was either
 because of lack of samples, or because the histogram did not contain two distributions, which is an
 underlying assumption of Otsu thresholding. These two effects occurred at the edges (both closest and
-furthest from implant), which would bleed into the later steps of the segmentation process. 
+furthest from implant), which would bleed into the later steps of the segmentation process.
 
 Rather than finding the threshold value in between the distributions, our next solution was to start
 finding the distributions by finding the ridges of the 2D-histogram. We do this by applying a series
@@ -425,6 +425,34 @@ which carries the same shape as the field-histogram.
 
 Here we present the final output from the steps described above.
 
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{\linewidth}
+        \includegraphics[width=\linewidth]{figures/blood_old_bone_100.png}
+        % TODO opdater hvis en anden slice størrelse bliver brugt. voxel size = 3.75
+        \caption{3D render of a $375\mu m \times 4230\mu m \times 6480\mu m$ slice of the blood network in the old bone region.}
+        \label{fig:blood-old-slice}
+    \end{subfigure}
+    \begin{subfigure}[b]{\linewidth}
+        \includegraphics[width=\linewidth]{figures/blood_new_bone_100.png}
+        \caption{3D render of a $375\mu m \times 4230\mu m \times 6480\mu m$ slice of the blood network in the new bone region.}
+        \label{fig:blood-new-slice}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\linewidth}
+        \includegraphics[width=\linewidth,height=\linewidth]{figures/blood_old_cube.png}
+        \caption{3D render of a $1mm \times 1 mm \times 1 mm$ cube of the blood network in the old bone region.}
+        \label{fig:blood-old-cube}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\linewidth}
+        \includegraphics[width=\linewidth,height=\linewidth]{figures/blood_new_cube.png}
+        \caption{3D render of a $1mm \times 1 mm \times 1 mm$ cube of the blood network in the new bone region.}
+        \label{fig:blood-new-cube}
+    \end{subfigure}
+    \caption{3D renders of the blood network. All of the samples are generated from a 2x downsample of the full resolution. Note the difference between the the capillary network in the old bone region (\ref{fig:blood-old-slice},\ref{fig:blood-old-cube}) compared to the newly grown bone region (\ref{fig:blood-new-slice},\ref{fig:blood-new-cube}).}
+    \label{fig:blood-network}
+\end{figure}
+
 \subsubsection{Sub-classification of soft tissue}
 
 With a good separation of soft tissue and bone, we  map out the blood vessel network using connected
@@ -477,7 +505,7 @@ Instead, we project the voxels onto a cylinder, as shown in Figure \ref{fig:cyli
   \end{tabular}
   \caption{
     (a) The implant is divided into 100 segments along its principal axis,
-    and for each segment, the circumscribed circle is computed. 
+    and for each segment, the circumscribed circle is computed.
     (b) The best overall cylindrical fit for the implant is computed using
     least squares. The implant contact is projected onto this cylinder,
     and can now be shown in a flat plot.}
