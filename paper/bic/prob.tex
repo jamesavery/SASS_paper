@@ -11,7 +11,7 @@ close to the titanium implant compared to the middle region or sample surface,
 we can track the unbroken, smooth deformation to assign a global material
 identity.
 
-To this end, we first {\em model the frequency distributions} using the
+To this end, we first {\it model the frequency distributions} using the
 2D histograms. Given that we are modeling materials $m=1,\ldots,M$,
 we write the full 2D histogram as a sum of distributions
 $g_m(\fval,v)$ modeling the described part, and an undescribed
@@ -45,7 +45,7 @@ we initialize the starting approximation as:
 \begin{equation}
   \label{eq:starting-guesses}
   \begin{split}
-    c_m(\fval) &= \mathop{\mathtt{argmax}}_{v \text{ with }\lab[\fval,v] = m} H(\fval,v)    \\    
+    c_m(\fval) &= \mathop{\mathtt{argmax}}_{v \text{ with }\lab[\fval,v] = m} H(\fval,v)    \\
     a_m(\fval) &= H(\fval,c_m(\fval))\\
     b_m(\fval) &= 3/\mathrm{width}_m(\fval)^2 \\
     d_m(\fval) &= 2
@@ -65,11 +65,11 @@ outliers due to noise, but equally important:
 extrapolate our models smoothly into the regions very close to the implant, where
 we don't have enough voxels to produce good statistics.
 
-We finally obtain the {\em conditional probabilities} from the material frequency distribution
+We finally obtain the {\it conditional probabilities} from the material frequency distribution
 models $g_m$ as:
 \begin{equation}
   \label{eq:Pm}
-  P(m|v,f(\xx)) = \frac{g_m(v,f(\xx))}{H(v,f(\xx))} 
+  P(m|v,f(\xx)) = \frac{g_m(v,f(\xx))}{H(v,f(\xx))}
 \end{equation}
 (well-defined where $H(v,\fval) > 0$, zero outside this region as $0\le g_m \le H$).
 

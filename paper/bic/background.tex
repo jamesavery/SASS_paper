@@ -26,7 +26,7 @@ Seven goats got introduced 5 critical size defects, with bone being cut accordin
 
 
 As the specimen for X-ray imaging included a titanium dental implant, comparatively high photon
- energy of 67.4 KeV (pink) \aleksandar{Hov! Vi blev enige om 50 KeV ???} was chosen, i.e. the
+ energy of 50 KeV (pink) was chosen, i.e. the
  emitted radiation of a wiggler insertion device (a
  magnetic device) was filtered    to produce a narrower bandwidth. An indirect detector (lens-coupling
  of a scintillator to a camera incorporating a charge-coupled device with $2048 \times 2048$ pixels),
@@ -54,7 +54,7 @@ of 1.875$\mu$m. Red voxels are numerically low, while blue voxels are high.}
 \label{fig:3viewsample}
 \end{figure}
 
-A cut sample is shown in three different cross sectional views in \cref{fig:3viewsample}. Each
+A cut sample is shown in three different cross sectional views in \Cref{fig:3viewsample}. Each
 material has a unique density and thus absorption. The titanium implant shown in blue has a
 higher absorption level than bone. Bone material shown in light orange has higher absorption
 than its sorrounding dark orange colored regions containing blood vessels tissue, air and resin.
@@ -105,7 +105,7 @@ we need to volume match any overlapping regions. The overlaps are only shifted i
 This made it possible to find the best overlap by simply minimizing the pixel-wise Eucledian distance
 between the volumes. The size of the shifted volumes goes from $846 \rightarrow 810$.
 
-In image \cref{fig:3viewsample} (YZ and XZ planes) we can clearly see darker edges around the border
+In image \Cref{fig:3viewsample} (YZ and XZ planes) we can clearly see darker edges around the border
 of the volume matched subvolumes at their overlaps. This creates an offset which is strongly seen
 within the implant, but the large contrast due to very high density, makes this easier to ignore.
 Even worse is the contribution of misrepresented voxels in the transitional regions where bone and
@@ -126,7 +126,7 @@ result of a misrepresented attenuation along the axis the X-rays are passing.
 
 This orientation dependency illustrates how voxel intensity values are not globally fixed. How a
 certain material is represented in intensity, is highly dependent on its position relative to
-neighbouring regions. Especially since this also determines the amount and type of derived noise. 
+neighbouring regions. Especially since this also determines the amount and type of derived noise.
 The same material with the same density, can thus be represented at multiple varying intensities
 within the same sample.
 
@@ -139,8 +139,8 @@ around the titanium implant.}
 \label{fig:xy-slice}
 \end{figure*}
 
-In \cref{fig:xy-slice} and \cref{fig:yz-slice} we see zoomed in regions of the XY and YZ planes
-of the same sample as shown in \cref{fig:3viewsample}.
+In \Cref{fig:xy-slice} and \Cref{fig:yz-slice} we see zoomed in regions of the XY and YZ planes
+of the same sample as shown in \Cref{fig:3viewsample}.
 
 \begin{figure}
 \centering
@@ -155,7 +155,7 @@ Both planes display a broad selection of the various type of noise sources found
 
 \subsubsection{Ring artifacts}
 
-Looking at the XY-slice in \cref{fig:xy-slice} we see clear concentric ring artifacts emanating from
+Looking at the XY-slice in \Cref{fig:xy-slice} we see clear concentric ring artifacts emanating from
 the center of the sample, and at strong edges of the titanium implant. It propagates strongly through
 the large region of air behind the implant. Compared to the other artifacts mentioned, this effect is
 arising from imperfections in the scanner setup. These types of artifacts can typically come from
@@ -206,7 +206,7 @@ Streaking artifacts occur at the dense implant region, but also in the transitio
 tissue. This effect is mostly seen in regions of large heterogeneity. When X-ray beams pass at angles
 containing multiple dense obstacles, the beam is hardened more. Then for angles with fewer dense
 obstacles the energy spectrum is preserved better. This produced the dark and bright streaks seen in
-\cref{fig:xy-slice}.
+\Cref{fig:xy-slice}.
 
 For a hardened beam, softer x-rays are absorbed instead of successfully penetrating the object,
 and will not contribute to image formation. High density structures such as the titanium implant
