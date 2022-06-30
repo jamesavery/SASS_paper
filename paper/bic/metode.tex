@@ -380,14 +380,25 @@ as long as the distributions does not overlap.
     \end{algorithmic}
 \end{algorithm}
 
-\begin{figure}
-    %\includegraphics[width=0.5\linewidth]{curves_edt.png}%
-    %\includegraphics[width=0.5\linewidth]{curves_diffusion.png}
-    \includegraphics[width=\linewidth]{ridges_gauss+edt-bone_region3.pdf}
-    \james{will produce overall plot with probabilities}
-    \caption{Detected ridges from the combined field histogram.}
-    \label{fig:curves}
-\end{figure}
+\begin{figure*}
+    % %\includegraphics[width=0.5\linewidth]{curves_edt.png}%
+    % %\includegraphics[width=0.5\linewidth]{curves_diffusion.png}
+    % \includegraphics[width=\linewidth]{ridges_gauss+edt-bone_region3.pdf}
+    % \james{will produce overall plot with probabilities}
+    % \caption{Detected ridges from the combined field histogram.}
+    % \label{fig:curves}
+  \centering
+  \includegraphics[width=.9\textwidth]{compute_probabilities_gauss+edt_bone_region3}\\
+  \includegraphics[width=.9\textwidth]{hist_slice_gauss+edt_bone_region3}\\
+  \caption{(a) Measured 2D histogram for the compund diffusion+distance field from Step 2. (b)
+    The detected ridges from Step 3. (c) Sum of computed frequency distribution models
+    with optimized smooth piecewise cubic functions for parameters $a(\fval), b(\fval), c(\fval), d(\fval)$:
+    this is the part of the 2D histogram explained by the smooth model. (d) The individual distributions evaluated
+    on the 2D field-value$\times$ voxel-value grid. (e) A single 1D slice of the 2D histogram (black) together with
+    the model frequency distributions. Red is soft-tissue, yellow is bone mineral.
+  }
+  \label{fig:curves-and-more}
+\end{figure*}
 
 \vspace{\baselineskip}
 \noindent\textbf{Step 4: Compute models for material probability distributions} \\
