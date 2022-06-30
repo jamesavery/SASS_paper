@@ -1,19 +1,44 @@
 \section{Background}
 \label{sec:background}
 
-In this section, we will briefly go through the physical composition of our samples, and at how
-the data is acquired. Then we will look at the noise sources typical for this type of data, and
-show the effects noise has on regions around the implant and biological tissue.
+In this section, we will briefly go through the physical composition of our samples, and how the
+data is acquired. Then we will look at the noise sources typical for this type of data, and show
+the effects that noise has on regions around the implant and biological tissue.
 
 \subsection{Data set}
-\james{TODO: Else, vil du skrive noget fornuftigt om gedeforsøget, og hvordan
-  biopsierne blev prepareret, osv.? Dertil hvad du end finder fornuftigt, at vi får med.}
+
+
+Seven goats got introduced 5 critical size defects, with bone being cut accordingly in the region.
+ Four defects were used to asses bone regeneration methods, and one was a control sample.
+ Peri-implant vertical bone augmentation was performed using autologous bone and two different
+ calcium phosphate bone substitutes. The bone specimens were evaluated undecalcified. The
+ specimen preparation was performed at the Department of Biomaterials at Gothenburg University,
+ Sweden. The specimens were initially fixated in 4\% paraformaldehyde. Dehydration of the
+ specimens was performed in increasing concentrations of ethanol to eliminate fat and water
+ content. Furthermore, specimens were infiltrated with MMA and embedded in molds 12 mm in
+ diameter and 20 mm in height \james{(Donath 1982, 1993, Erben 1997)}. They were scanned at the ESRF
+ in Grenoble, France. The advantage of using MMA is greater tissue penetration than water-soluble
+ methacrylates this is an advantage when preparing larger specimens such as bone biopsies
+ containing dental implants. Furthermore, the histological quality of bone sections is generally
+ higher for MMA embedded specimens compared to water- soluble methacrylates \james{(Erben 1997)}.
+ Additionally, tissue shrinkage is less than 2\% when using MMA embedded bone and cartilage
+ specimens \james{(Ferguson et al. 1999)}.
+
+
+As the specimen for X-ray imaging included a titanium dental implant, comparatively high photon
+ energy of 67.4 KeV (pink) \aleksandar{Hov! Vi blev enige om 50 KeV ???} was chosen, i.e. the
+ emitted radiation of a wiggler insertion device (a
+ magnetic device) was filtered    to produce a narrower bandwidth. An indirect detector (lens-coupling
+ of a scintillator to a camera incorporating a charge-coupled device with $2048 \times 2048$ pixels),
+ with a pixel size of 5$\mu$m acquired tomographic scans of the ROI, which was slightly smaller (10mm wide)
+ than the specimen (~20mm wide)” (Neldam et al. 2015). The sample was continuously rotated over
+ 180 degrees, as 1999 equiangular spaced radiographic images were taken.
 
 \subsubsection{Physical samples}
 
 The physical samples were prepared for SR$\mu$CT scanning by cutting out a portion from a larger
 12mm cylindrical sample. The cut samples are cubes of size (6.478mm, 6.478mm, 6.146mm) in the
-x,y,z direction respectively. This contains the titanium dental implant (Astra Tech OsseoSpeed,
+$(x,y,z)$ direction respectively. This contains the titanium dental implant (Astra Tech OsseoSpeed,
 ST Molndal, Sweden), which is 3.5mm in diameter and 8mm long. Along its length the lower 5.5mm
 has larger threads and is attached to recipient bone. The upper 2.5mm has smaller threads and
 is where newly formed bone is to be assessed. Sorrounding the bone and implant contact-region
@@ -24,19 +49,17 @@ are cavities containing resin, air, blood vessels and other fibrous tissue.
 \includegraphics[width=0.96\columnwidth]{770c_pag-full-xy-1x.png}
 \includegraphics[width=0.96\columnwidth]{770c_pag-full-yz-1x.png}
 \includegraphics[width=0.96\columnwidth]{770c_pag-full-xz-1x.png}
-\caption{Full sample seen as cross sections in XY, YZ, XZ planes respectively. A voxel has size of
-1.875$\mu$m. Red voxels are numerically low, while blue are high.}
+\caption{Cut sample seen as cross sections in XY, YZ and XZ-planes respectively. A voxel has a size
+of 1.875$\mu$m. Red voxels are numerically low, while blue voxels are high.}
 \label{fig:3viewsample}
 \end{figure}
 
-This is shown in three different cross sectional views
-in \cref{fig:3viewsample}. Each material has a unique density and thus absorption. The titanium
-implant shown in blue has higher absorption than bone. Bone material shown in light orange has
-higher absorption than its sorrounding dark orange colored regions containing blood vessels
-tissue, air and resin.
+A cut sample is shown in three different cross sectional views in \cref{fig:3viewsample}. Each
+material has a unique density and thus absorption. The titanium implant shown in blue has a
+higher absorption level than bone. Bone material shown in light orange has higher absorption
+than its sorrounding dark orange colored regions containing blood vessels tissue, air and resin.
 
 \subsubsection{Data acquisition}
-
 
 It can be difficult to study and evaluate the bone structure and blood network without destroying
 or manipulating the sample. X-ray computed tomography is a widely used tool for non-intrusive medical
@@ -49,22 +72,25 @@ non-intrusive and non-destructive manner. Medical CT-scans can provide spatial r
 order of submillimetre scale \citep{medicalct}. The more modern micro computed tomography ($\mu$CT)
 can provide much higher spatial resolution on the micrometre scale \citep{srexptime}.
 
-This work focuses on a data set acquired by Synchrotron Radiation micro-CT (SR$\mu$CT). For this imaging
-technique, electrons are accelerated to ultra-relativistic speeds in trajectories directed by strong
-magnetic fields. The resulting X-ray beam provides a high photon flux allows for very short exposure
-times \citep{srexptime}. This can help counter Poisson noise from suboptimal photon count \citep{srnoise}.
-Contrary to both CT and $\mu$CT, this approach requires a large particle accelerator,
-and is not standard medical or laboratory equipment. However, SR$\mu$CT 
-offers an even better spatial resolution of up to 0.1 $\mu$m, and much higher image quality due to
-fewer distortive X-ray effects.
-The resulting beams are high in
-brilliance and collimation, which gives a very clear signal. Artifacts from beam-hardening are
-minimized due to synchrotron radiation X-rays being characeterised by their practially mono-energetic
-spectrum.
+This work focuses on a data set acquired by Synchrotron Radiation micro-CT (SR$\mu$CT). For this
+imaging technique, electrons are accelerated to ultra-relativistic speeds in trajectories directed
+by strong magnetic fields. The resulting X-ray beam provides a high photon flux allowing for very
+short exposure times \citep{srexptime}. This can help counter Poisson noise from suboptimal photon
+count \citep{srnoise}. Contrary to both CT and $\mu$CT, this approach requires a large particle
+accelerator, and is not standard medical or laboratory equipment. However, SR$\mu$CT  offers an
+even better spatial resolution of up to 0.1 $\mu$m, and much higher image quality due to fewer
+distortive X-ray effects. The resulting beams are high in brilliance and collimation, which gives
+a very clear signal. Artifacts from beam-hardening are minimized due to synchrotron radiation
+X-rays being characeterised by their practially mono-energetic spectrum.
 
-The data presented here has been acquired at the ID19 beam line at the European Synchrotron
-Radiation Facility (ESRF) in Grenoble, France, and has previously \citep{sporring} been
-reconstructed using the Python framework PyHST \citep{pyhst}. The images are acquired at 50 KeV.
+The tomograms prestened here have been acquired at the ID19 beam line at the European Synchrotron
+Radiation Facility (ESRF) in Grenoble, France. They were reconstructed\citep{sporring} at the
+ID19 beamline. A standard filtered back-projection algorithm was applied via the ESRF in-house developed
+software PyHST\citep{pyhst}. PyHST was applied to improve reconstruction quality, hence reducing ring
+artefacts, and to reduce the required data volume if necessary \james{(Mirone et al. 2014)}. The
+size of the reconstructed tomogram was $2048 \times 2048 \times 1024$ voxels. The segmentation was
+performed using VG Studio Max 2.1 (Volume Graphics GHBM, Heidelberg, Germany) also at the ESRF in
+Grenoble, France. The tomograms were acquired at 50 KeV.
 
 \subsubsection{Image data}
 
@@ -196,7 +222,7 @@ errnoeously looks to be dense peripheral regions at the edges.
 
 \subsubsection{Phase contrast}
 
-\aleksandar{TODO: Glem ikke denne paragraf!}
+\aleksandar{TODO: Glem ikke denne paragraf!!!}
 The effect of ... is very similar in effect to beam hardening.
 
 Fringes at the edges of the
