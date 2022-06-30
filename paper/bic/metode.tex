@@ -473,8 +473,14 @@ Here we present the final output from the steps described above.
 
 \subsubsection{Sub-classification of soft tissue}
 
-With a good separation of soft tissue and bone, we  map out the blood vessel network using connected
-components analysis. The osteocytes are selected by volume and shape: For every connected component
+With a good separation of soft tissue and bone, we map out the blood vessel network using connected
+components analysis, which is visualized in the 3D renders in~\Cref{fig:blood-network}.
+Here we see that we have successfully segmented the blood vessels out of the bone region.
+It is especially prominent when looking at the capillary network, as we can see these in fine detail.
+Noteworthy, the newly formed bone region (\Cref{fig:blood-new-slice}) contains a larger concentrations of these small blood vessels, compared to the old bone (\Cref{fig:blood-old-slice}).
+If we zoom in to a small cube region (\Cref{fig:blood-old-cube} and \Cref{fig:blood-new-cube}), we see it even more defined, clearly seeing how the larger vessels connect through the smaller ones.
+
+The osteocytes are selected by volume and shape: For every connected component
 in the feasible volume range, its principal axis and best ellipsoid is computed and checked against
 the potential osteocyte shape.
 
@@ -495,7 +501,7 @@ or study the distribution across the surface area qualitatively.
     \includegraphics[width=\linewidth]{770c_pag-bic-xy-1x} \\
     \includegraphics[width=\linewidth]{770c_pag-bic-P01-xy-1x}
   \end{tabular}
-  \caption{TBW}
+  \caption{XY slices of the original tomography (top), and the segmentation (bottom) with yellow depicting bone and red depicting soft-tissue. Note how even though it is hard to see, the segmentation seems to accurately segment the materials close to the implant.}
   \label{fig:histology-comparison1}
 \end{figure}
 
@@ -505,7 +511,7 @@ or study the distribution across the surface area qualitatively.
     \includegraphics[width=\linewidth]{770c_pag-full-P01-yz-1x} \\
     \includegraphics[width=\linewidth]{770c_pag-bic-P01-yz-1x}
   \end{tabular}
-  \caption{TBW}
+  \caption{ZY slices of the segmentation seen far away (top) and zoomed in (bottom). Yellow depicts bone and red depicts soft-tissue. Note that the segmentation segments the materials close to the implant, even in the grooves of the implant..}
   \label{fig:histology-comparison2}
 \end{figure}
 
