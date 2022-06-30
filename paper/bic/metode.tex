@@ -182,24 +182,33 @@ We achieve this by adding the two fields together, producing a final combined fi
 % is surrounded by more implant.
 
 \subsection{Walkthrough of the method}
-This section will describe each step of our method in detail. Going from tomography to material
-probability distributions.
-\carl{flavortext}
+This section will describe each step of our method in detail. Going from tomography to a segmented tomography.
 
 \subsubsection{Overview}
 %Coarse steps, explain the idea
-The coarse steps of the segmentation method are:
-\begin{enumerate}
+In order to reach the tissue-bone implant contact metric, we have the three coarse steps: compute the fields, segmentation using the fields, and extraction of the contact from the segmented tomography.
+
+The steps of the field computation are:
+\begin{itemize}
     \item Compute the EDT and Diffusion fields to give each voxel spatial information about its relation to the implant.
     \item Compute frequency distributions of voxel values as functions of field values as 2D histograms.
+\end{itemize}
+
+Then, in order to segment using the fields:
+\begin{itemize}
     \item Find the materials within the 2D histograms as ridges, using image processing techniques.
     \item From the ridges, compute initial approximate frequency distributions of each material, which are then optimized to fit the 2D histograms.
-    \item From the optimized distributions, we derive probability distributions for material classification.
-\end{enumerate}
-The computed distributions approximate the conditional probabilities $P(m|v,x)$ that a particular voxel
-belongs to material $m$ given that it has value $v$ and field value $x$.
+    \item From the optimized distributions, we derive probability distributions for material classification. These distributions approximate the conditional probabilities $P(m|v,x)$ that a particular voxel belongs to material $m$ given that it has voxel value $v$ and field value $x$.
+    \item Apply the probability distributions to the tomography, segmenting the voxels into the different materials.
+\end{itemize}
 
-\james{TODO: Forklar bedre. Adskil ny segmenteringsmetode og anvendelse til BIC}
+Finally, to produce the tissue-bone implant contact metric:
+\begin{itemize}
+    \item From the segmented tomography, we compute the blood network of the bone regions to further extract which soft tissue voxels that are blood vessels.
+    \item This blood network is used alongside the the segmented bone to produce the final metric.
+\end{itemize}
+
+%\james{TODO: Forklar bedre. Adskil ny segmenteringsmetode og anvendelse til BIC}
 
 These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
 
