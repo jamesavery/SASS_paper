@@ -1,46 +1,66 @@
-
 \section{Introduction}
 \label{sec:intro}
 
 
+\subsection{Image data}
 
-% \begin{itemize}
-%  \item Vi undersøger:
-%      \begin{itemize}
-%      	\item Overordnet: Imlantantkontakt i knogler
-%      	\item Vil gerne kunne analysere og evaluere kvaliteten af "growth" omkring implantatet for at kunne vurdere den underlæggende sundhed og success af operationen
-%      	\item Vil gerne kunne afkorte tiden fra operation til analyse til evaluering, samtidigt med at kvaliteten af data er stabil til at der er højt evidensgrundlag
-%      	\item kunne sige noget om knoglekvaliteten og kompositionen
-%      	\item kontakt til implantat: dækket af knogle, blod (forbundet til blodnetværk)
-%      \end{itemize}
-%  \item Til det skal løses:
-%      \begin{itemize}
-% 	\item SR$\mu$CT enables this approach due to the quality and resolution of data
-%      	\item Segmentation is hard and time-consuming to do on this type of data.
-%      	\item contains noise that is hard to avoid from data acquisition
-%      	\item often segmentation is done manually, so being able to automate this data is of great value for the field.
-%      	\item Want to avoid using deep learning methods, but keep full determinism and transparency 
-%      	\item Simpler mathematical methods can be implemented efficiently and consistently
-%      \end{itemize}
-%  \item Hvordan vil vi bære os ad med at løse problemerne?
-%      \begin{itemize}
-%      	\item Det er en forudsætning at vi tydeligt kan observere hvad der sker i bone-to-implant interfacet
-%      	\item Den utrolig høje opløsning og kvaliteten af billeder fra SR-micro-CT giver adgang til analyse og segmentering med høj nøjagtighed.
-% %     	\item Ved brug 
-%      \end{itemize}
-% \end{itemize}
+The most common method for analysing bone samples is to extract histologies and examine their
+two-dimensional structure with light microscopy. This method has several drawbacks. First and
+foremost, it is destructive: In addition to the obvious issue that the histology must be cut
+from the full sample, the sawing process can contaminate soft tissue with bone dust, or leave
+surface scratches that complicates automatic image analysis. Secondly, histology by its nature
+only gives a two-dimensional slice of the full three-dimensional picture. The most important
+biological structures are inherently three-dimensional, and limiting analysis to 2D severely
+restricts the types of questions we can answer.
 
+Synchrotron Radiation micro-tomography (SR$\mu$CT) offers a non-destructive high-quality
+alternative to histology for detailed analysis of bone biopsies. \cite{torsten2018}
+quantified the uncertainty of 2D histology for four common bone analyses, and found that the
+choice of sampling plane for histological analysis incurred a significant uncertainty in the
+results, whereas the full volumetric analysis of SR$\mu$CT tomograms did not.
 
+Further, the high brilliance and collimation of synchrotron radiation yields particularly
+faithful 3D images, as the common distortive X-ray effects in hospital-grade setups such
+as beam hardening and projection artefacts are minimized. The high fidelity makes SR$\mu$CT
+attractive for conducting advanced medical image analyses with trustworthy results.
 
+However, while image distortion effects are much reduced compared to mainstream X-ray tomography,
+they are not eliminated, and numerical analysis and computations on the images must still be
+conducted carefully. Boundary effects near sample surfaces, ring artefacts, and especially
+distortion near high-contrast transitions, make accurate tissue classification difficult in
+regions where this distortion is significant. \cite{sporring} found that, while
+they could accurately classify bone tissue in the middle regions of the tomograms, they were
+not able to obtain good bone-to-implant contact evaluation (BIC), as evidenced by poor correlation
+with histological analysis of the same samples.
 
-% What is it we want to investigate?
-%...
+Installation of a dental implant initiates the regional acceleratory phenomenon (RAP), which
+implies acceleration of the different healing stages. RAP begins a few days after implant
+installation, peaks at 1-2 months, and subsides after 6-24 months \james{(Frost 1989)}. In cortical bone,
+the non-vital mineralized tissue initially needs to be resorbed prior to bone formation. In the
+cancellous compartment, the implant installation, mainly results in damage of marrow spaces with
+resulting local bleeding and coagulum formation. The coagulum gradually resorbs, collagen is laid
+down and replaced by osteoid, and eventually—if sufficient blood supply is evident—woven immature
+bone  developes, and sequentially osseointegration is initiated \james{(Frost 1989)}. After 6-12 weeks of
+healing most of the woven bone is mineralized and bone marrow containing blood vessels, adipocytes,
+and mesenchymal cells can be observed surrounding the trabeculae in the mineralized bone
+\james{(Berglundh 2003, Abrahamsson et al 2004)}. A cement line, thickness  0.2-5µm, will be deposited
+directly on the implant surface during continuous bone formation. The biological fixation of the
+implant initiates only a few days after implant installation, where the osteoblasts begin to deposit
+collagen matrix on the cement line. This early deposition of calcified matrix followed by the
+arrangement of woven bone and later mature cancellous bone develops in a 3D manner delimiting the
+marrow space \james{(Franchi 2004)}.
 
-% What are the challenges?
-%...
+The present work presents a computational method which automatically discovers probabilistic
+models for the distortions incurred by the physical effects in high-resolution X-ray CT such
+as SR$\mu$CT in order to reverse them and produce accurate tissue classification even in regions
+where these effects are significant. It exploits two properties, which are needed to hold for
+the method to work: i) Very high resolution is used to build statistical models as functions
+of space, and ii) that the effects to be countered vary continuously over space, so that we can
+track how voxel frequency distributions are distorted through space. We apply the method to the
+same dataset of micrometer-resulution SR$\mu$CT bone tomograms studied in \cite{torsten2018}
+and in \cite{sporring}, to achieve faithful tissue classification all the way to the titanium
+implant surface.
 
-% How will we solve these challenges?
-%...
 
 %%% Local Variables:
 %%% mode: latex

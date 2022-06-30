@@ -1,20 +1,20 @@
 %% This is file `medima-template.tex',
-%%
+%% 
 %% Copyright 2018 Elsevier Ltd
-%%
+%% 
 %% This file is part of the 'Elsarticle Bundle'.
 %% ---------------------------------------------
-%%
+%% 
 %% It may be distributed under the conditions of the LaTeX Project Public
 %% License, either version 1.2 of this license or (at your option) any
 %% later version.  The latest version of this license is in
 %%    http://www.latex-project.org/lppl.txt
 %% and version 1.2 or later is part of all distributions of LaTeX
 %% version 1999/12/01 or later.
-%%
+%% 
 %% The list of all files belonging to the 'Elsarticle Bundle' is
 %% given in the file `manifest.txt'.
-%%
+%% 
 %% Template article for Elsevier's document class `elsarticle'
 %% with harvard style bibliographic references
 %%
@@ -42,7 +42,7 @@
 %% Stylefile to load MEDIMA template
 \usepackage{medima}
 \usepackage{framed,multirow}
-\graphicspath{{./}{../../templates/MEDIMA-template/}{figures/}}
+\graphicspath{{./}{../../templates/MEDIMA-template/}}
 %% The amssymb package provides various useful mathematical symbols
 \usepackage{amssymb}
 \usepackage{latexsym}
@@ -52,8 +52,7 @@
 % not required.
 \usepackage{url}
 \usepackage{xcolor}
-\usepackage{graphicx,amsmath}
-\usepackage{subcaption}
+\usepackage{graphicx}
 
 \usepackage{hyperref}
 \usepackage[nameinlink]{cleveref}
@@ -61,7 +60,7 @@
 \Crefname{lstlisting}{Listing}{Listings}
 
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows,calc}
+\usetikzlibrary{positioning}
 \usepackage{listings}
 %\renewcommand{\ttdefault}{pcr}
 \lstset{
@@ -72,8 +71,6 @@
   keywordstyle=\bfseries\ttfamily,
   commentstyle=\color{gray}\ttfamily
 }
-\usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
 
 \definecolor{newcolor}{rgb}{.8,.349,.1}
 
@@ -87,26 +84,29 @@
 
 
 % \usepackage{showframe} % for debugging
-\usepackage{ulem}
-\input{macros}
+\newcommand{\carl}[1]{\textcolor{orange}{[Carl: #1]}}
+\newcommand{\aleksandar}[1]{\textcolor{cyan}{[Aleksandar: #1]}}
+\newcommand{\james}[1]{\textcolor{red}{[James: #1]}}
+\definecolor{ForestGreen}{RGB}{34,139,34}
+\newcommand{\suggestion}[3]{\textcolor{ForestGreen}{[\textbf{Suggestion (#1):} '\sout{#2}' $\rightarrow$ '#3']}}
+
+
+
+
 \begin{document}
 
 \verso{Given-name Surname \textit{et~al.}}
 
 \begin{frontmatter}
 
-% \title{Spatial Analysis for SR$\mu$CT Segmentation}%
-\title{
-  Reversing distortive X-ray effects I:
-  Accurate Implant-contact Tissue Classification in Bone SR$\mu$CT
-}%
+%\title{Spatial Analysis for SR$\mu$CT Segmentation}%
+\title{Spatial Analysis for SR$\mu$CT Segmentation}%
 
 \author[1]{James \snm{Avery}\corref{cor1}}
-\cortext[cor1]{Corresponding author:\\
-  Email: avery@nbi.ku.dk\\
-  Tel.: +45-30229111;
-}
+\cortext[cor1]{Corresponding author: 
+  Tel.: +45-30229111;  }
 \author[3]{Aleksandar \snm{Topic}\fnref{fn1}}
+\fntext[fn1]{This is author footnote for second author.}
 \author[1]{Carl \snm{Johnsen}}
 %% Third author's email
 \ead{author3@author.com}
@@ -126,18 +126,29 @@
 
 
 \begin{abstract}
-  %%%
-  \input{abstract.tex}
-%%%%
+  % State problem
+  % State contribution
+  We present a computational method that determines the image distortion as a function of space,
+  and is able to use the derived model to accurately classify tissue even near high-contrast
+  interfaces. 
+  %
+  We apply the method to solve the notoriously difficult problem of accurately classifying
+  tissue at high-contrast interfaces.
+
+  The data: 
+
+  the previous difficult problem of accurately classify direct contact of bone-tissue and
+  blood vessels to titanium implants 
+
+  The software is available as open source at http://github.com/jamesavery/SASS/
 \end{abstract}
 
 \begin{keyword}
-  \james{TODO: Check correct keywords}
 %% MSC codes here, in the form: \MSC code \sep code
 %% or \MSC[2008] code \sep code (2000 is the default)
 \MSC 41A05\sep 41A10\sep 65D05\sep 65D17
 %% Keywords
-\KWD Image analysis \sep Tissue classification \sep Ossointegration \sep Segmentation
+\KWD Keyword1\sep Keyword2\sep Keyword3
 \end{keyword}
 
 \end{frontmatter}
@@ -146,11 +157,9 @@
 
 \input{intro}
 
-\input{background}
+\input{motivation_fysik}
 
 \input{metode}
-
-\input{conclusion}
 
 \bibliographystyle{model2-names.bst}\biboptions{authoryear}
 \bibliography{refs}

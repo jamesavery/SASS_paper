@@ -1,5 +1,6 @@
 *.aux
 *.pdf
+!**/figures/*.pdf
 *.bbl
 *.blg
 *.fdb_latexmk

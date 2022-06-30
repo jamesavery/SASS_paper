@@ -1,8 +1,3 @@
-\newcommand{\xx}{\mathbf{x}}
-% \newcommand{\fval}{f(\xx)}
-% \newcommand{\fval}{f}
-\newcommand{\fval}{x}
-\newcommand{\lab}{\mathrm{L}}
 Our goal is to obtain good conditional probability distributions $P(m|v,\xx)$
 that model the likelihood of a voxel having material type $m$ as a function
 both on its value $v$ and its position $\xx$ in space. For the probabilities
@@ -33,7 +28,7 @@ but found that they dropped off too rapidly. We instead found excellent results
 with the next-simplest model, leaving the exponential power free:
 \begin{equation}
   \label{eq:dist-form}
-  g_m(\fval,v) = a_m(\fval) e^{-b_m(\fval) |v-c_m(\fval)|^d_m(\fval)
+  g_m(\fval,v) = a_m(\fval) e^{-b_m(\fval) |v-c_m(\fval)|^d_m(\fval)}
 \end{equation}
 where for each field value $\fval$
 $a(\fval)$ is the distribution height at the center $v=c(\fval)$,
@@ -42,7 +37,7 @@ the exponential power ($d=2$ yields a Gaussian, $d=1$ a simple exponential).
 In practice we found $1.5\le d \le 2$ to best match the actual frequency
 distribution decay rates.
 
-Using the ridges found in Section \ref{sec:ridges}, we generate good starting
+Using the ridges found in the previous step, we generate good starting
 guesses and constraints for the distribution parameters
 $a,b,c,d$:
 For each field-value $\fval$ (corresponding to a row in the 2D histogram),
@@ -58,7 +53,7 @@ we initialize the starting approximation as:
 \end{equation}
 where we use half the distance to the center of ridge $m+1$ as the width
 $\mathrm{width_m}(\fval)$, using the relation that $b = 3/w^d$ yields
-a $5\percent$ cutoff at $w$ when $1\le d \le 2$. This approximation
+a $5\%$ cutoff at $w$ when $1\le d \le 2$. This approximation
 already yields a good approximation. Thus, the subsequent
 optimization using the constrained quasi-Newton optimization method L-BFGS-B\cite{BFGS}
 converges rapidly to an excellent fit. Each 1D histogram row is first optimized
