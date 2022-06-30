@@ -494,7 +494,7 @@ The osteocytes are selected by volume and shape: For every connected component
 in the feasible volume range, its principal axis and best ellipsoid is computed and checked against
 the potential osteocyte shape.
 
-\subsection{Visualizing bone-implant contact and blood-implant contact}
+\subsection{Evaluating bone-implant contact and blood-implant contact}
 
 Once segmented, tissue in contact with the implant can be studied using the
 Euclidean Distance Transform (EDT) from the implant, restricted to the bone region. We can
@@ -503,7 +503,7 @@ for example $d_{min} = 1\mu m$ to $d_{max} = 5\mu m$. We then sum over the maske
 tissue type to obtain and divide by the total to obtain the tissue-to-implant contact per area,
 or study the distribution across the surface area qualitatively.
 
-\subsubsection{Histology-comparison}
+
 
 \begin{figure}
   \centering
@@ -518,7 +518,7 @@ or study the distribution across the surface area qualitatively.
 \begin{figure}
   \centering
   \begin{tabular}{c}
-    \includegraphics[width=\linewidth]{770c_pag-full-P01-yz-1x} \\
+    \includegraphics[width=\textwidth]{770c_pag-full-P01-yz-1x-gimp} \\
     \includegraphics[width=\linewidth]{770c_pag-bic-P01-yz-1x}
   \end{tabular}
   \caption{ZY slices of the segmentation seen far away (top) and zoomed in (bottom). Yellow depicts bone and red depicts soft-tissue. Note that the segmentation segments the materials close to the implant, even in the grooves of the implant..}
