@@ -248,7 +248,7 @@ The overall segmentation is computed in steps 1-5. For each step we will describ
 the algorithm where applicable, along with the the intermediate results.
 
 \vspace{\baselineskip}
-\noindent\textit{\textbf{Step 1: Field computations}}
+\noindent\textit{\textbf{Step 1: Field computations}}\\
 Both fields are computed from the implant mask, as described in~\Cref{sec:preprocess}.
 EDT is computed using the Python package \texttt{edt}~\cite{pypi-edt}. It takes the implant mask and
 sets every non-set voxel to be the Euclidian distance of the nearest implant voxel.
@@ -313,7 +313,6 @@ single one as shown in~\Cref{eq:field-comb}.
 
 \vspace{\baselineskip}
 \noindent\textbf{Step 2: 2D histograms} \\
-
 From the combined fields we compute a 2D-histogram with the field value on the y-axis and the voxel
 value on the x-axis.  This allows us to see the distribution of voxel values, based on their
 relative position from the implant. The algorithm for the field-histogram can be seen in~\Cref{alg:field-hist}
@@ -414,8 +413,7 @@ as long as the distributions does not overlap.
 \input{prob.tex}
 
 \vspace{\baselineskip}
-\noindent\textbf{Step 5: Perform segmentation}
-
+\noindent\textbf{Step 5: Perform segmentation} \\
 The final step of the segmentation process is to utilize the probabilities for segmentation.
 This process is fairly straightforward, as each voxel is looked up in the probability distribution,
 which carries the same shape as the field-histogram.
