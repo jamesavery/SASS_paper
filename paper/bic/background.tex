@@ -129,39 +129,52 @@ neighbouring regions. Especially since this also determines the amount and type 
 The same material with the same density, can thus be represented at multiple varying intensities
 within the same sample.
 
-\begin{figure*}
-\centering
-\includegraphics[width=\textwidth]{770c_pag-bic-xy-1x.png}
-\caption{Here we see a 1mm x 2mm region of an unscaled image slice in the XY dimension. It highlights
-some of the imperfections and noise present in the data. We especially see artifacts within and
-around the titanium implant.}
-\label{fig:xy-slice}
-\end{figure*}
+% \begin{figure*}
+% \centering
+% \includegraphics[width=\textwidth]{770c_pag-bic-xy-1x.png}
+% \caption{Here we see a 1mm x 2mm region of an unscaled image slice in the XY dimension. It highlights
+% some of the imperfections and noise present in the data. We especially see artifacts within and
+% around the titanium implant.}
+% \label{fig:xy-slice}
+% \end{figure*}
 
-In \Cref{fig:xy-slice} and \Cref{fig:yz-slice} we see zoomed in regions of the XY and YZ planes
+In \Cref{fig:slices}, we see zoomed in regions of the XY and YZ planes
 of the same sample as shown in \Cref{fig:3viewsample}.
 Both planes display a broad selection of the various type of noise sources found in the data.
 
 \begin{figure}
-\centering
-\includegraphics[width=\columnwidth]{770c_pag-bic-yz-1x.png}
-\caption{Here we see a 1.5mm x 1.5mm region of an unscaled image slice in the YZ dimension. This
-hightlights noise and voxexl effects around the newly formed bone in the micro threaded part of
-the titanium implant.}
-\label{fig:yz-slice}
+  \centering
+  \begin{tabular}{c}
+    \begin{tabular}{c}\includegraphics[width=\linewidth]{770c_pag-bic-xy-1x.png}\end{tabular}\\
+    \begin{tabular}{c}\includegraphics[width=\linewidth]{770c_pag-bic-yz-1x.png}\end{tabular}\\    
+  \end{tabular}
+  \caption{
+    To better see the distortion effects, we zoom in on sub-regions of the slices shown in
+    \Cref{fig:3viewsample}. Our visual systems automatically correct for most of the distortions,
+    as they appear similar to illumination effects. However, even some distance from the implant,
+    blod vessel voxels have higher values than bone voxels further out. As we approach the implant,
+    the value-shifts accellerates and becomes highly non-linear.
+    (a) A 1mm$\times$2mm region of an image slice in the XY-plane.
+    % It highlights some of the imperfections and noise present in the data.
+    We especially see artefacts within and around the titanium implant.    
+    (b) A 1.5mm x 1.5mm region of an image slice in the YZ-plane. This
+    hightlights noise and voxel effects around the newly formed bone in the micro threaded part of
+    the titanium implant.
+  }
+\label{fig:slices}
 \end{figure}
 
 
-\subsubsection{Ring artifacts}
+\subsubsection{Ring artefacts}
 
-Looking at the XY-slice in \Cref{fig:xy-slice} we see clear concentric ring artifacts emanating from
+Looking at the XY-slice in \Cref{fig:xy-slice} we see clear concentric ring artefacts emanating from
 the center of the sample, and at strong edges of the titanium implant. It propagates strongly through
-the large region of air behind the implant. Compared to the other artifacts mentioned, this effect is
-arising from imperfections in the scanner setup. These types of artifacts can typically come from
+the large region of air behind the implant. Compared to the other artefacts mentioned, this effect is
+arising from imperfections in the scanner setup. These types of artefacts can typically come from
 uncalibrated or defect adjacent detector elements. For synchrotron radiation sources it can also
-occur from shifts and vibrations in the monochromator crystal \citep{ringartifacts}.
+occur from shifts and vibrations in the monochromator crystal \citep{ringartefacts}.
 
-\subsubsection{Projection artifacts}
+\subsubsection{Projection artefacts}
 
 Bright streaks with strong edges are seen from the sharp corners of the titanium implant. When
 doing back projection, the symmetry breaking is seen as smeared lines across the sample. This
@@ -181,27 +194,27 @@ will cause dark streaks across the image, where attenuation was highest.
 
 \subsection{Beam hardening}\label{sec:beam-hardening}
 
-Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artifacts around high
+Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artefacts around high
 density regions. This effect is called beam-hardening \citep{beamhardening}, and occurs when rays
 with lower energy are attenuated more frequently, thus shifting the remaining photon energy to a
 higher effective average value. This offsets the local contrast, by overestimating the attenuation,
-leaving lighter spots on the image. Many types of artifacts will typically be present in these
+leaving lighter spots on the image. Many types of artefacts will typically be present in these
 setups, but most are taken into account by calibration using phantoms and pre-hardening the beam
 before it reaches the sample. Pre-hardening of the beam is done using filters that attenuate the
-softest rays. Due to its common usage, various metal artifact reduction (MAR) software exists to
+softest rays. Due to its common usage, various metal artefact reduction (MAR) software exists to
 account for noise and imperfections during reconstruction \citep{mar1}\citep{mar2}.
 
 Despite the practially mono-energetic rays from SR$\mu$CT, the source initially generates a
 polychromatic spectrum. During monochromatisation the resulting spectrum can still contain
 corrupted harmonic components. Only a few percent corruption is enough to produce strong
-artifacts, although monochromatisation is typically done in multiple layers \citep{srnoise}.
+artefacts, although monochromatisation is typically done in multiple layers \citep{srnoise}.
 It can not trivially be rejected that some noise does occur from poly-energetic incident radiation.
 Two distinct effects typically seen as a result of beam-hardening are in dark and bright streaks
-and cupping artifacts in high density regions.
+and cupping artefacts in high density regions.
 
 \subsubsection{Dark and bright streaks}
 
-Streaking artifacts occur at the dense implant region, but also in the transition from bone to softer
+Streaking artefacts occur at the dense implant region, but also in the transition from bone to softer
 tissue. This effect is mostly seen in regions of large heterogeneity. When X-ray beams pass at angles
 containing multiple dense obstacles, the beam is hardened more. Then for angles with fewer dense
 obstacles the energy spectrum is preserved better. This produced the dark and bright streaks seen in
@@ -228,7 +241,7 @@ of regions within the image\citep{srnoise}. Similar to dark and bright streaks m
 they show as misrepresentations of the voxel values. In our case we see them especially at the
 transitional edges between the titanium implant and the biological tissue and bone.
 
-%Partial volume artifacts which are dependent on the voxel size and are mentioned briefly by Neldam et al.
+%Partial volume artefacts which are dependent on the voxel size and are mentioned briefly by Neldam et al.
 
 %%% Local Variables:
 %%% mode: latex
