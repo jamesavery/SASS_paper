@@ -1,5 +1,34 @@
-\section{Discussion and future work}
+\section{Conclusion and future work}
 \label{sec:conclusion}
+
+While SR$\mu$CT yields 3D reconstructions of extremely high fidelity compared to lab-grade X-ray setups,
+several distortion effects remain that obstruct accurate tissue classification in important regions, in particular
+near and at interfaces of high-contrast transitions such as where biological tissue meets metallic implants.
+However, these effects are well behaved, in the sense that they vary smoothly over space, making it possible
+to discover approximate mathematical models of the effects, and counter their resulting distortion.
+
+We were able to build probabilistic models for the distortive effects
+of soft tissue and bone voxel values as functions of distance to the
+implant, and as functions of an approximate diffusion field. This made
+it possible to see all the way up to the implant surface, and
+automatically segment into tissue types throughout the sample and all
+the way up to the implant surface, with high accuracy both at long and
+short distances.
+
+In this pilot work, we have only made a qualitative study. In upcoming
+work, we plan a larger quantitative study that compares with histology
+microscopy results, obtained from the same biopsies.  In addition, we
+are extending the method with Bayesian combination of multiple
+``angles'': different sources of distortion effects (e.g.~multiple
+physical effects) can be better captured by different fields,
+e.g.~beam hardening may be best captured by the distance transform to
+the sample surface, while the diffusion field captures distortion near
+metallic implants. Thus different fields separate tissue material
+distributions in different regions, and in combination are expected to
+yield a stronger analysis. It is hoped that this will make it possible
+to separate multiple highly overlapping frequency distributions.
+
+
 
 
 \section{Acknowledgements}
