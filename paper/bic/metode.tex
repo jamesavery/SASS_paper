@@ -106,8 +106,18 @@ of constant value from the center has varying distance to the implant.
     %\includegraphics[width=.49\linewidth]{yb-bone_region3.png}
     %\includegraphics[width=.49\linewidth]{xb-bone_region3.png}
     %\includegraphics[width=\linewidth]{rb-bone_region3.png}
-    \includegraphics[width=\linewidth]{rb-bone_region3.pdf}
-    \caption{2D radius histogram. The y-axis depicts radius, with the x-axis being voxel value.}
+    \begin{tabular}{cc}
+      (a) \begin{tabular}{c}\includegraphics[width=\linewidth]{yb-full3.png}\end{tabular}\\
+      (b) \begin{tabular}{c}\includegraphics[width=\linewidth]{rb-full3.png}\end{tabular}\\                  
+%      \includegraphics[width=\linewidth]{rb-bone_region3.png}\\      
+    \end{tabular}
+    \caption{Examples of 2D histograms for the full tomogram: (a) along the $y$-axis, and (b) as a function of
+      distance $r$ to the center. The abscissa of the 2D histograms is voxel value, the ordinate is the value
+      of $y$ resp. $r$. Notice that the $r$-2D histogram well separates the materials for large
+      and intermediate values of $r$, but breaks down for small $r$. However, it clearly shows a brightening
+      trend for small $r$.
+    }
+
     \label{fig:2dhists}
 \end{figure}
 
@@ -489,7 +499,7 @@ the potential osteocyte shape.
 Once segmented, tissue in contact with the implant can be studied using the
 Euclidean Distance Transform (EDT) from the implant, restricted to the bone region. We can
 simply mask the voxels that are within a thin shell of distances, $d_{min} < d(x,y,z) \le d_{max}$,
-for example $d_{min} = 1\mu m$ to $d_{max} = 10\mu m$. We then sum over the masked voxels of each
+for example $d_{min} = 1\mu m$ to $d_{max} = 5\mu m$. We then sum over the masked voxels of each
 tissue type to obtain and divide by the total to obtain the tissue-to-implant contact per area,
 or study the distribution across the surface area qualitatively.
 
