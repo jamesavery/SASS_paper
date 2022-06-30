@@ -68,15 +68,16 @@ reconstructed using the Python framework PyHST \citep{pyhst}. The images are acq
 
 \subsubsection{Image data}
 
-Each image sample contains voxels with a spatial resolution 1.875$\mu$m. The full physical size of
-a sample is about 6.5mm, which makes the raw dimensions of a single image $(3480,3480,3384)$ pixels.
-For computational purposes, this has been cropped to be divisible by a power $2^N$ or more
-specifically $2^5=32$ was used in our case. Depending on its initial size, a full image sample is
-further scanned into 4-6 sub-volumes through the height of the implant. This gives a size of
-$(3456,3456,846)$ pixels per sub-volume, where the last axis gets stacked for a full volume. Before
-being stacked, we need to volume match any overlapping regions. The overlaps are only shifted in the
-last dimension. This made it possible to find the best overlap by simply minimizing the pixel-wise
-eucledian distance between the volumes. The size of the shifted volumes goes from $846 \rightarrow 810$.
+The full physical size of a sample is about 6.5mm in each direction. Each image sample contains
+voxels with a spatial resolution of 1.875$\mu$m. The samples are scanned in chunks of 4-6
+sub-volumes through the height of the implant, depending on the initial size of a sample.
+For computational purposes, the pixel size has been cropped to be divisible by a power $2^N$ or
+more specifically $2^5=32$ was used in our case. This gives a size of $(3456,3456,846)$ pixels
+per sub-volume, where the last axis gets stacked for a full volume. This makes the raw dimensions
+of a single image containing 4 subvolumes $(3480,3480,3384)$ pixels in total. Before being stacked,
+we need to volume match any overlapping regions. The overlaps are only shifted in the last dimension.
+This made it possible to find the best overlap by simply minimizing the pixel-wise Eucledian distance
+between the volumes. The size of the shifted volumes goes from $846 \rightarrow 810$.
 
 In image \cref{fig:3viewsample} (YZ and XZ planes) we can clearly see darker edges around the border
 of the volume matched subvolumes at their overlaps. This creates an offset which is strongly seen
