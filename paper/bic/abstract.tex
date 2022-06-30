@@ -1,6 +1,6 @@
 Synchrotron Radiation micro-CT (SR$\mu$CT) produces images at
 extremely high fidelity.  However, while distortive X-ray effects such
-as beam-hardening are minimized due to highly brilliant monocromatic
+as beam-hardening are minimized due to highly brilliant monochromatic
 beams, they are not eliminated. In particular, obtaining accurate
 tissue classification is a challenge near high-contrast interfaces
 such as metal implants.
@@ -15,14 +15,14 @@ biological tissue in contact with a titanium implant.
   
 %{\bf The data:}
 The new tissue classification method was used to evaluate
-bone-to-implant contact (BIC) in micrometer-resolutiom SR$\mu$CT images.
+bone-to-implant contact (BIC) in micrometer-resolution SR$\mu$CT images.
 In a previous study, we were unable to obtain accurate
 results for BIC, due to difficulties in accurately classifying the
 tissue types near the titanium implant surface. In the present work,
 we fully reverse the distortive effects and obtain accurate tissue classification
 all the way to the implant surface.
 
-The method is implenented in C++ and Python, and is parallelized for GPU and multicore CPU.
+The method is implemented in C++ and Python, and is parallelized for GPU and multi-core CPU.
 To deal with the very large image sizes arising from SR$\mu$CT, exceeding system
 memory on even large workstations, the algorithms are designed to run
 out-of-core on multi-resolution representations of the tomograms.

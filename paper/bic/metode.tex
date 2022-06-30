@@ -122,13 +122,13 @@ of constant value from the center has varying distance to the implant.
 \end{figure}
 
 \subsection{Field histograms}
-%Show that the fields can perfectly seperate
+%Show that the fields can perfectly separate
 %discuss all the way to implant contact
 In order to obtain spatial information based on the relation to the implant, we construct two
-\textit{field} representations: Euclidian Distance Transform (EDT) and Diffusion.
+\textit{field} representations: Eucledian Distance Transform (EDT) and Diffusion.
 
 %EDT is good overall, but difficult close to the implant.
-EDT computes each voxel as the Euclidian distance to the implant.  This makes for a generally good
+EDT computes each voxel as the Eucledian distance to the implant.  This makes for a generally good
 representation for all but the voxels that are close to the implant. The shortcoming near the implant
 is mainly due to the fact that the voxels in the grooves of the implant have the same distance, and
 thus the same value, as voxels next to the threads of the implant. This is shown in~\Cref{fig:edt-vs-diffusion}.
@@ -188,7 +188,7 @@ to better represent both voxels that are far away, as well as the ones that are 
 We achieve this by adding the two fields together, producing a final combined field.
 
 % Show that the distance to the implant in edt will be the same in the grooves of the screw compared
-% to the threads of the screw. This is "fixed" with diffusion, as the grooves will be brigher as it
+% to the threads of the screw. This is "fixed" with diffusion, as the grooves will be brighter as it
 % is surrounded by more implant.
 
 \subsection{Walkthrough of the method}
@@ -261,7 +261,7 @@ the algorithm where applicable, along with the the intermediate results.
 \noindent\textit{\textbf{Step 1: Field computations}}\\
 Both fields are computed from the implant mask, as described in~\Cref{sec:preprocess}.
 EDT is computed using the Python package \texttt{edt}~\cite{pypi-edt}. It takes the implant mask and
-sets every non-set voxel to be the Euclidian distance of the nearest implant voxel.
+sets every non-set voxel to be the Eucledian distance of the nearest implant voxel.
 
 For diffusion, rather than solving the diffusion equation, we approximate it using multiple convolutions
 of a 3D-Gaussian kernel. Furthermore, instead of a single pass with a 3D-kernel, we apply 3 $\times$ 1D
@@ -297,7 +297,7 @@ kernel. The algorithm can be seen in~\Cref{alg:diffusion}, and the XZ-plane in~\
 \end{algorithm}
 
 %EDT + Diffusion
-To obtain a good seperation both close to the implant and far away, we combine the two fields into a
+To obtain a good separation both close to the implant and far away, we combine the two fields into a
 single one as shown in~\Cref{eq:field-comb}.
 
 %\begin{algorithm}
@@ -327,7 +327,7 @@ From the combined fields we compute a 2D-histogram with the field value on the y
 value on the x-axis.  This allows us to see the distribution of voxel values, based on their
 relative position from the implant. The algorithm for the field-histogram can be seen in~\Cref{alg:field-hist}
 along with a plot of the resulting histogram in~\Cref{fig:field-hist}. We see that the voxel values
-shift based on their closeness to the implant, which clearly results in two seperable distributions.
+shift based on their closeness to the implant, which clearly results in two separable distributions.
 
 \begin{algorithm}
     \caption{Field 2D histograms.}
@@ -353,7 +353,7 @@ shift based on their closeness to the implant, which clearly results in two sepe
 \begin{figure}
     %\includegraphics[width=\linewidth]{fb-edt-bone_region3.png}
     \includegraphics[width=\linewidth]{fb-gauss+edt-bone_region3.pdf}
-    \caption{2D field histogram. Note that there are two clearly seperated ridges, which makes up
+    \caption{2D field histogram. Note that there are two clearly separated ridges, which makes up
     different materials.}
     \label{fig:field-hist}
 \end{figure}
@@ -408,7 +408,7 @@ as long as the distributions does not overlap.
   \centering
   \includegraphics[width=.9\textwidth]{compute_probabilities_gauss+edt_bone_region3}\\
   \includegraphics[width=.9\textwidth]{hist_slice_gauss+edt_bone_region3}\\
-  \caption{(a) Measured 2D histogram for the compund diffusion+distance field from Step 2. (b)
+  \caption{(a) Measured 2D histogram for the compound diffusion+distance field from Step 2. (b)
     The detected ridges from Step 3. (c) Sum of computed frequency distribution models
     with optimized smooth piecewise cubic functions for parameters $a(\fval), b(\fval), c(\fval), d(\fval)$:
     this is the part of the 2D histogram explained by the smooth model. (d) The individual distributions evaluated
