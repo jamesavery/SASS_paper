@@ -1,3 +1,4 @@
+%TODO: Issue #2. Stram første paragraf.
 Synchrotron Radiation micro-CT (SR$\mu$CT) produces images at
 extremely high fidelity.  However, while distortive X-ray effects such
 as beam-hardening are minimized due to highly brilliant monochromatic
@@ -19,16 +20,16 @@ bone-to-implant contact (BIC) in micrometer-resolution SR$\mu$CT images.
 In a previous study, we were unable to obtain accurate
 results for BIC, due to difficulties in accurately classifying the
 tissue types near the titanium implant surface. In the present work,
-we fully reverse the distortive effects and obtain accurate tissue classification
+we invert the distortive effects and obtain accurate tissue classification
 all the way to the implant surface.
+%TODO: Issue #1. MANGLER TAL HER. Disse skal beregnes.
 
 The method is implemented in C++ and Python, and is parallelized for GPU and multi-core CPU.
-To deal with the very large image sizes arising from SR$\mu$CT, exceeding system
+To deal with the very large 3D image sizes arising from SR$\mu$CT, exceeding system
 memory on even large workstations, the algorithms are designed to run
 out-of-core on multi-resolution representations of the tomograms.
 
 The source code is available as open source at http://github.com/jamesavery/SASS/.
-
 
 
 %%% Local Variables:
