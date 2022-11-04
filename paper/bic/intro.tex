@@ -4,12 +4,12 @@
 
 \subsection{Image data}
 
-The most common method for analysing bone samples is to extract histologies and examine their
+Bone samples are most commonly analysed by extracting histologies and examining their
 two-dimensional structure with light microscopy. This method has several drawbacks. First and
 foremost, it is destructive: In addition to the obvious issue that the histology must be cut
 from the full sample, the sawing process can contaminate soft tissue with bone dust, or leave
-surface scratches that complicates automatic image analysis. Secondly, histology by its nature
-only gives a two-dimensional slice of the full three-dimensional picture. The most important
+surface scratches that complicate automatic image analysis. Secondly, histology by its nature
+only gives a two-dimensional slice of the full three-dimensional picture. Most important
 biological structures are inherently three-dimensional, and limiting analysis to 2D severely
 restricts the types of questions we can answer.
 
@@ -19,12 +19,12 @@ quantified the uncertainty of 2D histology for four common bone analyses, and fo
 choice of sampling plane for histological analysis incurred a significant uncertainty in the
 results, whereas the full volumetric analysis of SR$\mu$CT tomograms did not.
 
-Further, the high brilliance and collimation of synchrotron radiation yields particularly
-faithful 3D images, as the common distortive X-ray effects seen in hospital-grade setups such
+The high brilliance and collimation of synchrotron radiation yields particularly
+faithful 3D images, as common distortive X-ray effects seen in hospital-grade setups such
 as beam hardening and projection artefacts are minimized. The high fidelity makes SR$\mu$CT
 attractive for conducting advanced medical image analyses with trustworthy results.
 
-However, while image distortion effects are much reduced compared to mainstream X-ray tomography,
+However, while image distortion effects are much reduced compared to laboratory X-ray tomography,
 they are not eliminated, and numerical analysis and computations on the images must still be
 conducted carefully. Boundary effects near sample surfaces, ring artefacts from sensor faults, and especially
 distortion near high-contrast transitions, make accurate tissue classification difficult in
@@ -37,9 +37,9 @@ The present work presents a computational method which automatically discovers p
 models for the distortions incurred by the physical effects in high-resolution X-ray CT such
 as SR$\mu$CT in order to reverse them and produce accurate tissue classification even in regions
 where these effects are significant. It exploits two properties, which are needed to hold for
-the method to work: i) Very high resolution is used to build statistical models as functions
-of space, and ii) that the effects to be countered vary continuously over space, so that we can
-track how voxel frequency distributions are distorted through space. We apply the method to the
+the method to work: i) very high resolution is used to build statistical models as functions
+of space, and ii) the effects to be countered must vary continuously over space, so that we can
+track how voxel frequency distributions are distorted throughout the image. We apply the method to the
 same dataset of micrometer-resolution SR$\mu$CT bone tomograms studied in \cite{torsten2018}
 and in \cite{sporring}, to achieve faithful tissue classification all the way to the titanium
 implant surface.
