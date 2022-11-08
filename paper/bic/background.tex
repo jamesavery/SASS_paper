@@ -41,8 +41,8 @@ generally higher for MMA embedded specimens compared to water-soluble
 methacrylates~\cite{erben1997}. Additionally, tissue shrinkage is less than 2\% when using MMA
 embedded bone and cartilage specimens~\cite{ferguson1999}.
 
-The physical samples were prepared for SR$\mu$CT scanning by cutting out portions from the larger
-cylindrical biopsies. Within these samples, we see the titanium dental implant (Astra Tech
+Physical samples were prepared for SR$\mu$CT scanning by cutting out portions from the larger
+cylindrical biopsies. Within these samples, we find the titanium dental implant (Astra Tech
 OsseoSpeed, ST Molndal, Sweden).  It is 3.5mm in diameter and 8mm long. Along its length the lower
 5.5mm has larger threads and is attached to recipient bone. The upper 2.5mm has smaller threads and
 is where newly formed bone is to be assessed. Surrounding the bone and implant contact-region are
@@ -58,6 +58,7 @@ of 1.875$\mu$m. Red voxels are numerically low, while blue voxels are high.}
 \label{fig:3viewsample}
 \end{figure}
 
+% TODO: description of color depends on final colormap -- still better than lighter/dark
 A cut sample is shown in three different cross sectional views in \Cref{fig:3viewsample}. Each
 material has a unique density and thus absorption. The titanium implant shown in blue has a higher
 absorption level than bone. Bone material shown in light orange has higher absorption than its
@@ -71,7 +72,7 @@ imaging. By exposing a subject to X-rays, we can map the linear attenuation coef
 passing rays. Each ray is attenuated relatively to the density and composition of the material it
 passes.  By rotating either the scanner or the sample we can get a full 3D image representation of
 the inner structure of the sample. Each volumetric pixel (voxel) then represents the X-ray
-attenuation at its spatial position. We can therefore reliably use X-rays to internally characterise
+attenuation at its spatial position. In this way, X-rays can reliably be used to internally characterise
 samples in a non-intrusive and non-destructive manner. Medical CT-scans can provide spatial
 resolutions on the order of submillimetre scale \citep{medicalct}. The more modern micro computed
 tomography ($\mu$CT) can provide much higher spatial resolution on the micrometre scale
@@ -97,148 +98,23 @@ necessary~\cite{MIRONE201441}. The tomograms were acquired at 50 KeV.
 
 \subsubsection{Image data}
 
-The full physical size of a sample is about 6.5mm in each direction. Each image sample contains
-voxels with a spatial resolution of 1.875$\mu$m. The samples are scanned in chunks of 4-6
+The physical field-of-view of a single image sample is about 6.5mm in each direction. Each sample
+contains voxels with a spatial resolution of 1.875$\mu$m. The samples are scanned in chunks of 4-6
 sub-volumes through the height of the implant, depending on the initial size of a sample.  For
 computational purposes, the pixel size has been cropped to be divisible by a power $2^N$ or more
 specifically $2^5=32$ was used in our case. This gives a size of $(3456,3456,846)$ pixels per
-sub-volume, where the last axis gets stacked for a full volume. This makes the raw dimensions of a
-single image containing 4 subvolumes $(3480,3480,3384)$ pixels in total. Before being stacked, we
-need to volume match any overlapping regions. The overlaps are only shifted in the last dimension.
-This made it possible to find the best overlap by simply minimizing the pixel-wise Eucledian
-distance between the volumes. The size of the shifted volumes goes from $846 \rightarrow 810$.
+sub-volume, where the last axis gets stacked for a full volume. This gives a single image containing
+4 subvolumes the dimensions $(3480,3480,3384)$ pixels in total. Before being stacked, we need to
+volume match any overlapping regions. The overlaps are only shifted in the last dimension.  This
+made it possible to find the best overlap by simply minimizing the pixel-wise Eucledian distance
+between the volumes. The depth of the shifted volumes decreases from 846 to 810.
 
-In image \Cref{fig:3viewsample} (YZ and XZ planes) we can clearly see darker edges around the border
-of the volume matched subvolumes at their overlaps. This creates an offset which is strongly seen
-within the implant, but the large contrast due to very high density, makes this easier to ignore.
-Even worse is the contribution of misrepresented voxels in the transitional regions where bone and
-tissue contains these jagged edges.
+In image \Cref{fig:3viewsample} (YZ- and XZ-planes) we clearly see dark edges around the border of
+the volume matched subvolumes at their overlaps. This creates an offset which is very prominent
+within the implant, but the large relative contrast due to its high density, makes this easier to
+ignore.  Even worse is the contribution of misrepresented voxels in the transitional regions where
+bone and tissue contains visible jagged edges.
 
-\subsection{Physical effects, noise and artifacts}
-\label{sec:physics}
-
-Noise in tomography is unavoidable, and it makes segmentation harder because it further obscures the
-boundaries between materials. Materials may be well separated from certain angles in the
-3d-reconstructed image, but overlap from others. Some noise like that corrected by flat-field
-correction is very uniformly distributed across images. Some noise is however very spatially
-dependent on its surrounding regions. Knowing the composition and positioning of the materials being
-imaged, we can counter some of these effects during segmentation. The noise effects manifest
-themselves as numerical shifts in voxel-values as a function of their position. This is a direct
-result of a misrepresented attenuation along the axis the X-rays are passing.
-
-This orientation dependency illustrates how voxel intensity values are not globally fixed. How a
-certain material is represented in intensity, is highly dependent on its position relative to
-neighbouring regions. Especially since this also determines the amount and type of derived noise.
-The same material with the same density, can thus be represented at multiple varying intensities
-within the same sample.
-
-% \begin{figure*} \centering \includegraphics[width=\textwidth]{770c_pag-bic-xy-1x.png}
-% \caption{Here we see a 1mm x 2mm region of an unscaled image slice in the XY dimension. It
-% highlights some of the imperfections and noise present in the data. We especially see artifacts
-% within and around the titanium implant.} \label{fig:xy-slice} \end{figure*}
-
-In \Cref{fig:slices}, we see zoomed in regions of the XY and YZ planes of the same sample as shown
-in \Cref{fig:3viewsample}.  Both planes display a broad selection of the various type of noise
-sources found in the data.
-
-\begin{figure}
-  \centering
-  \begin{tabular}{c}
-    \begin{tabular}{c}(a) \includegraphics[width=\linewidth]{770c_pag-bic-xy-1x.png}\end{tabular}\\
-    \begin{tabular}{c}(b) \includegraphics[width=\linewidth]{770c_pag-bic-yz-1x.png}\end{tabular}\\    
-  \end{tabular}
-  \caption{
-    To better see the distortion effects, we zoom in on sub-regions of the slices shown in
-    \Cref{fig:3viewsample}. Our visual systems automatically correct for most of the distortions,
-    as they appear similar to illumination effects. However, even some distance from the implant,
-    blood vessel voxels have higher values than bone voxels further out. As we approach the implant,
-    the value-shifts accelerates and becomes highly non-linear.
-    (a) A 1mm$\times$2mm region of an image slice in the XY-plane.
-    % It highlights some of the imperfections and noise present in the data.
-    (b) A 1.5mm x 1.5mm region of an image slice in the YZ-plane in the micro threaded part of
-    the titanium implant.
-  }
-\label{fig:slices}
-\end{figure}
-
-\subsubsection{Ring artefacts}
-
-Looking at the XY-slice in \Cref{fig:slices} we see clear concentric ring artefacts emanating from
-the center of the sample, and at strong edges of the titanium implant. It propagates strongly
-through the large region of air behind the implant. Compared to the other artefacts mentioned, this
-effect is arising from imperfections in the scanner setup. These types of artefacts can typically
-come from uncalibrated or defect adjacent detector elements. For synchrotron radiation sources it
-can also occur from shifts and vibrations in the monochromator crystal \citep{ringartefacts}.
-
-\subsubsection{Projection artefacts}
-
-Bright streaks with strong edges are seen from the sharp corners of the titanium implant. When doing
-back projection, the symmetry breaking is seen as smeared lines across the sample. This can occur
-from the high pass filter used during filtered back projection, which exaggerates the differences
-between adjacent elements \citep{ctnoise}.
-
-\subsubsection{Compton scattering}
-
-Lower energy rays contribute mostly with noise from scattering effects. A ray will propagate through
-a material, get scattered and diffract from its initial trajectory. This gives a misrepresentation
-of the attenuation along its initial trajectory. The artefacts seen from scattering are similar in
-nature to those formed by beam hardening. This is because both effectively reduce the measured
-attenuation. For energy levels of above 50 KeV relevant for the data presented here, Compton
-scattering is the dominating type \citep{Compton}. The scattering occurs due to photon-electron
-interaction between X-ray beam and the material it passes through. Like beam-hardening, scattering
-will cause dark streaks across the image, where attenuation was highest.
-
-\subsection{Beam hardening}\label{sec:beam-hardening}
-
-Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artefacts around high
-density regions. This effect is called beam-hardening \citep{beam-hardening}, and occurs when rays
-with lower energy are attenuated more frequently, thus shifting the remaining photon energy to a
-higher effective average value. This offsets the local contrast, by overestimating the attenuation,
-leaving lighter spots on the image. Many types of artefacts will typically be present in these
-setups, but most are taken into account by calibration using phantoms and pre-hardening the beam
-before it reaches the sample. Pre-hardening of the beam is done using filters that attenuate the
-softest rays. Due to its common usage, various metal artefact reduction (MAR) software exists to
-account for noise and imperfections during reconstruction \citep{mar1}\citep{mar2}.
-
-Despite the practically mono-energetic rays from SR$\mu$CT, the source initially generates a
-poly-chromatic spectrum. During monochromatisation the resulting spectrum can still contain
-corrupted harmonic components. Only a few percent corruption is enough to produce strong artefacts,
-although monochromatisation is typically done in multiple layers \citep{srnoise}.  It can not
-trivially be rejected that some noise does occur from poly-energetic incident radiation.  Two
-distinct effects typically seen as a result of beam-hardening are in dark and bright streaks and
-cupping artefacts in high density regions.
-
-\subsubsection{Dark and bright streaks}
-
-Streaking artefacts occur at the dense implant region, but also in the transition from bone to
-softer tissue. This effect is mostly seen in regions of large heterogeneity. When X-ray beams pass
-at angles containing multiple dense obstacles, the beam is hardened more. Then for angles with fewer
-dense obstacles the energy spectrum is preserved better. This produced the dark and bright streaks
-seen in \Cref{fig:xy-slice}.
-
-For a hardened beam, softer x-rays are absorbed instead of successfully penetrating the object, and
-will not contribute to image formation. High density structures such as the titanium implant break
-the isotropy, making the projected X-ray mean energy spectrum dependent on incident orientation
-\citep{srnoise}.
-
-\subsubsection{Cupping effect}
-
-A common artefact that occurs when beams pass more homogeneous cylindrical objects. Since beams
-passing the middle will traverse more material compared to the edges, the beam is hardened more
-towards the center and intensity becomes lower as a result. This can manifest itself in what
-erroneously looks to be dense peripheral regions at the edges.
-
-\subsection{Phase contrast}
-
-Phase contrast is an effect whose consequences are not very unlike those of beam-hardening.
-Although used as an advantage in holotomography\citep{holotomography} and phase contrast
-tomography\citep{phasecontrast}, it induces noise in regular tomography such as used here. It
-typically results in fringes around edges of regions within the image\citep{srnoise}. Similar to
-dark and bright streaks mentioned above, they show as misrepresentations of the voxel values. In our
-case we see them especially at the transitional edges between the titanium implant and the
-biological tissue and bone.
-
-%Partial volume artefacts which are dependent on the voxel size and are mentioned briefly by Neldam et al.
 
 %%% Local Variables:
 %%% mode: latex
