@@ -23,7 +23,7 @@ implant installation, where the osteoblasts begin to deposit collagen matrix on 
 This early deposition of calcified matrix followed by the arrangement of woven bone and later mature
 cancellous bone develops in a 3D manner delimiting the marrow space~\cite{Franchi2004}.
 
-\subsection{Data set}
+\subsection{Physical samples}
 
 The experiment evaluated four methods for stimulating maxillary bone regeneration.  5 critical size
 defects were introduced to 7 goats. Four defects were used to asses bone regeneration methods, and
@@ -33,36 +33,20 @@ undecalcified. The specimen preparation was performed at the Department of Bioma
 Gothenburg University, Sweden. The specimens were initially fixated in 4\% paraformaldehyde.
 Dehydration of the specimens was performed in increasing concentrations of ethanol to eliminate fat
 and water content. Furthermore, specimens were infiltrated with methylmethacrylate (MMA) and
-embedded in molds 12 mm in diameter and 20 mm in height. They were scanned at the ESRF in Grenoble,
-France. The advantage of using MMA is greater tissue penetration than water-soluble methacrylates.
-This is an advantage when preparing larger specimens such as bone biopsies containing dental
-implants. Furthermore, the histological quality of bone sections is generally higher for MMA
-embedded specimens compared to water-soluble methacrylates~\cite{erben1997}. Additionally, tissue
-shrinkage is less than 2\% when using MMA embedded bone and cartilage specimens~\cite{ferguson1999}.
+embedded in molds 12 mm in diameter and 20 mm in height~\citep{NELDAM2015682}. They were scanned at
+the ESRF in Grenoble, France. The advantage of using MMA is greater tissue penetration than
+water-soluble methacrylates.  This is an advantage when preparing larger specimens such as bone
+biopsies containing dental implants. Furthermore, the histological quality of bone sections is
+generally higher for MMA embedded specimens compared to water-soluble
+methacrylates~\cite{erben1997}. Additionally, tissue shrinkage is less than 2\% when using MMA
+embedded bone and cartilage specimens~\cite{ferguson1999}.
 
-%TODO: Issue #9. Red, hvad der kan bruges. F.eks. er 1.875my scanningen ved 50keV.
-% As the specimen for X-ray imaging included a titanium dental implant, comparatively high photon
-%  energy of 50 keV (pink) was chosen, i.e.~the
-%  emitted radiation of a wiggler insertion device (a
-%  magnetic device) was filtered  to produce a narrower bandwidth. An indirect detector (lens-coupling
-%  of a scintillator to a camera incorporating a charge-coupled device with $2048 \times 2048$ pixels),
-%  with a pixel size of 5$\mu$m acquired tomographic scans of the ROI, which was slightly smaller (10mm wide)
-%  than the specimen (~20mm wide)” (Neldam et al. 2015). The sample was continuously rotated over
-%  180 degrees, as 1999 equiangular spaced radiographic images were taken.
-
-\subsubsection{Physical samples}
-
-The physical samples were prepared for SR$\mu$CT scanning by cutting out a portion from larger
-$\diameter$12mm H20mm cylindrical biopsies. %TODO: Issue #9. Aleksandar, hvor har du fundet det? Er
-det radius eller 
-%TODO: Det kan jo ikke passe, da implantatet er 8mm. Prøverne er i øvrigt nærmere cylindriske end
-%kubiske.  The cut samples are cubes of size (6.478mm, 6.478mm, 6.146mm) in the $(x,y,z)$ direction
-%respectively.
-This contains the titanium dental implant (Astra Tech OsseoSpeed, ST Molndal, Sweden), which is
-3.5mm in diameter and 8mm long. Along its length the lower 5.5mm has larger threads and is attached
-to recipient bone. The upper 2.5mm has smaller threads and is where newly formed bone is to be
-assessed. Surrounding the bone and implant contact-region are cavities containing resin, air, blood
-vessels and other fibrous tissue.
+The physical samples were prepared for SR$\mu$CT scanning by cutting out portions from the larger
+cylindrical biopsies. Within these samples, we see the titanium dental implant (Astra Tech
+OsseoSpeed, ST Molndal, Sweden).  It is 3.5mm in diameter and 8mm long. Along its length the lower
+5.5mm has larger threads and is attached to recipient bone. The upper 2.5mm has smaller threads and
+is where newly formed bone is to be assessed. Surrounding the bone and implant contact-region are
+cavities containing resin, air, blood vessels and other fibrous tissue.
 
 \begin{figure}
 \centering
@@ -107,11 +91,9 @@ characeterised by their practically mono-energetic spectrum.
 The tomograms prestened here have been acquired at the ID19 beam line at the European Synchrotron
 Radiation Facility (ESRF) in Grenoble, France. They were reconstructed\citep{sporring} at the ID19
 beamline. A standard filtered back-projection algorithm was applied via the ESRF in-house developed
-software PyHST\citep{pyhst}. PyHST was applied to improve reconstruction quality, hence reducing
-ring artefacts, and to reduce the required data volume if necessary~\cite{MIRONE201441}. The size of
-the reconstructed tomograms was $2048 \times 2048 \times 1024$ voxels. The segmentation was
-performed using VG Studio Max 2.1 (Volume Graphics GHBM, Heidelberg, Germany) also at the ESRF in
-Grenoble, France. The tomograms were acquired at 50 KeV.
+software PyHST~\citep{NELDAM2015682}\citep{pyhst}. PyHST was applied to improve reconstruction
+quality, hence reducing ring artefacts, and to reduce the required data volume if
+necessary~\cite{MIRONE201441}. The tomograms were acquired at 50 KeV.
 
 \subsubsection{Image data}
 
@@ -201,7 +183,7 @@ Lower energy rays contribute mostly with noise from scattering effects. A ray wi
 a material, get scattered and diffract from its initial trajectory. This gives a misrepresentation
 of the attenuation along its initial trajectory. The artefacts seen from scattering are similar in
 nature to those formed by beam hardening. This is because both effectively reduce the measured
-attenuation. For energy levels of above 50KeV relevant for the data presented here, Compton
+attenuation. For energy levels of above 50 KeV relevant for the data presented here, Compton
 scattering is the dominating type \citep{Compton}. The scattering occurs due to photon-electron
 interaction between X-ray beam and the material it passes through. Like beam-hardening, scattering
 will cause dark streaks across the image, where attenuation was highest.
