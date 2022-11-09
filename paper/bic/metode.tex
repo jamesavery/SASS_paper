@@ -353,26 +353,34 @@ shift based on their closeness to the implant, which clearly results in two sepa
 \begin{figure}
     %\includegraphics[width=\linewidth]{fb-edt-bone_region3.png}
     \includegraphics[width=\linewidth]{fb-gauss+edt-bone_region3.pdf}
-    \caption{2D field histogram. Note that there are two clearly separated ridges, which makes up
-    different materials.}
+    \caption{2D field histogram. Note that there are two clearly separated ridges, which each represent
+      the expectation value for a particular material as a function of the field value.}
     \label{fig:field-hist}
 \end{figure}
 
 \vspace{\baselineskip}
-\noindent\textbf{Step 3: Isolate the materials} \\
-The next step is to isolate the different materials spatially, which is done through the field-histogram.
-For our first attempt, we applied Otsu's threshold to each each row in the 2D-histogram. While this
-provided good results for two well defined distributions, it eventually began to fail. This was either
-because of lack of samples, or because the histogram did not contain two distributions, which is an
-underlying assumption of Otsu thresholding. These two effects occurred at the edges (both closest and
-furthest from implant), which would bleed into the later steps of the segmentation process.
+\noindent\textbf{Step 3: Identify the materials} \\
+In order to decompose 2D histogram into a sum of probability distributions that represent
+the different materials present in the tomogram, we first identify the {\em ridges}:
+i.e., the peaks in the 1D histograms that are persistent and vary continuously with the field value.
+Thus we can expect each ridge to represent the {\em expectation values} for a particular material
+as a function of the field value, i.e., as a function of the voxel's position in space.
 
-Rather than finding the threshold value in between the distributions, our next solution was to start
-finding the distributions by finding the ridges of the 2D-histogram. We do this by applying a series
-of image processing techniques, described in~\Cref{alg:material}. Each of the resulting contours
-become their own material, which are then labeled as material 1 or 2 respectively for this particular
-sample. For samples that would contain more than two distributions, the same algorithm should apply,
-as long as the distributions does not overlap.
+Any ridge-finding method will do: we compute it through the series of image processing operations shown in
+\Cref{alg:material}.
+% The next step is to isolate the different materials spatially, which is done through the field-histogram.
+% For our first attempt, we applied Otsu's threshold to each each row in the 2D-histogram. While this
+% provided good results for two well defined distributions, it eventually began to fail. This was either
+% because of lack of samples, or because the histogram did not contain two distributions, which is an
+% underlying assumption of Otsu thresholding. These two effects occurred at the edges (both closest and
+% furthest from implant), which would bleed into the later steps of the segmentation process.
+
+% Rather than finding the threshold value in between the distributions, our next solution was to start
+% finding the distributions by finding the ridges of the 2D-histogram. We do this by applying a series
+% of image processing techniques, described in~\Cref{alg:material}. Each of the resulting contours
+% become their own material, which are then labeled as material 1 or 2 respectively for this particular
+% sample. For samples that would contain more than two distributions, the same algorithm should apply,
+% as long as the distributions does not overlap.
 
 \begin{algorithm}
     \caption{Material isolation.}
