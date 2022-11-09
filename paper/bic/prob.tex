@@ -28,7 +28,7 @@ but found that they dropped off too rapidly. We instead found excellent results
 with the next-simplest model, leaving the exponential power free:
 \begin{equation}
   \label{eq:dist-form}
-  g_m(\fval,v) = a_m(\fval) e^{-b_m(\fval) |v-c_m(\fval)|^d_m(\fval)}
+  g_m(\fval,v) = a_m(\fval) e^{-b_m(\fval) |v-c_m(\fval)|^{d_m(\fval)}}
 \end{equation}
 where for each field value $\fval$
 $a(\fval)$ is the distribution height at the center $v=c(\fval)$,
@@ -44,12 +44,12 @@ For each field-value $\fval$ (corresponding to a row in the 2D histogram),
 we initialize the starting approximation as:
 \begin{equation}
   \label{eq:starting-guesses}
-  \begin{split}
-    c_m(\fval) &= \mathop{\mathtt{argmax}}_{v \text{ with }\lab[\fval,v] = m} H(\fval,v)    \\
-    a_m(\fval) &= H(\fval,c_m(\fval))\\
-    b_m(\fval) &= 3/\mathrm{width}_m(\fval)^2 \\
-    d_m(\fval) &= 2
-  \end{split}
+  \begin{array}{lll}
+    c_m(\fval) &= \mathop{\mathtt{argmax}}_{v \text{ with }\lab[\fval,v] = m} H(\fval,v)  & \text{Peak position}  \\
+    a_m(\fval) &= H(\fval,c_m(\fval)) & \text{Peak value}\\
+    b_m(\fval) &= 3/\mathrm{width}_m(\fval)^2  & \text{Decay rate}\\
+    d_m(\fval) &= 2 & \text{Exponential power}
+  \end{array}
 \end{equation}
 where we use half the distance to the center of ridge $m+1$ as the width
 $\mathrm{width_m}(\fval)$, using the relation that $b = 3/w^d$ yields
