@@ -33,16 +33,28 @@ they could accurately classify bone tissue in the middle regions of the tomogram
 not able to obtain good bone-to-implant contact evaluation (BIC), as evidenced by poor correlation
 with histological analysis of the same samples.
 
-The present work presents a computational method which automatically discovers probabilistic
+The present work presents a fully automatic computational method which discovers probabilistic
 models for the distortions incurred by the physical effects in high-resolution X-ray CT such
 as SR$\mu$CT in order to reverse them and produce accurate tissue classification even in regions
 where these effects are significant. It exploits two properties, which are needed to hold for
 the method to work: i) very high resolution is used to build statistical models as functions
 of space, and ii) the effects to be countered must vary continuously over space, so that we can
-track how voxel frequency distributions are distorted throughout the image. We apply the method to the
+track how voxel frequency distributions are distorted throughout the image.
+We apply the method to the
 same dataset of micrometer-resolution SR$\mu$CT bone tomograms studied in \cite{torsten2018}
 and in \cite{sporring}, to achieve faithful tissue classification all the way to the titanium
 implant surface.
+
+The aims of the current work is:
+\begin{enumerate}
+\item To design a fully automatic \textbf{spatially aware segmentation algorithm} that
+  improves segmentation quality of tissues in bone-SR$\mu$CT in all regions, including near high-contrast interfaces.
+\item To implement this method efficiently in software for GPU and multi-core CPU using out-of-core techniques, to
+  facilitate analysis of 3D SR$\mu$CT images that exceed system memory.
+\item To use the new method to evaluate bone-to-implant contact closer to implant surfaces than previously feasible. 
+\end{enumerate}
+
+
 
 
 %%% Local Variables:
