@@ -133,16 +133,16 @@ The next section describes the latter.
 %Show that the fields can perfectly separate
 %discuss all the way to implant contact
 In the present work, the main distortion we want to invert is the brightening of voxels near the high-contrast interface between
-titanium implant and biological tissue. We can group the voxels according to their distance to the implant using the
+titanium implant and biological tissue, in order to accurately determine tissue-implant contact.
+To this end, we can group the voxels according to their distance to the implant using the
 {\em Euclidean Distance Transform} (EDT). \Cref{fig:2dhists}(c) shows the corresponding 2D histogram, which shows a darkening effect for large distances
 (near the sample surface) and brightening for small distances (near the implant surface).
-
 
 %EDT is good overall, but difficult close to the implant.
 However, we can do better: As discussed in~\Cref{sec:physics}, the implant produces a \textit{glowing} effect, which
 can be modeled physically by diffusion. \Cref{fig:edt-vs-diffusion} shows
 how a voxel inside the troughs of the threading receives brightening contributions from many sides, while a voxel above the peak of the threading at
-the same distance from the implant receives much fewer contributions. To resolve brightening of voxels very close to the implant, it thus makes sense
+the same distance from the implant receives much less. To resolve brightening of voxels very close to the implant, it thus makes sense
 to use a diffusion field, as shown in \Cref{fig:field-slice}. 
 
 
@@ -191,15 +191,17 @@ to use a diffusion field, as shown in \Cref{fig:field-slice}.
     \label{fig:field-slice}
 \end{figure}
 
-While diffusion works well on voxels close to the implant, it assigns the same value to the voxels
-far from the implant. Therefore, an optimal solution is to use both the EDT and the diffusion field
-to better represent both voxels that are far away, as well as the ones that are close to the implant.
-We achieve this by adding the two fields together, producing a final combined field.
+Using a diffusion field to model the glow from the implant, we are able to describe the brightening effect even very close to the implant, but the field is nearly
+zero everywhere else. In order
+to construct a single field that separates voxels well according to the major contributions of distortion, we construct a combined EDT+diffusion field. We will see
+in the next section that this is enough to produce a high-quality segmentation throughout the tomogram, both near the implant surface and far away from it.
+
 
 % Show that the distance to the implant in edt will be the same in the grooves of the screw compared
 % to the threads of the screw. This is "fixed" with diffusion, as the grooves will be brighter as it
 % is surrounded by more implant.
 
+%TODO: Adskil METODE, altsaa SASS, fra ANVENDELSE, altsaa BIC. 
 \subsection{Walkthrough of the method}
 This section will describe each step of our method in detail. Going from tomography to a segmented tomography.
 
@@ -215,19 +217,17 @@ The steps of the field computation are:
     
 Then, in order to segment using the fields:
 \begin{enumerate}
-    \item Find the materials within the 2D histograms as ridges, using image processing techniques.
-    \item From the ridges, compute initial approximate frequency distributions of each material, which are then optimized to fit the 2D histograms.
-    \item From the optimized distributions, we derive probability distributions for material classification. These distributions approximate the conditional probabilities $P(m|v,x)$ that a particular voxel belongs to material $m$ given that it has voxel value $v$ and field value $x$.
-    \item Apply the probability distributions to the tomography, segmenting the voxels into the different materials.
+    \item[3] Find the material ridges within the 2D histograms, using image processing techniques.
+    \item[4] From the ridges, compute initial approximate frequency distributions of each material, which are then optimized to fit the 2D histograms.
+          From the optimized distributions, we derive probability distributions for material classification. These distributions approximate the conditional probabilities $P(m|v,x)$ that a particular voxel belongs to material $m$ given that it has voxel value $v$ and field value $x$.
+    \item[5] Apply the probability distributions to the tomography, segmenting the voxels into the different materials.
 \end{enumerate}
     
-Finally, to produce the tissue-bone implant contact metric:
+In the present paper, we use the improved segmentation to evaluate bone-implant contact and blood-implant contact.
 \begin{enumerate}
-    \item From the segmented tomography, we compute the blood network of the bone regions to further extract which soft tissue voxels that are blood vessels.
-    \item This blood network is used alongside the segmented bone to produce the final metric.
+\item[6] From the segmented tomography, we compute the network of blood vessels and the osteocyte network. Voxels are classified as bone, if they are in a connected compentnt of bone-mineral and within a maximal distance from blood supply and osteocytes.
+\item[7] Perform the tissue-to-implant contact analysis.
 \end{enumerate}
-
-%\james{TODO: Forklar bedre. Adskil ny segmenteringsmetode og anvendelse til BIC}
 
 These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
 
@@ -247,8 +247,8 @@ These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
         \node[draw, fill=black!10, rounded corners] (curvs) at (0,-2) {3. Find Ridges};
         \node[draw, fill=black!10, rounded corners] (probs) at (0,-3) {4. Compute probabilities};
         \node[draw, fill=black!10, rounded corners] (segm)  at (0,-4) {5. Segment the voxels};
-        \node[draw, fill=black!10, rounded corners] (blood) at (0,-5) {6. Compute blood network};
-        \node[draw, fill=black!10, rounded corners] (bic)   at (0,-6) {7. Compute bone- and blood-implant contact};
+        \node[draw, fill=black!10, rounded corners] (blood) at (0,-5) {6. Compute blood network and osteocytes};
+        \node[draw, fill=black!10, rounded corners] (bic)   at (0,-6) {7. Compute tissue properties};
 
         \path[draw, ->] (prep)  -- (field);
         \path[draw, ->] (field) -- (hists);
@@ -269,13 +269,12 @@ the algorithm where applicable, along with the the intermediate results.
 \vspace{\baselineskip}
 \noindent\textit{\textbf{Step 1: Field computations}}\\
 Both fields are computed from the implant mask, as described in~\Cref{sec:preprocess}.
-EDT is computed using the Python package \texttt{edt}~\cite{pypi-edt}. It takes the implant mask and
-sets every non-set voxel to be the Eucledian distance of the nearest implant voxel.
+EDT is computed in parallel using W.~Silversmith's implentation of Meijster's algorithm \cite{pypi-edt},
+% the Python package \texttt{edt}~\cite{pypi-edt}. %Den er implementeret i C++
+yielding a 3D in which every non-implant voxel becomes the Eucledian distance of the nearest implant voxel.
 
-For diffusion, rather than solving the diffusion equation, we approximate it using multiple convolutions
-of a 3D-Gaussian kernel. Furthermore, instead of a single pass with a 3D-kernel, we apply 3 $\times$ 1D
-convolutions, one in each dimension, to the tomography. This obtains the same result as a regular 3D-Gaussian
-kernel. The algorithm can be seen in~\Cref{alg:diffusion}, and the XZ-plane in~\Cref{fig:field-slice}.
+For diffusion, rather than solving a full diffusion equation, we approximate it using repeated convolutions
+of a 3D-Gaussian kernel, implemented by separating into 1D convolutions, as seen in~\Cref{alg:diffusion}, and the XZ-plane in~\Cref{fig:field-slice}.
 
 \begin{algorithm}
     \caption{Diffusion approximation.}
@@ -333,10 +332,11 @@ single one as shown in~\Cref{eq:field-comb}.
 \vspace{\baselineskip}
 \noindent\textbf{Step 2: 2D histograms} \\
 From the combined fields we compute a 2D-histogram with the field value on the y-axis and the voxel
-value on the x-axis.  This allows us to see the distribution of voxel values, based on their
-relative position from the implant. The algorithm for the field-histogram can be seen in~\Cref{alg:field-hist}
-along with a plot of the resulting histogram in~\Cref{fig:field-hist}. We see that the voxel values
-shift based on their closeness to the implant, which clearly results in two separable distributions.
+value on the x-axis.  The algorithm for the field-histogram can be seen in~\Cref{alg:field-hist}
+along with a plot of the resulting histogram in~\Cref{fig:field-hist}. We see that the bone and soft tissue
+separate neatly into two distinguishable distributions. The effect of the diffusion field is to ``zoom in'' near the implant surface,
+where the diffusion field changes rapidly.
+
 
 \begin{algorithm}
     \caption{Field 2D histograms.}
@@ -441,7 +441,7 @@ Any ridge-finding method will do: we compute it through the series of image proc
 
 \vspace{\baselineskip}
 \noindent\textbf{Step 5: Perform segmentation} \\
-The final step of the segmentation process is to utilize the probabilities for segmentation.
+The final step of the segmentation process is to use the probabilities for segmentation.
 This process is fairly straightforward, as each voxel is looked up in the probability distribution,
 which carries the same shape as the field-histogram.
 
