@@ -14,7 +14,7 @@ identity.
 To this end, we first {\it model the frequency distributions} using the
 2D histograms. Given that we are modeling materials $m=1,\ldots,M$,
 we write the full 2D histogram as a sum of distributions
-$g_m(\fval,v)$ modeling the described part, and an undescribed
+$g_m(\fval,v)$ representing the modeled part, and a
 residual $r(\xx,v)$.
 \begin{equation}
   \label{eq:hist}
@@ -53,7 +53,7 @@ we initialize the starting approximation as:
 \end{equation}
 where we use half the distance to the center of ridge $m+1$ as the width
 $\mathrm{width_m}(\fval)$, using the relation that $b = 3/w^d$ yields
-a $5\%$ cutoff at $w$ when $1\le d \le 2$. This approximation
+a $5\%$ cutoff at $w$ for any $1\le d \le 2$. This approximation
 already yields a good approximation. Thus, the subsequent
 optimization using the constrained quasi-Newton optimization method L-BFGS-B\cite{BFGS}
 converges rapidly to an excellent fit. Each 1D histogram row is first optimized

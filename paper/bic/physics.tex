@@ -23,9 +23,9 @@ intensities within the same sample.
 
 \begin{figure}
   \centering
-  \begin{tabular}{c}
-    \begin{tabular}{c}(a) \includegraphics[width=\linewidth]{770c_pag-bic-xy-1x.png}\end{tabular}\\
-    \begin{tabular}{c}(b) \includegraphics[width=\linewidth]{770c_pag-bic-yz-1x.png}\end{tabular}\\    
+  \begin{tabular}{cc}
+    \!\!\!\!\!\!(a)\!\!\!&\begin{tabular}{c}\includegraphics[width=0.96\columnwidth]{770c_pag-bic-xy-1x.png}\end{tabular}\\
+    \!\!\!\!\!\!(b)\!\!\!&\begin{tabular}{c}\includegraphics[width=0.96\columnwidth]{770c_pag-bic-yz-1x.png}\end{tabular}\\    
   \end{tabular}
   \caption{
     To better see the distortion effects, we zoom in on sub-regions of the slices shown in
@@ -45,9 +45,7 @@ In \Cref{fig:slices}, we see zoomed in regions of the XY- and YZ-planes of the s
 in \Cref{fig:3viewsample}.  Both planes display a broad selection of the various type of noise
 sources found in the data.
 
-\subsection{Beam hardening}
-\label{sec:beam-hardening}
-
+\paragraph{Beam hardening}
 Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artefacts around high
 density regions. This effect is called beam-hardening \citep{beam-hardening}, and occurs when rays
 with lower energy are attenuated more frequently, thus shifting the remaining photon energy to a

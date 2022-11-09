@@ -45,11 +45,20 @@ same dataset of micrometer-resolution SR$\mu$CT bone tomograms studied in \cite{
 and in \cite{sporring}, to achieve faithful tissue classification all the way to the titanium
 implant surface.
 
+Our goal is to obtain good conditional probability distributions $P(m|v,\xx)$
+that model the likelihood of a voxel having material type $m$ as a function
+both on its value $v$ and its position $\xx$ in the tomogram. We want to make sure that these distribution
+functions vary smoothly across space, to ensure that we can identify the materials correctly across the entire
+image: even though the frequency distributions look completely different
+close to the titanium implant compared to the middle region or sample surface,
+we can track the unbroken, smooth deformation to assign a global material
+identity.
+
 The aims of the current work is:
 \begin{enumerate}
 \item To design a fully automatic \textbf{spatially aware segmentation algorithm} that
   improves segmentation quality of tissues in bone-SR$\mu$CT in all regions, including near high-contrast interfaces.
-\item To implement this method efficiently in software for GPU and multi-core CPU using out-of-core techniques, to
+\item To implement this method efficiently in open-source software for GPU and multi-core CPU using out-of-core techniques, to
   facilitate analysis of 3D SR$\mu$CT images that exceed system memory.
 \item To use the new method to evaluate bone-to-implant contact closer to implant surfaces than previously feasible. 
 \end{enumerate}
