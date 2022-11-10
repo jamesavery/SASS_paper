@@ -22,25 +22,35 @@ illustrates how the different materials cover ranges of values that blend togeth
 \end{figure}
 
 \subsection{Preprocessing}\label{sec:preprocess}
-To reduce the complexity of the segmentation process, we preprocess the data by removing redundant
-information. From our work in an upcoming paper under preparation, we are able to obtain two
-masks: an \textit{implant mask} and a \textit{bone mask}.
+To reduce the complexity of the segmentation process, we preprocess
+the data by removing redundant information.
+% Since the values of the implant material is well-separated from the rest of the sample, obtaining
+% the rough implant mask through global thresholding is trivial, as the orange line in~\Cref{fig:1d-hist}
+% shows. This mask is then refined, along with the internal gaps being closed, giving us the implant mask.
+We first compute a coarse
+bone-region using a crude segmentation, and through a direct geometric
+analysis of the implant determines the sample coordinate system, with the origin
+on the back-plane of the sawed-through implants and principal axes coordinate system vectors
+$\mathbf{u}$ pointing up towards the implant top, $\mathbf{v}$ pointing forward away from the back-plane,
+and $\mathbf{w}$ point right, parallel to the back-plane. An automatic wave-analysis of the threads
+computationally determines the macro-threaded recipient bone region, and the micro-threaded de-novo regenerated bone region.
+We then perform the spatially-aware segmentation analysis restricted to the bone-regions in order to
+not expand effort on the parts of the segmentation problem that can be solved with simpler methods.
+Note that the process is fully automatic, and does not require human intervention.
 
-Since the values of the implant material is radically different from the rest of the sample, obtaining
-the rough implant mask through global thresholding is trivial, as the orange line in~\Cref{fig:1d-hist}
-shows. This mask is then refined, along with the internal gaps being closed, giving us the implant mask.
-Using this mask, we are also able to remove the air making up half of the sample cylinder. This is depicted
-in~\Cref{fig:3viewsample}, above the implant and to the left of the implant in the XY and YZ cross
-sections respectively. Finally the implant mask can show us the orientation of the implant. This squashes
-the blue peak from the histogram, leaving the two peaks marked by the red and green lines as being
-the most defined.
+%TODO: Måske medtage disse detaljer, men er for træt til at renskrive.
+% , we are also able to remove the air making up half of the sample cylinder. This is depicted
+% in~\Cref{fig:3viewsample}, above the implant and to the left of the implant in the XY and YZ cross
+% sections respectively. Finally the implant mask can show us the orientation of the implant. This squashes
+% the blue peak from the histogram, leaving the two peaks marked by the red and green lines as being
+% the most defined.
 
-As we are only interested in the voxels inside the bone, and we know that bone is the most prominent
-material left, we perform another coarse segmentation. This is done by thresholding between the two
-large distributions, choosing everything to the right of this threshold as the bone mask. These voxels
-are morphologically closed, to also consumes the internal gaps in the bone region, which makes up the
-soft tissue inside the bone. The implant and bone region masks are applied throughout subsequent steps
-to filter out noise in the tomography.
+% As we are only interested in the voxels inside the bone, and we know that bone is the most prominent
+% material left, we perform another coarse segmentation. This is done by thresholding between the two
+% large distributions, choosing everything to the right of this threshold as the bone mask. These voxels
+% are morphologically closed, to also consumes the internal gaps in the bone region, which makes up the
+% soft tissue inside the bone. The implant and bone region masks are applied throughout subsequent steps
+% to filter out noise in the tomography.
 
 \subsection{Exploiting spatial information}
 % Show the correlation of x,y,z,r to histograms 2d
