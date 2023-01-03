@@ -7,7 +7,7 @@ of how we solve the problem, with a final detailed walkthrough of each step in t
 \subsection{1-dimensional histograms}
 %diskuter overlappende materialer
 Looking at a 1D-histogram of the voxel value in a tomography, as shown in~\Cref{fig:1d-hist}, we are
-able to distinguish different distributions, but we see that there is a large overlap. This leads to
+able to distinguish different distributions, but we see that there are large overlaps. This leads to
 global thresholding being infeasible, at least for the distributions in the lower half of the histogram.
 This happens because the voxel value is not globally defined, as~\Cref{sec:physics} explains, which
 illustrates how the different materials cover ranges of values that blend together in the histogram.
@@ -62,11 +62,11 @@ However, if we fix one axis $x$, $y$, or $z$, the image {\em does} contain milli
 models for e.g.~the conditional probabilities $P(m|v,x)$, $P(m|v,y)$, and $P(m|v,z)$. To this end, we compute 2D histograms that simply count voxel frequencies
 both conditioned on value $v$ and coordinate value along either $x$, $y$, or $z$. 
 
-Figure \ref{fig:2Dhists}(a)
+Figure \ref{fig:2dhists}(a)
 shows the histogram for our model tomogram (implant excluded) as a function of the $y$ coordinate: each row in the image is a histogram for a fixed value of $y$.
 Figure \ref{fig:3viewsample}(a) helps us see what happens: For $y<2400\micron$, there is only air, then we reach a thin layer of resin, after which we enter
 the region where we find bone, soft tissue, resin, and air. The air voxels are brightened as we approach the implant, shifting the peaks smoothly rightwards.
-Figure \ref{fig:2Dhists}(b) shows a similar 2D histogram for the radial coordinate $r=\sqrt{x^2+y^2+z^2}$.
+Figure \ref{fig:2dhists}(b) shows a similar 2D histogram for the radial coordinate $r=\sqrt{x^2+y^2+z^2}$.
 From this plot, we see two prominent distributions that change along the $r$ axis. The radius correlates with distance to the sample surface
 (capturing edge effects), and for medium $r$, it is a good proxy for distance to the implant, and we see a brightening with smaller $r$, and a darkening and
 broadening of the distributions for large $r$. Each {\em view} provides us with additional information about how voxel values are distorted throughout space:
