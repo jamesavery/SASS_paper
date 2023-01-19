@@ -573,7 +573,7 @@ The next section describes the latter.
 %                    \State $h_r[r,v_{i}]{+}{+}$
 %                \EndIf
 %            \EndFor
-%            \Return $h_z,h_y,h_z,h_r$
+%            \State \Return $h_z,h_y,h_z,h_r$
 %        \EndFunction
 %    \end{algorithmic}
 %\end{algorithm}
@@ -590,8 +590,8 @@ The next section describes the latter.
                     \State $r \gets \left\lfloor\sqrt{(x-c_x)^2 + (y-c_y)^2}\right\rfloor$
                     \State $h_r[r,v_{i}]{+}{+}$
                 \EndIf
-            \EndFor\\
-            \Return $h_r$
+            \EndFor
+            \State \Return $h_r$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -735,8 +735,8 @@ of a 3D-Gaussian kernel, implemented by separating into 1D convolutions, as seen
                     \EndFor
                     \State $|buf|_0[:] \gets |buf|_1[:]$
                 \EndFor
-               \EndFor\\
-            \Return $|buf|_0$
+            \EndFor
+            \State \Return $|buf|_0$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -754,7 +754,7 @@ single one as shown in~\Cref{eq:field-comb}.
 %            \State $r \gets r - \min (f_{dif})$
 %            \State $r \gets \frac{r}{\max (f_{dif})}$
 %
-%            \Return $r$
+%            \State \Return $r$
 %        \EndFunction
 %    \end{algorithmic}
 %\end{algorithm}
@@ -791,7 +791,7 @@ where the diffusion field changes rapidly.
                     \EndIf
                 \EndIf
             \EndFor
-            \Return $h$
+            \State \Return $h$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -847,7 +847,7 @@ Any ridge-finding method will do: we compute it through the series of image proc
                     \State $l \gets |draw\_contour|(l, cs[i], i+1)$
                 \EndIf
             \EndFor
-            \Return $l$
+            \State \Return $l$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -972,7 +972,7 @@ which carries the same shape as the field-histogram.
                     \EndIf
                 \EndIf
             \EndFor
-            \Return $result$
+            \State \Return $result$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
