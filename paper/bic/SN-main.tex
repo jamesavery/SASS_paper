@@ -548,7 +548,9 @@ Figure \ref{fig:2dhists}(a)
 shows the histogram for our model tomogram (implant excluded) as a function of the $y$ coordinate: each row in the image is a histogram for a fixed value of $y$.
 Figure \ref{fig:3viewsample}(a) helps us see what happens: For $y<2400\micron$, there is only air, then we reach a thin layer of resin, after which we enter
 the region where we find bone, soft tissue, resin, and air. The air voxels are brightened as we approach the implant, shifting the peaks smoothly rightwards.
-Figure \ref{fig:2dhists}(b) shows a similar 2D histogram for the radial coordinate $r=\sqrt{x^2+y^2}$.
+A better coordinate system for capturing both the distortive edge-effects, and the glow from the implant, is to use cylindrical coordinates with respect
+to the implant center line. This is computed automatically as the centers for the least-squares optimal circles with respect to the implant along the principal axis. 
+Figure \ref{fig:2dhists}(b) shows a similar 2D histogram for the radial cylinder coordinate $r=\sqrt{\left( x-c_x(z)\right)^2+\left( y-c_y(z)\right)^2}$.
 From this plot, we see two prominent distributions that change along the $r$ axis. The radius correlates with distance to the sample surface
 (capturing edge effects), and for medium $r$, it is a good proxy for distance to the implant, and we see a brightening with smaller $r$, and a darkening and
 broadening of the distributions for large $r$. Each {\em view} provides us with additional information about how voxel values are distorted throughout space:
@@ -711,11 +713,7 @@ the algorithm where applicable, along with the the intermediate results.
 Both fields are computed from the implant mask, as described in~\Cref{sec:preprocess}.
 EDT is computed in parallel using W.~Silversmith's implementation of Meijster's algorithm \cite{pypi-edt},
 % the Python package \texttt{edt}~\cite{pypi-edt}. %Den er implementeret i C++
-<<<<<<< HEAD
 yielding a 3D image in which every non-implant voxel is the Euclidean distance to the nearest implant voxel.
-=======
-yielding a 3D image, in which every non-implant voxel becomes the Euclidean distance of the nearest implant voxel.
->>>>>>> 9b8941fed86a659d7c5dbd84a305b9a69dcb8d15
 
 For diffusion, rather than solving a full diffusion equation, we approximate it using repeated convolutions
 of a 3D-Gaussian kernel, implemented by separating into 1D convolutions, as seen in~\Cref{alg:diffusion}, and the XZ-plane in~\Cref{fig:field-slice}.
@@ -854,13 +852,8 @@ Any ridge-finding method will do: we compute it through the series of image proc
                 \If {$\text{size}(\text{contours}[i]) > t$}
                     \State $l \gets \text{draw\_contour}(l, \text{contours}[i], i+1)$
                 \EndIf
-<<<<<<< HEAD
-            \EndFor\\
-            \Return $l$
-=======
             \EndFor
             \State \Return $l$
->>>>>>> 9b8941fed86a659d7c5dbd84a305b9a69dcb8d15
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -967,7 +960,8 @@ models $g_m$ as:
 \noindent\textbf{Step 5: Perform segmentation} \\
 The final step of the segmentation process is to apply these probabilities for segmentation.
 For each voxel, we obtain its voxel value and field value, which are then used to lookup in the probability distributions, giving us a probability that the voxel belongs to a certain class.
-The voxel is then assigned the class with the highest probability, meaning we have effectively classified the voxel based of its voxel intensity and spatial position.
+The voxel is then assigned the class with the highest probability, meaning we have effectively classified the voxel based of its voxel intensity and spatial position. In addition,
+the segmentation confidence is quantified by the probability.
 
 \begin{algorithm}
     \caption{Final segmentation from the probability distributions.}
