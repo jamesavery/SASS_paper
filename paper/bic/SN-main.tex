@@ -708,7 +708,7 @@ the algorithm where applicable, along with the the intermediate results.
 Both fields are computed from the implant mask, as described in~\Cref{sec:preprocess}.
 EDT is computed in parallel using W.~Silversmith's implementation of Meijster's algorithm \cite{pypi-edt},
 % the Python package \texttt{edt}~\cite{pypi-edt}. %Den er implementeret i C++
-yielding a 3D in which every non-implant voxel becomes the Euclidean distance of the nearest implant voxel.
+yielding a 3D image in which every non-implant voxel is the Euclidean distance to the nearest implant voxel.
 
 For diffusion, rather than solving a full diffusion equation, we approximate it using repeated convolutions
 of a 3D-Gaussian kernel, implemented by separating into 1D convolutions, as seen in~\Cref{alg:diffusion}, and the XZ-plane in~\Cref{fig:field-slice}.
@@ -811,7 +811,7 @@ the different materials present in the tomogram, we first identify the {\em ridg
 i.e., the peaks in the 1D histograms that are persistent and vary continuously with the field value.
 Thus we can expect each ridge to represent the {\em expectation values} for a particular material
 as a function of the field value, i.e., as a function of the voxel's position in space.
-
+%
 Any ridge-finding method will do: we compute it through the series of image processing operations shown in
 \Cref{alg:material}.
 % The next step is to isolate the different materials spatially, which is done through the field-histogram.
@@ -846,7 +846,7 @@ Any ridge-finding method will do: we compute it through the series of image proc
                 \If {$size(cs[i]) > t$}
                     \State $l \gets |draw\_contour|(l, cs[i], i+1)$
                 \EndIf
-            \EndFor
+            \EndFor\\
             \Return $l$
         \EndFunction
     \end{algorithmic}
@@ -901,14 +901,14 @@ more voxels than the image contains.
 The distribution functions can be chosen in any way that approximately
 model the observed frequencies: we first used Gaussians with passable success,
 but found that they dropped off too rapidly. We instead found excellent results
-with the next-simplest model, leaving the exponential power free:
+with the next-simplest model, leaving the exponential power $d_m(x)$ as a free parameter:
 \begin{equation}
   \label{eq:dist-form}
   g_m(\fval,v) = a_m(\fval) e^{-b_m(\fval) \vert v-c_m(\fval)\vert^{d_m(\fval)}}
 \end{equation}
-where for each field value $\fval$
-$a(\fval)$ is the distribution height at the center $v=c(\fval)$,
-$b(\fval)$ is the exponential falloff rate, and $d(\fval)$ is
+In Eq.~\eqref{eq:dist-form}, each field value $\fval$
+$a(\fval)$ is the distribution height at the center $v=c(\fval)$;
+$b(\fval)$ is the exponential falloff rate; and $d(\fval)$ is
 the exponential power ($d=2$ yields a Gaussian, $d=1$ a simple exponential).
 In practice we found $1.5\le d \le 2$ to best match the actual frequency
 distribution decay rates.
@@ -1055,7 +1055,7 @@ Euclidean Distance Transform (EDT) from the implant, restricted to the bone regi
 simply mask the voxels that are within a thin shell of distances, $d_{min} < d(x,y,z) \le d_{max}$,
 for example $d_{min} = 1\mu m$ to $d_{max} = 5\mu m$. We then sum over the masked voxels of each
 tissue type to obtain and divide by the total to obtain the tissue-to-implant contact per area,
-or study the distribution across the surface area qualitatively.
+or study the distribution across the surface area qualitatively. %TODO: Gør det!
 
 A larger quantitative study is planned that analyses the full data set against recently conducted 
 histological microscopy taken from the same biopsies. In the present work, we evaluate qualitatively:
