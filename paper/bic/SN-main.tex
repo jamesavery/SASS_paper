@@ -720,26 +720,26 @@ of a 3D-Gaussian kernel, implemented by separating into 1D convolutions, as seen
     \caption{Diffusion approximation.}
     \label{alg:diffusion}
     \begin{algorithmic}
-        \Function {Diffusion} {$|voxels|[n_z*n_y*n_x]$, $repetitions$, \newline \indent \indent $|kernel|[2*k+1]$}
+        \Function {Diffusion} {voxels$[n_z*n_y*n_x]$, $n_\text{repetitions}$, \newline \indent \indent kernel$[2*k+1]$}
             \State $S \gets [n_y * n_x, n_x, 1]$
             \State $N \gets [n_z, n_y, n_x]$
-            \State $|buf|_0[:] \gets |voxels|[:]$
-            \For {$rep$ \textbf{in} $repetitions$}
-                \For {$dim$ \textbf{in} $dimensions$}
+            \State $\text{buf}_0[:] \gets \text{voxels}[:]$
+            \For {$\text{rep}$ \textbf{in} $0{:}n_\text{repetitions}$}
+                \For {$\text{dim}$ \textbf{in} $0{:}3$}
                     \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
                         \State $X \gets [z,y,x]$
-                        \State $i_{start} \gets - \min (k, X[dim])$
-                        \State $i_{end} \gets \min (k, N[dim] - X[dim] - 1)$
-                        \State $i_{global} \gets z*S[0] + y*S[1] + x*S[2]$
-                        \For {$i$ \textbf{in} $i_{start}:i_{end}$}
-                            \State $i_\text{offset} \gets i_\text{global} + i*S[dim]$
-                            \State $|buf|_1[index] \gets |buf|_0[i_\text{offset}] * kernel[i+k]$
+                        \State $i_\text{start} \gets - \min (k, X[\text{dim}])$
+                        \State $i_\text{end} \gets \min (k, N[\text{dim}] - X[\text{dim}] - 1)$
+                        \State $i_\text{global} \gets z*S[0] + y*S[1] + x*S[2]$
+                        \For {$i$ \textbf{in} $i_\text{start}:i_\text{end}$}
+                            \State $i_\text{offset} \gets i_\text{global} + i*S[\text{dim}]$
+                            \State $\text{buf}_1[i_\text{global}] \gets \text{buf}_0[i_\text{offset}] * \text{kernel}[i+k]$
                         \EndFor
                     \EndFor
-                    \State $|buf|_0[:] \gets |buf|_1[:]$
+                    \State $\text{buf}_0[:] \gets \text{buf}_1[:]$
                 \EndFor
             \EndFor
-            \State \Return $|buf|_0$
+            \State \Return $\text{buf}_0$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -782,14 +782,15 @@ where the diffusion field changes rapidly.
     \caption{Field 2D histograms.}
     \label{alg:field-hist}
     \begin{algorithmic}
-        \Function {Field\_hist} {$|voxels|[n_z,n_y,n_x]$, $\field[n_z,n_y,n_x]$, $v_{bins}$, $v_{min}$, $v_{max}$, $f_{bins}$, $f_{min}$, $f_{max}$}
+        \Function {Field\_hist} {$\text{voxels}[n_z,n_y,n_x]$, $\text{field}[n_z,n_y,n_x]$, $v_\text{bins}$, $v_
+        \text{min}$, $v_\text{max}$, $f_\text{bins}$, $f_\text{min}$, $f_\text{max}$}
             \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
-                \State $v \gets |voxels|[z,y,x]$
-                \If {$v_{min} \leq v \leq v_{max}$}
-                    \State $f \gets |voxels|[z,y,x]$
-                    \If {$f_{min} \leq f \leq f_{max}$}
-                        \State $v_i \gets (v_{bins} - 1) - \frac{v - v_{min}}{v_{max} - v_{min}}$
-                        \State $f_i \gets (f_{bins} - 1) - \frac{f - f_{min}}{f_{max} - f_{min}}$
+                \State $v \gets \text{voxels}[z,y,x]$
+                \If {$v_\text{min} \leq v \leq v_\text{max}$}
+                    \State $f \gets \text{field}[z,y,x]$
+                    \If {$f_\text{min} \leq f \leq f_\text{max}$}
+                        \State $v_i \gets (v_\text{bins} - 1) - \frac{v - v_\text{min}}{v_\text{max} - v_\text{min}}$
+                        \State $f_i \gets (f_\text{bins} - 1) - \frac{f - f_\text{min}}{f_\text{max} - f_\text{min}}$
                         \State $h[f_i,v_i]{+}{+}$
                     \EndIf
                 \EndIf
@@ -835,19 +836,19 @@ Any ridge-finding method will do: we compute it through the series of image proc
     \caption{2D histogram ridge-finding.}
     \label{alg:material}
     \begin{algorithmic}
-        \Function {Ridges} {$h[f_{bins}$, $v_{bins}]$, $\sigma$, $peak_{min}$, $k_x$, $k_y$, \newline \indent \indent $i_{dilate}$,$i_{erode}$, $t$}
-            \For {$row$ \textbf{in} $0{:}f_{bins}$}
-                \State $r \gets |gaussian\_smooth|(h[row,:], \sigma)$
-                \State $p \gets |find\_peaks|(r, peak_{min})$
-                \State $ps[p] \gets 1$
+        \Function {Ridges} {$h[f_\text{bins}$, $v_\text{bins}]$, $\sigma$, $\text{peak}_\text{min}$, $k_x$, $k_y$, \newline \indent \indent $i_\text{dilate}$,$i_\text{erode}$, $t$}
+            \For {$\text{row}$ \textbf{in} $0{:}f_\text{bins}$}
+                \State $r \gets \text{gaussian\_smooth}(h[\text{row},:], \sigma)$
+                \State $p \gets \text{find\_peaks}(r, \text{peak}_\text{min})$
+                \State $\text{peaks}[\text{row}, p] \gets 1$
             \EndFor
-            \State $kernel = |cross\_kernel|(k_x, k_y)$
-            \State $d \gets |dilate|(ps, i_{|dilate|}, kernel)$
-            \State $e \gets |erode|(d, i_{|erode|}, kernel)$
-            \State $cs \gets |find\_contours|(e)$
-            \For {$i$ \textbf{in} $0{:}cs$}
-                \If {$size(cs[i]) > t$}
-                    \State $l \gets |draw\_contour|(l, cs[i], i+1)$
+            \State $\text{kernel} = \text{cross\_kernel}(k_x, k_y)$
+            \State $d \gets \text{dilate}(\text{peaks}, i_{\text{dilate}}, \text{kernel})$
+            \State $e \gets \text{erode}(d, i_{\text{erode}}, \text{kernel})$
+            \State $\text{contours} \gets \text{find\_contours}(e)$
+            \For {$i$ \textbf{in} $0{:}\text{contours}$}
+                \If {$\text{size}(\text{contours}[i]) > t$}
+                    \State $l \gets \text{draw\_contour}(l, \text{contours}[i], i+1)$
                 \EndIf
             \EndFor
             \State \Return $l$
@@ -963,20 +964,20 @@ The voxel is then assigned the class with the highest probability, meaning we ha
     \caption{Final segmentation from the probability distributions.}
     \label{alg:segment}
     \begin{algorithmic}
-        \Function {Segment} {$voxels[n_z,n_y,n_x], p[n_{classes},f_{bins},v_{bins}],$ \newline \indent \indent $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
+        \Function {Segment} {$\text{voxels}[n_z,n_y,n_x], p[n_\text{classes},f_\text{bins},v_\text{bins}],$ \newline \indent \indent $v_\text{bins}, v_\text{min}, v_\text{max}, f_\text{bins}, f_\text{min}, f_\text{max}$}
             \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
-                \State $v \gets voxels[z,y,x]$
-                \If {$v_{min} \leq v \leq v_{max}$}
-                    \State $f \gets voxels[z,y,x]$
-                    \If {$f_{min} \leq f \leq f_{max}$}
-                        \State $v_i \gets (v_{bins} - 1) - \frac{v - v_{min}}{v_{max} - v_{min}}$
-                        \State $f_i \gets (f_{bins} - 1) - \frac{f - f_{min}}{f_{max} - f_{min}}$
-                        \State $ps \gets p[:,f_i,v_i]$
-                        \State $result[z,y,x] \gets argmax(ps) + 1$
+                \State $v \gets \text{voxels}[z,y,x]$
+                \If {$v_\text{min} \leq v \leq v_\text{max}$}
+                    \State $f \gets \text{voxels}[z,y,x]$
+                    \If {$f_\text{min} \leq f \leq f_\text{max}$}
+                        \State $v_i \gets (v_\text{bins} - 1) - \frac{v - v_\text{min}}{v_\text{max} - v_\text{min}}$
+                        \State $f_i \gets (f_\text{bins} - 1) - \frac{f - f_\text{min}}{f_\text{max} - f_\text{min}}$
+                        \State $\text{probabilities} \gets p[:,f_i,v_i]$
+                        \State $\text{result}[z,y,x] \gets \text{argmax}(\text{probabilities}) + 1$
                     \EndIf
                 \EndIf
             \EndFor
-            \State \Return $result$
+            \State \Return $\text{result}$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
