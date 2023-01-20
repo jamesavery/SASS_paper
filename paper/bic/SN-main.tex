@@ -580,23 +580,24 @@ The next section describes the latter.
 %    \end{algorithmic}
 %\end{algorithm}
 
-\begin{algorithm}
-    \caption{2-dimensional radius histogram.}
-    \label{alg:2dhists}
-    \begin{algorithmic}
-        \Function {hist\_r} {$|voxels|[n_z,n_y,n_x],c_x,c_y,n_{bins},v_{min},v_{max}$}
-            \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
-                \State $v \gets |voxels|[z,y,x]$
-                \If {$v_{min} \leq v \leq v_{max}$}
-                    \State $v_{i} \gets (n_{bins}-1) \cdot \frac{v - v_{min}}{v_{max} - v_{min}}$
-                    \State $r \gets \left\lfloor\sqrt{(x-c_x)^2 + (y-c_y)^2}\right\rfloor$
-                    \State $h_r[r,v_{i}]{+}{+}$
-                \EndIf
-            \EndFor
-            \State \Return $h_r$
-        \EndFunction
-    \end{algorithmic}
-\end{algorithm}
+% TODO Jeg har hevet den ud, da den ikke bliver brugt. Vi nævner den kun i metode beskrivelsen for at motivere EDT + Diffusion.
+%\begin{algorithm}
+%    \caption{2-dimensional radius histogram.}
+%    \label{alg:2dhists}
+%    \begin{algorithmic}
+%        \Function {hist\_r} {$|voxels|[n_z,n_y,n_x],c_x,c_y,n_{bins},v_{min},v_{max}$}
+%            \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
+%                \State $v \gets |voxels|[z,y,x]$
+%                \If {$v_{min} \leq v \leq v_{max}$}
+%                    \State $v_{i} \gets (n_{bins}-1) \cdot \frac{v - v_{min}}{v_{max} - v_{min}}$
+%                    \State $r \gets \left\lfloor\sqrt{(x-c_x)^2 + (y-c_y)^2}\right\rfloor$
+%                    \State $h_r[r,v_{i}]{+}{+}$
+%                \EndIf
+%            \EndFor
+%            \State \Return $h_r$
+%        \EndFunction
+%    \end{algorithmic}
+%\end{algorithm}
 
 \begin{figure}
     \centering
