@@ -955,15 +955,15 @@ models $g_m$ as:
 
 \vspace{\baselineskip}
 \noindent\textbf{Step 5: Perform segmentation} \\
-The final step of the segmentation process is to use the probabilities for segmentation.
-This process is fairly straightforward, as each voxel is looked up in the probability distribution,
-which carries the same shape as the field-histogram.
+The final step of the segmentation process is to apply these probabilities for segmentation.
+For each voxel, we obtain its voxel value and field value, which are then used to lookup in the probability distributions, giving us a probability that the voxel belongs to a certain class.
+The voxel is then assigned the class with the highest probability, meaning we have effectively classified the voxel based of its voxel intensity and spatial position.
 
 \begin{algorithm}
     \caption{Final segmentation from the probability distributions.}
     \label{alg:segment}
     \begin{algorithmic}
-        \Function {Segment} {$voxels[n_z,n_y,n_x], p[f_{bins},v_{bins}],$ \newline \indent \indent $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
+        \Function {Segment} {$voxels[n_z,n_y,n_x], p[n_{classes},f_{bins},v_{bins}],$ \newline \indent \indent $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
             \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
                 \State $v \gets voxels[z,y,x]$
                 \If {$v_{min} \leq v \leq v_{max}$}
@@ -971,7 +971,8 @@ which carries the same shape as the field-histogram.
                     \If {$f_{min} \leq f \leq f_{max}$}
                         \State $v_i \gets (v_{bins} - 1) - \frac{v - v_{min}}{v_{max} - v_{min}}$
                         \State $f_i \gets (f_{bins} - 1) - \frac{f - f_{min}}{f_{max} - f_{min}}$
-                        \State $result[z,y,x] \gets p[f_i, v_i]$
+                        \State $ps \gets p[:,f_i,v_i]$
+                        \State $result[z,y,x] \gets argmax(ps) + 1$
                     \EndIf
                 \EndIf
             \EndFor
