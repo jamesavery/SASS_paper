@@ -234,6 +234,16 @@ The aims of the current work is:
 % In this section, we will briefly go through the physical composition of our samples, and how the
 % data is acquired. Then we will look at the noise sources typical for this type of data, and show
 % the effects that noise has on regions around the implant and biological tissue.
+The methods presented in this paper were devised as part of development of a larger software toolbox
+for fully automatic analysis of very-high resolution SR$\mu$CT bone tomograms.
+Presently, the work is focused on automatic analysis of an experiment conducted to evaluate
+four different methodologies for stimulating bone regeneration in goat mandibles, described below. The software
+system is also being developed as preparatory work for analysis of SR$\mu$CT bone tomograms from 150 human patients
+in the MAXIBONE project (\url{www.maxibone.eu}). This project aims to create personalized maxillary bone regeneration by using culture
+expanded autologous bone marrow stem cells and biomaterials, for which clinical trials are presently being conducted.
+The data set used in the present work is 35 high-resolution tomograms of old and regenerated goat mandible bone samples, in order to
+evaluate the amount and health of regenerated bone, and in particular zooming in on ossointegration against the titanium implants
+closer than was previously done. 
 
 \subsection{Background for the medical experiment} Installation of a dental implant initiates the
 Regional Acceleratory Phenomenon (RAP), which implies acceleration of the different healing stages.
@@ -395,9 +405,8 @@ intensities within the same sample.
 In \Cref{fig:slices}, we see zoomed in regions of the XY- and YZ-planes of the same sample as shown
 in \Cref{fig:3viewsample}.  Both planes display a broad selection of the various type of noise
 sources found in the data.
-
-\paragraph{Beam hardening}
-Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artefacts around high
+\begin{itemize}
+\item \textbf{Beam hardening:} Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artefacts around high
 density regions. This effect is called beam-hardening \citep{beam-hardening}, and occurs when rays
 with lower energy are attenuated more frequently, thus shifting the remaining photon energy to a
 higher effective average value. This offsets the local contrast, by overestimating the attenuation,
@@ -415,23 +424,23 @@ trivially be rejected that some noise does occur from poly-energetic incident ra
 distinct effects typically seen as a result of beam-hardening are in dark and bright streaks and
 cupping artefacts in high density regions.
 
-\paragraph{Dark and bright streaks} Streaking artefacts occur at the dense implant region, but also
+\item \textbf{Dark and bright streaks:} Streaking artefacts occur at the dense implant region, but also
 in the transition from bone to softer tissue. This effect is mostly seen in regions of large
 heterogeneity. When X-ray beams pass at angles containing multiple dense obstacles, the beam is
 hardened more. Then for angles with fewer dense obstacles the energy spectrum is preserved better.
 This produced the dark and bright streaks seen in \Cref{fig:slices}.
-
+%
 For a hardened beam, softer x-rays are absorbed instead of successfully penetrating the object, and
 will not contribute to image formation. High density structures such as the titanium implant break
 the isotropy, making the projected X-ray mean energy spectrum dependent on incident orientation
 \citep{srnoise}.
 
-\paragraph{Cupping effect} A common artefact that occurs when beams pass more homogeneous
+\item \textbf{Cupping effect:} A common artefact that occurs when beams pass more homogeneous
 cylindrical objects. Since beams passing the middle will traverse more material compared to the
 edges, the beam is hardened more towards the center and intensity becomes lower as a result. This
 can manifest itself in what erroneously looks to be dense peripheral regions at the edges.
 
-\paragraph{Phase contrast} Phase contrast is an effect whose consequences are not very unlike those
+\item \textbf{Phase contrast:} Phase contrast is an effect whose consequences are not very unlike those
 of beam-hardening.  Although used as an advantage in holotomography\citep{holotomography} and phase
 contrast tomography\citep{phasecontrast}, it induces noise in regular tomography such as used here.
 It typically results in fringes around edges of regions within the image\citep{srnoise}. Similar to
@@ -439,11 +448,7 @@ dark and bright streaks mentioned above, they show as misrepresentations of the 
 case we see them especially at the transitional edges between the titanium implant and the
 biological tissue and bone.
 
-% TODO skulle det ikke merges / rearranges? 
-\subsection{Other noise and artifacts}
-\label{sec:noise-artefacts}
-
-\paragraph{Ring artefacts} Looking at the XY-plane in \Cref{fig:slices}(a) we see clear concentric ring
+\item \textbf{Ring artefacts:} Looking at the XY-plane in \Cref{fig:slices}(a) we see clear concentric ring
 artefacts emanating from the center of the sample, and at strong edges of the titanium implant. It
 propagates strongly through the large region of air behind the implant. Compared to the other
 artefacts mentioned, this effect is arising from imperfections in the scanner setup. These types of
@@ -451,12 +456,12 @@ artefacts can typically come from uncalibrated or defect adjacent detector eleme
 radiation sources it can also occur from shifts and vibrations in the monochromator crystal
 \citep{ringartefacts}.
 
-\paragraph{Projection artefacts} Bright streaks with strong edges are seen from the sharp corners of
+\item \textbf{Projection artefacts:} Bright streaks with strong edges are seen from the sharp corners of
 the titanium implant. When doing back projection, a symmetry break is seen as smeared lines across
 the sample. This can occur from the high pass filter used during filtered back projection, which
 exaggerates the differences between adjacent elements \citep{ctnoise}.
 
-\paragraph{Compton scattering} Lower energy rays contribute mostly with noise from scattering
+\item \textbf{Compton scattering:} Lower energy rays contribute mostly with noise from scattering
 effects. A ray will propagate through a material, get scattered and diffract from its initial
 trajectory. This gives a misrepresentation of the attenuation along its initial trajectory. The
 artefacts seen from scattering are similar in nature to those formed by beam hardening. This is
@@ -465,9 +470,7 @@ the data presented here, of 50 KeV and above, Compton scattering is the dominant
 \citep{Compton}.  The scattering occurs due to photon-electron interaction between X-ray beam and
 the material it passes through. Like beam-hardening, scattering will cause dark streaks across the
 image, where attenuation was highest.
-
-\subsection{Dealing with artefacts}
-\label{sec:dealwithit}
+\end{itemize}
 
 The distortions that come from the class of physical effects and noise artefacts discussed in this
 section, will vary continuously as a function of the spatial coordinates. This allows the possibility
@@ -1146,6 +1149,9 @@ to separate multiple highly overlapping frequency distributions.
 This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 779322 (``MAXIBONE'').
 JA was partially supported by the VILLUM Foundation through VILLUM Experiment Project: 41017.
 CJ was funded by the Innovation Fund Denmark (IFD) under File No. 8057-00012B, the IFD Grand Solutions project ``Adaptive X-ray InSpection''.
+
+\section{Conflict of Interest}
+On behalf of all authors, the corresponding author states that there is no conflict of interest. 
 
 %\biboptions{authoryear}
 \bibliography{refs}

@@ -1,9 +1,9 @@
-.PHONY: main.pdf
-main.pdf: main.tex
-	pdflatex main
-	pdflatex main
-	bibtex main
-	pdflatex main
+.PHONY: SN-main.pdf
+SN-main.pdf: SN-main.tex
+	pdflatex SN-main
+	pdflatex SN-main
+	bibtex SN-main
+	pdflatex SN-main
 
 
 clean:
