@@ -1,0 +1,117 @@
+Re: "Spatially Adapted Statistical Segmentation I Reversing distortive X-ray effects for Accurate Implant-contact Tissue Classification in Bone SRµCT" (Ms. No. SNCS-D-23-00204) 
+Decision:  Reject with Option to Resubmit
+
+Dear Prof Avery,
+
+Your manuscript has been reviewed for SN Computer Science by one of our Handling Editors, who made a recommendation to reject this manuscript with which I concur.  As a result, I am unable to accept your paper for publication in SN Computer Science.  However,  if you could address the concerns outlined below, this manuscript could be considered again for SN Computer Science.  Thus, I would be willing to entertain a resubmission of this manuscript if you can address the concerns described below.  If you choose to resubmit, the new manuscript would be re-reviewed and may not be accepted (indeed a significant fraction of resubmissions are rejected the second time).
+
+The comments from the Handling Editor and Reviewers are given below. Some comments may also be added as attached files, accessible from Editorial Manager.
+
+If you wish to submit a greatly revised manuscript, address the points raised in the reviews and then resubmit your manuscript by  to https://www.editorialmanager.com/sncs/. Please provide a detailed response to the previous reviews in the "respond to reviewers" text box.  I expect to return the manuscript, along with your response to the original Handling Editor.
+
+
+Please make sure to submit editable source files (e.g. Word).
+
+We will return manuscripts which do not follow these guidelines.
+
+Thank you for considering SN Computer Science as an outlet for your research results. If you choose not to undertake these major revisions, then I wish you the best of luck in finding a more suitable outlet for your work.
+
+Sincerely,
+Umapada Pal, PhD 
+Editor in Chief,   
+SN Computer Science 
+
+Comments to Authors from Handling Editor and Reviewers (if any):
+
+Reviewer #1: The article provides a detailed account of a segmentation technique that relies on 2D marginal distributions. This method involves a series of image processing steps to ultimately enhance the extraction of the blood network by separating soft tissue from bone in synchrotron tomographic data. While the article is quite lengthy, it would benefit from being more concise and focused. However, its major shortcoming lies in the absence of proper validation: the sole evaluation method employed is visual, which does not meet the requirements of a scientific publication. There are indeed numerous aspects that require significant revision, and a thorough validation process should be conducted. The current state of the article is inadequate for acceptance, and a complete rewrite is highly recommended.
+
+MAJOR ISSUES
+
+1. Introduction section. The article lacks a review of the existing segmentation literature, and only two references are cited. While it may not be the ideal platform to undertake such an exhaustive task, it would be beneficial to at least compare the proposed approach with standard segmentation techniques. Additionally, the subsection title "1.1" should be removed as there is no corresponding "1.2," and the content should be condensed to allow for a brief literature review.
+
+2. Background section. This section should be titled "Materials" and should primarily cover the imaging parameters, such as geometry, energy, and dimensions. It is unnecessary to include extensive details about the medical background or sample preparation. The novelty of the paper lies in the spatially-aware segmentation technique, rather than the context, which can be significantly condensed. It should be noted that the proposed technique has the potential to be applied to segmentation challenges in various material types with significant attenuation differences.
+
+3. Physical effects section. The method effectively addresses beam-hardening artifacts near strong attenuating interfaces. However, it is important to note that Compton scattering is unlikely to cause any degradation in the conducted experiments, and the segmentation routine does not handle line streaks or several other types of "noise" (preference for the term "artifacts"). These include photon starvation, lag, partial volume artifact, motion, and more. Additionally, the presentation of the information appears somewhat disorganized since the cupping effect arises from both beam-hardening and scattering. Consequently, this section could be omitted, and instead, a couple of citations to tomography textbooks in the introduction section (e.g., Buzug (2008), Hsieh (2009)) would be sufficient to justify the research.
+
+4. Method section - Subsection 4.1. This serves as the motivation behind the development of a new segmentation technique and should be incorporated into the introduction, providing the necessary context for the study.
+
+5. Method section - Subsection 4.2. The "Preprocessing" subsection lacks clarity. Please provide more elaboration and clarification on the phrase "by removing redundant information." Does it pertain to the registration process? Furthermore, it is essential to assess the robustness of the new segmentation method concerning this preprocessing step, as it serves as the initial stage of the algorithmic flow.
+
+6. Method section - Subsections 4.3 and 4.4. These sections provide a step-by-step account of the research tests and developments, which is not ideal for a scientific article. Instead of resembling a historical novel, the article should focus on the relevant information. The preliminary tests conducted on 2D marginals along volume axes, radial distances, and Euclidean distances, as described in the text and depicted in Figure 4, do not contribute significantly. These sections should be consolidated to directly describe the proposed field that combines the Euclidean distance transform and diffusion. Equation (1) should be placed at this stage as well. On page 10, line 41, it is mentioned that the diffusion field is zero away from the implant. This implies, based on Equation (1), that the combined field will be negative in regions far from the implant. However, it is unclear why the vertical axis of Figure 8 is strictly positive in that case. A more detailed description of the
+dimensions of the variables f diffusion and f edt in Equation (1) is required, including their typical range and units.
+
+7. Method section - Subsection 4.5. Algorithms 1 to 4, which describe basic operations such as convolution, histogram management, and morphological filtering, do not contribute to the novelty of the proposed method nor enhance the understanding of the algorithms. In this case, it would be more appropriate to provide citations to reference textbooks in image processing, as they would suffice to cover these well-established operations, e.g., Bovik (2009).
+
+8. Method section - Subsections 4.6 and 4.7. Firstly, these two subsections should be placed within a "Results" section rather than the "Method" section. Additionally, since there is no corresponding sub-subsection 4.6.2, the title of sub-subsection 4.6.1 should be removed. One significant aspect missing from the Results section is the validation step. It is not sufficient to rely solely on a "visual" assessment of the method. To ensure a rigorous evaluation, Monte Carlo codes can be utilized to simulate x-ray realistic images. Figures of merit such as MAPE (mean absolute percentage error), ZNCC (zero-mean normalised cross-correlation) or SSIM (structural similarity index) should be employed to provide a quantitative assessment of the method's performance.
+
+
+MINOR ISSUES
+
+The following typos appear throughout the paper:
+
+1. units should be in regular font and not in math-mode,
+
+2. micrometer is with an upright mu,
+
+3. kilo-electronvolt is "keV" not "KeV".
+
+
+REFERENCES
+
+Bovik, A., ed. (2009), The essential guide to Image Processing, Academic Press.
+
+Buzug, T. (2008), Computed Tomography: From Photon Statistics to Modern Cone-Beam CT, Springer Berlin Heidelberg.
+
+Hsieh, J. (2009), Computed Tomography Principles, Design, Artifacts, and Recent Advances, 2 edn, Wiley.
+
+
+
+Reviewer #2: The authors have produced  an algorithm that segment Synchrotron Radiation micro-CT (SRµCT) volumes that are corrupted by artefacts. I find that the technique proposed here is sound, and that it produces reasonable results. My main concern is with the choice of words that slightly changes the meaning of sentences at times. For example, "High fidelity" in the first sentence of the abstract is debatable at best, or it is factually wrong. One would argue that if it was such high fidelity, there won't be any artefacts in the 1st place. I would moderate the original statement and change it into "high resolution". In the abstract again, "distortive X-ray effects" is also questionable when it comes to beam-hardening. A better choice of words would "corruptive". It may be details, but it makes it harder to interpret the actual meaning.
+
+When a numerical style of bibliography is chosen, it is bad practice in terms of style to use the reference as the subject of the verb. "[1] quantified the uncertainty of 2D histology [...] SRµCT tomograms did not." should be replaced with "Lauridsen, Feidenhans'l and Pinholt quantified the uncertainty of 2D histology [...] SRµCT tomograms did not [1]." or changed, e.g. "It is possible to quantify the uncertainty of 2D histology ... [1]."
+As above, I would replace distortive with another word or expression in Section 1. Explain what "projection artefact" means. In fact, the authors could add illustrations for the beam hardening and the projection artefacts. Similarly, the use of "distortion" on Page 3 should be revised.
+Again as above with the reference of [1], [2] starts the sentence, which is not appropriate. There are latex commands to output the name of the authors instead of the number.
+Similarly "in [1] and in [2]" should be avoided. "To achieve a faithful tissue classification all the way to the titanium implant surface, we apply the method to the same dataset of micrometer-resolution SRµCT bone tomograms studied previously [1,2]".
+"Aim" is not an accurate synonym of "objectives". "Goal" at L.32 of Page 3 is the "aim". At L.41, it should be "objectives".
+"Background" should be replaced with "Context" or "Related work". On pages 4 and 5 (probably others too), make sure you add space characters before units of length (see https://en.wikipedia.org/wiki/Space_(punctuation)#Unit_symbols_and_numbers).
+On Page 6, in (3456, 3456, 3360), use $\times$ for defining the resolution. The use of commas made it harder than necessary to interpret.
+
+Some work is needed on the illustrations. In Figure 1, the colour look up table is counter intuitive. Red is often used for hot, and blue for cold. Please add the colour bar to make it easier to interpret the images.
+I welcome the extensive caption of Figure 2. However, to make it easier to interpret, annotate the picture with text and arrows. Rectangles could be added to Figure 1 to show where the ROIs are from. Use "$\times$" instead of "x" in the caption.
+Figure 3. Why are some voxel values negative? Should the label of the horizontal axis be "Linear attenuation coefficients [in \textmu]"? Please display the vertical axis in % and add the axis label: "Voxel count [in %]". A word is missing after "a tomography". Was it slice or volume?
+Figure 10, please elaborate on the "note the difference between". It may not be obvious for someone who is not too familiar with such images and such practice may feel frustrating to the reader.
+
+Other than such minor issues, I am happy to recommand the paper for publication in SN Computer Science.
+
+Minor comments:
+- Consistency, always use the same formatting for mu in SRµCT. It is sometimes in italic or bold+italic. I would personally use "\textmu" (not in italic).
+- Sub-section 1.1 is not followed by Sub-section 1.2. You must therefore remove the heading of Sub-section 1.1.
+- The acronym SRµCT is already known on Page 5. Do not define it twice. I often use the glossaries package for that purpose.
+- Add a space character before [2] on Page 6. The same on Page 14 with [24].
+- I would use a capital D for 3D on the same page. In fact, I would say "In the reconstructed 3D image"
+- On Page 11, use a capital S for  in Steps 1-5. (steps is used as a name instead of a noun).
+- In the next sentence, add a comma after "For  each step".
+- In Eq. 1, I wonder if f_{\tex{combined}}, etc. will look better.
+- Page 15. Replace "don't" with "do not".
+- I could not find a reference to Algorithm 4 in the text. Please double-check.
+- Page 16, Line 35 "um" in 1um and 5um should not be in italic, and a space character is needed. Use: "$d_{min}$ = 1 {\textmu}m to $d_{max}$ = 5 {\textmu}m".
+- Lines 46-47. Do not start the line with a number. Use a non-separable space character in LaTeX:   "... as were shown in Figures~\ref{fig:your ref 1} and~\ref{fig:your ref 2}, allowing ..."
+- Page 30, again, the units should not be in italic and space characters are missing.
+- Page 32, there are two fullstops instead of one at the end of the caption.
+- Consistency in the use of DOIs in the bibliography would be welcome.
+- Double-check the use of capital letters in acronyms for every reference of the bibliography. If you add curly bracket around the acronyms, the case will be preserved, e.g. for [10]
+
+@article{LIN2009403,
+        abstract = {An imaging instrument can be characterized by its spatial resolution, contrast resolution, and temporal resolution. The capabilities of computed tomography (CT) relative to other cardiac imaging modalities can be understood in these terms. The purpose of this review is to characterize the spatial, contrast, and temporal resolutions of cardiac CT in practical terms.},
+        author = {Lin, Eugene and Alessio, Adam},
+        doi = {10.1016/j.jcct.2009.07.003},
+        issn = {1934-5925},
+        journal = {Journal of Cardiovascular Computed Tomography},
+        keywords = {Computed tomography; Coronary arteries; Heart},
+        number = {6},
+        pages = {403--408},
+        title = {What are the basic concepts of temporal, contrast, and spatial resolution in cardiac {CT}?},
+        volume = {3},
+        year = {2009}
+}
+
