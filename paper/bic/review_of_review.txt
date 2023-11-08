@@ -1,0 +1,47 @@
+
+A brief overview of the major comments, ignoring the minor ones here
+
+-----------------------------------------------------------------------------------
+Reviewer #1
+
+ 1]
+ > find more existing segmentation literature
+ > apply more existing segmentation techniques
+ - remove 1.1
+ 2]
+ > less medicine and context more imaging parameters
+ - stronger note for application of proposed technique
+ 3]
+ - no significant Compton scattering in our case (not sure that is true ???)
+ > segmentation doesn't handle several types of artifacts,
+   so it should be sufficient to remove section and refer to textbooks in intro
+ 4]
+ > incorporate method section to introduction section
+ 5]
+ - explain what "redundant information is"
+ > assess preprocessing step
+ 6]
+ > Remove R&D parts, reads like a historical novel
+ > potential errors in diffusion field interpretation away from implant
+ > more detailed description of variables f_diff + f_edt
+ [7]
+ > remove "basic operations" algorithms A1-A4, they don't add anything
+ [8]
+ > Make "results" section instead of the long "methods"
+ - remove 4.6.1 since there is no 4.6.2
+ > Validation, validation, validation (not just visually), use a assessment measure
+-----------------------------------------------------------------------------------
+Reviewer #2
+
+ [1]
+ - use of words slightly change meaning throughout (high fidelity, high res, distortive, aim vs objective)
+ - avoid using references as subject of the verb
+ - change section name "background" to "context/related work"
+ - instead of commas, use \times for resoltution
+ > Figure 1 colors are counter intuitive
+ > Annotate Figure 1 to show where ROIs are from
+ > Annotate Figure 2 with text and arrows
+ > Figure 3 has negative voxels -> explain
+ > Figure 3: check hor axis + change ver axis to %
+ > Figure 10: elaborate on "note the difference"
+-----------------------------------------------------------------------------------
