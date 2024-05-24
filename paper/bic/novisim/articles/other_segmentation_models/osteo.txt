@@ -1,0 +1,25 @@
+Reference from article that Diana Krüger et al. published (whom I wrote to)...
+The U-net is trained as explained here:
+
+A load frame for in situ tomography at PETRA III
+------------------------------------------------
+https://bib-pubdb1.desy.de/record/435534/files/spie2019_v3.pdf
+
+U-net structure, trained on 12 datasets, but only 2d slices, that were semi-manually annotated, and enriched through augmentation. The 2d slices were obtained from the three orthogonal directions of the full volumes. This gives a total of 95652 2d images used for training.
+
+Data sets were resampled to an effective pixel size of 5 µm.
+
+"Inference is run from the three orthogonal view axes of the volume, and the final label gets assigned based on the label getting the highest probability in ONE of these three independent segmentations"..... So this means that the dimensions cannot affect each other in the final decision making. This is actually quite bad, imagine:
+dim_x says 51% prob of blood
+dim_y says 52% prob of bone
+dim_z says 51% prob of blood.
+Then it would assign that voxel to be bone, based on a 1% difference, even though two dimensions agree that it is something else.
+
+Validation accuracy is 97% after training.
+
+
+
+
+
+
+

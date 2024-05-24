@@ -1,0 +1,26 @@
+# Remember to run:
+
+export PATH=elastix501/bin:$PATH
+export LD_LIBRARY_PATH=elastix501/lib:$LD_LIBRARY_PATH
+
+echo $LD_LIBRARY_PATH
+
+
+# --------------------------------------------------------------------------- #
+
+Example from:
+ - https://pyphase.readthedocs.io/en/master/examples.html
+ - https://pyphase.readthedocs.io/en/master/index.html
+ - https://pyphase.readthedocs.io/en/master/about.html
+
+# --------------------------------------------------------------------------- #
+
+# Elastix repo's
+https://github.com/SuperElastix/elastix/releases
+
+look in manual under 3.2.1 Getting started the really easy way
+
+link to manual:
+https://github.com/SuperElastix/elastix/releases/download/5.1.0/elastix-5.1.0-manual.pdf
+
+# --------------------------------------------------------------------------- #

@@ -1,0 +1,31 @@
+Evaluering af metode
+--------------------
+
+Mulighed 1)
+-----------
+
+Vi benytter en state-of-the-art metode til at segmentere vores data til sammenligning.
+
+Problem:
+--------
+
+Kan for det første ikke nemt lade sig gøre pga størrelsen på vores data.
+Derudover eksisterer der ingen ground-truth til vores data, så at sammenligne to metoder er
+umuligt - hvilken en af metoderne har ret? Ingen ved det!
+
+Evalueringen bliver derfor i bedste fald arbitrær fordi vi kan vælge en god/dårlig model ift vores data, som giver en vilkårlig støtte af vores argumenter. Evalueringen siger således mere om den hand-picked state-of-the-art model vi vælger, end om kvaliteten af vores metode.
+
+Det bliver desuden ikke nemmere for andre at bruge deres metoder til at evaluere om de kan gøre det bedre end os, fordi de jo ikke har adgang til vores data (dette er dog et generelt problem i feltet...).
+
+
+Mulighed 2)
+-----------
+
+Vi simulerer noget data som indeholder røntgen metal artifakter som ligner dem vi ser på vores rigtige data. Tanken er at vores metode kan segmentere den simulerede data pænt. Dette kan vi bruge til at vise at vores metode virker på mere end blot det oprindelige data, og derfor er generaliseret. Vi kan sandsynligvis ikke regne med at slå artifakt reduktionen fra skaberne af simulations-værktøjet, da de netop har trænet og skræddersyet deres metode på hvad de betegner som ground truth.
+
+Når vi har reproducerbar simuleret data, kan vi desuden sammenligne vores metode med andre state-of-the-art løsninger på samme data, hvilket giver en mindre arbitrær sammenligning.
+
+Problem:
+--------
+
+Hvis simuleringen ikke repræsenterer den oprindelige data mht støj og artifakter, så kan hele evalueringen blive for kunstig.
