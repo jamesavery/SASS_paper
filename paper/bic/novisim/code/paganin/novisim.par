@@ -1,0 +1,139 @@
+# -------------------------------------------
+# HST: High Speed Tomography - Parameter file
+# -------------------------------------------
+
+# All parameters are documented as per the documentation, available at:
+# http://ftp.esrf.fr/scisoft/PYHST2/genindex.html
+# Most parameters are too lengthy in their description, to summarize here.
+# If a comment has too little context, please refer to the documentation above.
+
+##################################
+##### Projection file format #####
+##################################
+
+FILE_PREFIX              = projections_edf/proj_  # Naming scheme of projection files
+NUM_FIRST_IMAGE          = 0                  # No. of first projection file
+NUM_LAST_IMAGE           = 499                # 1499 No. of last projection file
+NUMBER_LENGTH_VARIES     = NO                 # If padded with zeros or not
+LENGTH_OF_NUMERICAL_PART = 4                  # No. of characters in naming scheme
+FILE_POSTFIX             = .edf               # File extension used for projections
+FILE_INTERVAL            = 1                  # Interval between input files, if 1 -> no skips
+
+######################################
+##### Projetion image properties #####
+######################################
+
+NUM_IMAGE_1        = 432     # Number of pixels horizontally
+NUM_IMAGE_2        = 409     # Number of pixels vertically
+IMAGE_PIXEL_SIZE_1 = 4.966   # Pixel size horizontally (microns)
+IMAGE_PIXEL_SIZE_2 = 4.966   # Pixel size vertically (microns)
+
+################################
+##### Background treatment #####
+################################
+
+SUBTRACT_BACKGROUND = YES                   # Subtract background from data
+BACKGROUND_FILE     = projections_edf/dark.edf    # File name, *.edf or *.h5 files are supported 
+
+#################################
+##### Flat field correction #####
+#################################
+
+CORRECT_FLATFIELD           = YES                # Divide by flat-field image
+FLATFIELD_CHANGING          = NO                # If NO, then a single FF is read, if YES, a series of FF files is used
+FLATFIELD_FILE              = projections_edf/ref.edf               # Name of flat-field file, use N.A. (None) if series is used
+##FF_PREFIX                   = testsdata/refHST   # If series is chosen, prefix must be provided
+##FF_NUM_FIRST_IMAGE          = 0                  # Number of first flat-field file
+##FF_NUM_LAST_IMAGE           = 1500               # Number of last flat-field file
+##FF_NUMBER_LENGTH_VARIES     = NO                 # If 1, the numerical part length is not fixed
+##FF_LENGTH_OF_NUMERICAL_PART = 4                  # If length is fixed, this defines the zero-padded number of characters
+#FF_POSTFIX                  = .edf               # File postfix to be appended to PREFIX+number
+##FF_FILE_INTERVAL            = 1500               # Interval between flat-field files
+
+TAKE_LOGARITHM = YES                             # Take log of projection values
+
+###############################################
+##### Experimental acquisition parameters #####
+###############################################
+
+ANGLE_BETWEEN_PROJECTIONS = 0.360000    # Increment angle in degrees between projections: 180 / # proj
+ROTATION_VERTICAL         = YES         # "If horizontal data are rotated at reading time then all parameter as if axis were vertical"
+ROTATION_AXIS_POSITION    = 200.0 # Axis position in pixels
+
+#####################################
+##### Reconstruction parameters #####
+#####################################
+
+OUTPUT_SINOGRAMS =   NO      # Output sinograms to files or not
+OUTPUT_RECONSTRUCTION = YES  # Reconstruct and save or not
+START_VOXEL_1    =    1      # X-start of reconstruction volume
+START_VOXEL_2    =    1      # Y-start of reconstruction volume
+START_VOXEL_3    =    1      # Z-start of reconstruction volume
+END_VOXEL_1      =  432      # X-end (inclusive) of reconstruction volume
+END_VOXEL_2      =  432      # Y-end (inclusive) of reconstruction volume
+END_VOXEL_3      =  409      # Z-end (inclusive) of reconstruction volume
+OVERSAMPLING_FACTOR = 4      # Oversampling factor : the to-be-backprojected data are oversampled.
+                             # Then nearest neighbour approximation is used. When using GPU
+                             # this parameter has no effect : linear interpolation is done at
+			     # the hardware level
+			     # 0 = Linear, 1 = Nearest pixel
+ANGLE_OFFSET = 0.000000      # Reconstruction rotation offset angle in degrees
+#CACHE_KILOBYTES = 1024       # Size of processor cache (L2) per processor (KBytes)
+#SINOGRAM_MEGABYTES = 1000    # Maximum size of sinogram storage (megabytes)
+
+################################
+##### Extra features PyHST ##### -- not used for now, and has been commented out
+################################
+
+DO_CCD_FILTER = YES                   # CCD filter (spikes)
+# Setting this parameter to 1 activates a filtering on each projection. The treatement is applied after :
+#      -background subtraction -division by the flat-field -double FF correction ... if these options are activated.
+#            CCD_Filter: a median filter is applied on the 3X3 neighbour of every pixel. 
+#  If the pixel value ( the higher the more photons) exceed the median value more then the �threshold� 
+#   parameter then the pixel value is replaced by the median value.
+CCD_FILTER = "CCD_Filter"
+CCD_FILTER_PARA = {"threshold": 0.040000 }
+#     When this option is on (1) a filtering is applied to the sinogramme trying to remove ring artefacts. 
+#  This options was previously named DO_SINO_FILTER in pyhst1. The old names for this option are still compatible.
+#
+DO_SINO_FILTER = NO # Sinogram filter (rings)
+SINO_FILTER = "SINO_Filter"
+#   old option SINO_FILTER, now can be called "RING_FILTER" : in this case the sinogram is averaged over all the projections, then
+#     a high-band pass filter is applied to the average and the result is substracted from all the projections.
+#    The details of the frequencies filtering are specified through variable RING_FILTER_PAR
+#    More details on the manual : Ring Correction 
+ar = numpy.ones(2048,'f')
+ar[0]=0.0
+ar[2:18]=0.0
+SINO_FILTER_PARA = {"FILTER": ar }
+###  DO_AXIS_CORRECTION : When set to 1 ( or YES) this option activates the axis translation correction.
+###    The first columns is the horizontal correction. The second , if present, the vertical correction.
+###    The datas are the axis displacements. Positive value means positive displacement
+DO_AXIS_CORRECTION = NO # Axis correction
+AXIS_CORRECTION_FILE = N.A.
+OPTIONS= { 'padding':'E' , 'axis_to_the_center':'Y', 'avoidhalftomo':'N'} # Padding and position axis
+PENTEZONE=10 # Doing half-tomo, this defines the width of the overlapping regions around rotation axis
+
+#############################################
+##### Paganin reconstruction parameters #####
+#############################################
+
+#DO_PAGANIN = 1                              # Whether to use Paganin filtering (for homogenuous objects)
+#PAGANIN_Lmicron = 247.790366                # Units of microns.
+#PAGANIN_MARGE = 20                          # Units of pixels. Should be same order as PAGANIN_Lmicron which is in microns.
+#                                            # When applying FFT, the considered data has a larger extent than ROI, because
+#                                            # the Paganin kernel has an effective length.
+#DO_OUTPUT_PAGANIN = 0                       # If 1, preprocessed projections after paganin are written to an edf file
+#OUTPUT_PAGANIN_FILE = projes/paga_cufft_    # Defines prefix of each projection that will be written to an edf file
+#PUS=0.0                                     # Sigma value in pixel units of unsharp filter.
+#PUC=0.0                                     # Unclear? A coefficient used in conjunction with PUS.
+#UNSHARP_LoG=0                               # Use laplacian of gaussian instead of gaussian itself for convolution kernel
+#ZEROCLIPVALUE = 0.005                        # Minimum value of radiographs after flat / before log
+
+#########################
+##### Output format #####
+#########################
+
+OUTPUT_FILE = paganin.vol  # Choice of output format, if *.vol then binary form as float32 is used.
+DISPLAY_GRAPHICS = NO      # Show images during reconstruction
+#TRYGPU=1                   # Use GPU if available, default is true
