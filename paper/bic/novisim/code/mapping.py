@@ -47,6 +47,12 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage import zoom
+import cv2
+import math
+import matplotlib
+matplotlib.use("TKAgg")
+from sklearn.cluster import KMeans
+
 
 def mmap(fpath, tshape, tslice, axis):
     """Efficient memory mapped partial volumes.
@@ -85,11 +91,16 @@ def make_label_lut(maxval):
     labels[0b0100] = "blood"
     return labels
 
-def dice(pred, true, k = 1):
-    # Dice coefficient
-    intersection = np.sum(pred[true==k]) * 2.0
-    dice = intersection / (np.sum(pred) + np.sum(true))
-    return dice
+def accuracy_score(segm, gtruth):
+    """ Compute individual class accuracy, corresponding to Rand index. """
+    # generate label LUT and map identified values as a labels
+    label_lut = make_label_lut(maxval=np.max(gtruth))
+    score = {}
+    # skip zeroth value (since it's not used)
+    for c in np.unique(gtruth)[1:]:
+        class_acc = np.mean(segm[gtruth == c] == c)
+        score.update({f"{label_lut[int(c)]}": round(class_acc,5)})
+    return score
 
 def crop_center(array, crop_size):
     """
@@ -118,7 +129,7 @@ def crop_center(array, crop_size):
     
     return cropped_array
 
-def map_tomo_to_gtruth(tomo, tomo_index, gtruth, pixel_pitch):
+def evaluate_segmentation(tomo, tomo_index, gtruth, pixel_pitch):
     """
     Input:
      - tomo: 3d numpy array
@@ -158,25 +169,30 @@ def map_tomo_to_gtruth(tomo, tomo_index, gtruth, pixel_pitch):
     # magnification can now be calculated as
     # magnification = source2detector_dist / source2sample_dist
     # magnification = image_size / sample_size
-    # ==> image_size = sample_size * (source2detector_dist / source2sample_dist)
+    # => image_size = sample_size * (source2detector_dist / source2sample_dist)
     # where the image size is the enlarged projection unto the detector
     # sensor dimension (in image plane) is always larger than actual x-rayed area in sample-plane
     # sanity check: yes numerator is always larger than denominator, so sample_dim < sensor_dim
-    mag =  source2detector_dist / source2sample_dist
+    mag = source2detector_dist / source2sample_dist
     image_dim = tuple(round(s*mag) for s in tomo_dim)
 
     """ lazy and slow method """
 
     print("magnification factor:", mag)
 
-    scaled_gtruth = zoom(gtruth, mag)
-    scaled_gtruth = crop_center(scaled_gtruth, tomo.shape)
+    #scaled_gtruth = zoom(gtruth, mag)
+    #scaled_gtruth = crop_center(scaled_gtruth, tomo.shape)
+    scaled_gtruth = gtruth # ignore while debugging
 
-    score = {
-        "implant": dice(pred=tomo, true=scaled_gtruth, k=1),
-        "bone":    dice(pred=tomo, true=scaled_gtruth, k=2),
-        "blood":   dice(pred=tomo, true=scaled_gtruth, k=4),
-    }
+    # sanity check
+    #print("accuracy: ", accuracy_score(segm=gtruth, gtruth=gtruth))
+
+    # calculate accuracy scores for all classes
+    # FIXME: since we don't have the Osteopmorph segmentation on Novi-sim data yet,
+    # we simply make random segmentation matrix, and expect an accuracy score of ~ 0.33 each
+    segmat = np.random.randint(1,4,(gtruth.shape)) # creates array containing [1,2,3]
+    segmat[segmat==3] = 4 # convert 3 to blood (4)
+    score = accuracy_score(segm=segmat, gtruth=scaled_gtruth)
 
     """ explicit method """
 
@@ -209,19 +225,27 @@ def map_tomo_to_gtruth(tomo, tomo_index, gtruth, pixel_pitch):
 
     return score
 
-def plot_all_axes(tomo, idxs=None):
+def plot_all_axes(tomo, idxs=None, hist=False):
     if not idxs:
         cx, cy, cz = (i//2 for i in tomo.shape)
     else:
         cx, cy, cz = idxs
     # [z,y,x] -> e.g. [ver-axis, 200, hor-axis]
     fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(10,4))
-    ax[0].imshow(tomo[cx,:,:], cmap="viridis");
-    ax[0].set_xlabel("x"); ax[0].set_ylabel("y"); ax[0].set_title(f"z={cz}");
-    ax[1].imshow(tomo[:,cy,:], cmap="viridis");
-    ax[1].set_xlabel("x"); ax[1].set_ylabel("z"); ax[1].set_title(f"y={cy}");
-    ax[2].imshow(tomo[:,:,cz], cmap="viridis");
-    ax[2].set_xlabel("y"); ax[2].set_ylabel("z"); ax[2].set_title(f"x={cx}");
+    if hist:
+        ax[0].hist(tomo[cx,:,:].flatten(), bins=500);
+        ax[0].set_xlabel("count"); ax[0].set_ylabel("intensity"); ax[0].set_title(f"histogram");
+        ax[1].hist(tomo[:,cy,:].flatten(), bins=500);
+        ax[1].set_xlabel("count"); ax[1].set_ylabel("intensity"); ax[1].set_title(f"histogram");
+        ax[2].hist(tomo[:,:,cz].flatten(), bins=500);
+        ax[2].set_xlabel("count"); ax[2].set_ylabel("intensity"); ax[2].set_title(f"histogram");
+    else:
+        ax[0].imshow(tomo[cx,:,:], cmap="viridis");
+        ax[0].set_xlabel("x"); ax[0].set_ylabel("y"); ax[0].set_title(f"z={cz}");
+        ax[1].imshow(tomo[:,cy,:], cmap="viridis");
+        ax[1].set_xlabel("x"); ax[1].set_ylabel("z"); ax[1].set_title(f"y={cy}");
+        ax[2].imshow(tomo[:,:,cz], cmap="viridis");
+        ax[2].set_xlabel("y"); ax[2].set_ylabel("z"); ax[2].set_title(f"x={cx}");
     plt.tight_layout()
     plt.show()
     return
@@ -233,38 +257,246 @@ def minmaxnorm(x):
     I = I.astype(np.uint16)
     return I
 
+def kmeans(vol, zslice, nclasses):
+
+    image = vol[zslice,:,:]
+    original_shape = image.shape
+    all_pixels = image.reshape((-1,1))
+
+    dominant_colors = nclasses
+
+    km = KMeans(n_clusters=dominant_colors)
+    km.fit(all_pixels)
+
+    centers = km.cluster_centers_
+    print(centers) # In RGB Format
+
+    # Convert to Integer format
+    centers = np.array(centers,dtype='uint8')
+
+    i = 1
+
+    plt.figure(0,figsize=(8,2))
+
+    # Storing info in color array
+    colors = []
+
+    for each_col in centers:
+        plt.subplot(1,4,i)
+        plt.axis("off")
+        i+=1
+        colors.append(each_col)
+        # Color Swatch
+        a = np.zeros((100,100,3),dtype='uint8')
+        a[:,:,:] = each_col
+        plt.imshow(a)
+       
+    plt.show()
+
+    new_img = np.zeros((432*432),dtype='uint8')
+
+    # Iterate over the image
+    for ix in range(new_img.shape[0]):
+        new_img[ix] = colors[km.labels_[ix]]
+
+    new_img = new_img.reshape((original_shape))
+    plt.imshow(new_img)
+    plt.show()
+
+    print(f"KMeans found {len(centers)} clusters.")
+
+    return new_img
+
+def multiscale_otsu(vol, zslice, nclasses):
+    # FIXME: screws up for nclasses<4 ??
+
+    """
+    # https://stackoverflow.com/a/53883887
+    # developed by- SUJOY KUMAR GOSWAMI
+    # source paper- https://people.ece.cornell.edu/acharya/papers/mlt_thr_img.pdf
+    It seems to work OK for most slices along the z-dimension, but not all. It has a hard time
+    differentiating between blood and bone - which makes sense and is also good for us. Also it
+    does not correlate any classes between slices in the z-direction either.
+    """
+
+    # for now extract single z-slice
+    image = vol[zslice,:,:]
+
+    a = 0 # minimum value
+    b = (2**16)-1 # maximum value
+    n = nclasses # number of thresholds (better choose even value)
+    k = 0.7 # free variable to take any positive value
+    thresholds = [] # list which will contain 'n' thresholds
+
+    def sujoy(image, a, b):
+        if a>b:
+            s=-1
+            m=-1
+            return m,s
+
+        image = np.array(image)
+        t1 = (image>=a)
+        t2 = (image<=b)
+        X = np.multiply(t1,t2)
+        Y = np.multiply(image,X)
+        s = np.sum(X)
+        m = np.sum(Y)/s
+        return m,s
+
+    for i in range(int(n/2-1)):
+        image = np.array(image)
+        t1 = (image>=a)
+        t2 = (image<=b)
+        X = np.multiply(t1,t2)
+        Y = np.multiply(image,X)
+        mu = np.sum(Y)/np.sum(X)
+
+        Z = Y - mu
+        Z = np.multiply(Z,X)
+        W = np.multiply(Z,Z)
+        sigma = math.sqrt(np.sum(W)/np.sum(X))
+
+        T1 = mu - k*sigma
+        T2 = mu + k*sigma
+
+        x, y = sujoy(image, a, T1)
+        w, z = sujoy(image, T2, b)
+
+        thresholds.append(x)
+        thresholds.append(w)
+
+        a = T1+1
+        b = T2-1
+        k = k*(i+1)
+
+    T1 = mu
+    T2 = mu+1
+    x, y = sujoy(image, a, T1)
+    w, z = sujoy(image, T2, b)    
+    thresholds.append(x)
+    thresholds.append(w)
+    thresholds.sort()
+
+    print(f"Multi-scale Otsu found {len(thresholds)} thresholds: {thresholds}.")
+
+    # plotting part is copied from skimage multi-otsu example:
+    # https://scikit-image.org/docs/stable/auto_examples/segmentation/plot_multiotsu.html 
+
+
+    # Using the threshold values, we generate the three regions.
+    regions = np.digitize(image, bins=thresholds)
+
+    # make plot of: original image + histogram with obtained thresholds + segmentation map
+    # FIXME: add legend to imshow with class 1,2,3 etc
+    fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
+
+    ax[0].imshow(image, 'viridis')
+    ax[0].set_title('Tomogram')
+
+    ax[1].hist(image.ravel(), bins=255, range=(1,image.max()))
+    ax[1].set_title('Histogram')
+    for thresh in thresholds:
+        ax[1].axvline(thresh, color='r', linestyle='--', alpha=0.5)
+
+    ax[2].imshow(regions, cmap='jet')
+    ax[2].set_title('Multi-Otsu segmentation')
+
+    plt.subplots_adjust()
+    plt.tight_layout()
+    #plt.savefig("multi_otsu.png", facecolor="w", pad_inches=0, dpi=200)
+    plt.show()
+
+    # Other models don't know if label 1 should be bone or blood or ...
+    # so we manually map their labels to match those arbitrarily chosen for the ground truth
+    # such that they agree on what each label is called
+    if nclasses == 4:
+        regions[regions==1]=0
+        regions[regions==4]=1
+        regions[regions==2]=4
+        regions[regions==3]=2
+
+    return regions
+
+def simplify_tomo(tomo, level):
+    """ When using other segmentation methods, we want to make comparison more fair.
+
+    We introduce multiple levels of masking, to verify what difference it makes to
+    keep air, implant and resin. For the implant, it is of course not possible to remove
+    the bleeding edges with altered intensity values from the implant, even though it has
+    been masked away. This is a result of the difficulty of the essential problem we are
+    trying to solve.""" 
+
+    with h5py.File("masks/bone_masks/770c_pag_8x.h5", "r") as hf:
+        cut_cylinder_bone = hf["cut_cylinder_bone/mask"][:].astype(np.uint8)
+        cut_cylinder_air = hf["cut_cylinder_air/mask"][:].astype(np.uint8)
+        bone_region = hf["bone_region/mask"][:].astype(np.uint8)
+        implant_region = hf["implant/mask"][:].astype(np.uint8)
+
+    if level == 0:
+        # do not remove anything
+        pass
+    elif level == 1:
+        # remove back mask
+        # classes remaining: blood + bone + implant + air
+        tomo[cut_cylinder_air.astype(bool)] = 0
+    elif level == 2:
+        # as above + remove edges in opposite end
+        # classes remaining: blood + bone + implant
+        new_mask = bone_region + implant_region
+        new_mask[new_mask==2] = 0 # remove small overlap (unphysical)
+        tomo[~new_mask.astype(bool)] = 0
+    elif level == 3:
+        # as above + remove implant
+        # classes remaining: blood + bone
+        tomo[~bone_region.astype(bool)] = 0
+    return tomo
+
+
 if __name__ == "__main__":
-
-    """ load tomogram """
-
-    # TODO: note that this should actually be osteomorph segmentation output
-    # current we are missing a paganin before that becomes possible, because
-    # bone and blood are not easily separatable
-    # load a tomogram from raw
+    
+    # load tomogram
     tomo = mmap(fpath="tomograms/rec_432x432x409.raw",
                 tshape=(432,432,409),
                 tslice=None,
                 axis=None)
+
+    # map to uint16
     tomo = minmaxnorm(tomo)
 
     # verify tomogram
-    plot_all_axes(tomo)
+    #plot_all_axes(tomo)
+    #plot_all_axes(tomo, hist=True)
 
     """ load ground truth matrix """
 
-    # load corresponding ground truth matrix if already created 
+    # load corresponding ground truth matrix
     with h5py.File("masks/gtruth.h5", "r") as hf:
         gtruth = hf["data"][:]
 
-    # verify ground truth matric
-    plot_all_axes(gtruth)
+    # verify ground truth matrix
+    #plot_all_axes(gtruth)
 
-    """ perform mapping of pixel to label """
+    """ Alternative segmentation methods """
 
-    # when a voxel maps to zero, this equals to no valid label
-    score = map_tomo_to_gtruth(tomo=tomo,
-                               tomo_index=(123,456,789),
-                               gtruth=gtruth,
-                               pixel_pitch=76e-6)
+    level = 2
+    nclasses = 4
+    zslice = 216
 
+    #tomo = simplify_tomo(tomo=tomo, level=level)
+    #gtruth = simplify_tomo(tomo=gtruth, level=level)
+    # Multi-scale Otsu
+    #segm = multiscale_otsu(vol=tomo, zslice=zslice, nclasses=nclasses)
+    # KMeans
+    segm = kmeans(vol=tomo, zslice=zslice, nclasses=nclasses)
+
+    """ output score """
+
+    score = accuracy_score(segm=segm, gtruth=gtruth[zslice,:,:])
     print("score:\n", score)
+    
+    fig, ax = plt.subplots(nrows=1, ncols=2)
+    ax[0].imshow(segm); ax[0].set_title("segmentation")
+    ax[1].imshow(gtruth[216,:,:]); ax[1].set_title("gtruth")
+    plt.title("Visual comparison of segmentation and ground truth")
+    plt.tight_layout()
+    plt.show()
