@@ -9,14 +9,31 @@ import meshlib.mrmeshpy as mr
 import meshlib.mrmeshnumpy as mrn
 import numpy as np
 import h5py
+from typing import Tuple, Union, List
+# importing tuple, and list is technically only required for Python <= 3.8, note capital letters
+# In Python 3.10+ Union is not needed but is replaced by a bar | between multiple types
+# Also Optional[X] is the same as X | None or Union[X, None]
 
-def load_masks_from_h5(fpath, dset):
-    # convenience function
+def load_masks_from_h5(fpath:str, dset:str) -> np.ndarray:
+    """Convenience function to load file from h5
+
+    Input:
+       fpath: path to .h5 file
+       dset:  name/path of dataset within h5 structure
+    Return: 
+       mask:  Numpy array in uint8 format
+    """
     with h5py.File(fpath, "r") as hf:
         mask = hf[dset][:].astype(np.uint8)
     return mask
 
-def generate_stl(mask, outputname):
+def generate_stl(mask:np.ndarray, outputname:str) -> None:
+    """Make STL model file from numpy array.
+
+    Input:
+       mask:       3d numpy array containing a single mask
+       outputname: desired name of STL file, without extension
+    """
     # convert boolean values to numbers, float32 or 64 is required by meshlib
     inputData = mask.astype(np.float32)
     # convert 3D array to SimpleVolume data
@@ -29,7 +46,15 @@ def generate_stl(mask, outputname):
     mr.saveMesh(mesh, outputname+".stl")
     return
 
-def overlay_at_center(bkg,overlay):
+def overlay_at_center(bkg:np.ndarray,overlay:np.ndarray) -> np.ndarray:
+    """Add multiple masks to same 3d numpy array fixed around origo.
+
+    Input:
+       bkg:     numpy array which gets new mask overlayed
+       overlay: new mask used as overlay
+    Return: 
+       bkg:     Updated numpy array with added mask
+    """
     # assumes that bkg is larger than overlay
     h1,w1,d1 = bkg.shape
     h2,w2,d2 = overlay.shape
@@ -40,10 +65,17 @@ def overlay_at_center(bkg,overlay):
     bkg[ch:ch+h2, cw:cw+w2, cd:cd+d2] += overlay
     return bkg
 
-def create_ground_truth(scale=(409,432,432), save_stl=False, saveh5=False):
+def create_ground_truth(scale:Tuple[int,int,int]=(409,432,432), save_stl:bool=False, saveh5:bool=False) -> np.ndarray:
     """
     Create single 3d LUT with ground truth labeling from STL models containing:
     implant, bone and blood.
+
+    Input:
+       scale:    desired dimensions of ground truth, if available masks are too small/large they get scaled
+       save_stl: boolean to decide if new STLs are saved
+       saveh5:   boolean to decide if result it saved to .h5
+    Return: 
+       ground_truth: 3d numpy array containing combined masks for each label
     """
 
     #####################

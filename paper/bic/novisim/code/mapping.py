@@ -52,17 +52,24 @@ import math
 import matplotlib
 matplotlib.use("TKAgg")
 from sklearn.cluster import KMeans
+from typing import Tuple, Union, List
+# importing tuple, and list is technically only required for Python <= 3.8, note capital letters
+# In Python 3.10+ Union is not needed but is replaced by a bar | between multiple types
+# Also Optional[X] is the same as X | None or Union[X, None]
 
 
-def mmap(fpath, tshape, tslice, axis):
+def mmap(fpath:str, tshape:Tuple[int,int,int], tslice:Union[None,str], axis:Union[None,int]) -> np.ndarray:
     """Efficient memory mapped partial volumes.
     Note that axes are swapped to get correct ordering.
     Tomograms comes from novi-sim in (z,x,y), we swap to get (x,y,z).
 
-    fpath  : str
-    tshape : 3-tuple of int
-    tslice : None or int
-    axis   : None or int {0,1,2}
+    Input:
+       fpath:  path to filename containing raw volumetric data
+       tshape: 3-tuple of int describing volumetric dimensions
+       tslice: None or int, depending on if only a slice is requested
+       axis:   None or int {0,1,2} that sets from which axis slice is taken.
+    Return: 
+       data:   Numpy array containing either 2d or 3d data.
     """
     assert axis == None or axis <= 2
     mread = np.memmap(fpath, dtype='float32', mode='r', shape=tshape, order="F")
@@ -76,23 +83,37 @@ def mmap(fpath, tshape, tslice, axis):
         data = mread
     return data
 
-def make_label_lut(maxval):
+def make_label_lut(maxval:int) -> List[str]:
     """
+    Input:
+       maxval: largest numerical value in ground truth matrix
+    Return: 
+       labels: list of strings, with format [0,c1,c2,0,c4,...,c5,0,...]
+               with values at 2^n where n is number of classes.
+               Note that n will always be small (for example 4)
+
     maxval is simply the highest value, so if label n has value 2^n
     The sample background has value zero and is not counted as an actual label.
     The zeroth label is thus never used, also because it would gives ambiguous
     combinations in overlapping regions.
     """
-    # create list of strings, will have format [0,c1,c2,0,c4,...,c5,0,...]
-    # with values at 2^n where n is number of classes
+
     labels = [str(0) for i in range(maxval+1)]
     labels[0b0001] = "implant"
     labels[0b0010] = "bone"
     labels[0b0100] = "blood"
     return labels
 
-def accuracy_score(segm, gtruth):
-    """ Compute individual class accuracy, corresponding to Rand index. """
+def accuracy_score(segm:np.ndarray, gtruth:np.ndarray) -> dict[str,float]:
+    """Compute individual class accuracy, corresponding to Rand index.
+    
+    Input:
+       segm:   3d numpy array representing output from a segmentation
+       gtruth: 3d numpy array containing actual ground truth
+    Return: 
+       score:  Dictionary containing scores in range [0-1] for each label
+    """
+
     # generate label LUT and map identified values as a labels
     label_lut = make_label_lut(maxval=np.max(gtruth))
     score = {}
@@ -102,19 +123,18 @@ def accuracy_score(segm, gtruth):
         score.update({f"{label_lut[int(c)]}": round(class_acc,5)})
     return score
 
-def crop_center(array, crop_size):
+def crop_center(arr:np.ndarray, crop_size:Tuple[int,int,int]) -> np.ndarray:
     """
     Crop 3D-array to the specified crop_size, keeping the center voxel fixed.
     
-    Parameters:
-    array (np.ndarray): Input 3D array to be cropped.
-    crop_size (tuple): Size of the crop (depth, height, width).
-    
-    Returns:
-    np.ndarray: Cropped 3D array.
+    Input:
+       tomo: 3d numpy array to be cropped
+       crop_size: tuple containing size of the crop (depth, height, width)
+    Return: 
+       cropped_array: 3d numpy array which has been cropped around center.
     """
 
-    d, h, w = array.shape
+    d, h, w = arr.shape
     cd, ch, cw = crop_size
     
     start_d = max((d - cd) // 2, 0)
@@ -125,18 +145,20 @@ def crop_center(array, crop_size):
     end_h = start_h + ch
     end_w = start_w + cw
     
-    cropped_array = array[start_d:end_d, start_h:end_h, start_w:end_w]
+    cropped_array = arr[start_d:end_d, start_h:end_h, start_w:end_w]
     
     return cropped_array
 
-def evaluate_segmentation(tomo, tomo_index, gtruth, pixel_pitch):
+def evaluate_segmentation(tomo:np.ndarray, tomo_index:Tuple[int,int,int], gtruth:np.ndarray, pixel_pitch:Tuple[float,float]) -> dict[str,float]:
     """
     Input:
-     - tomo: 3d numpy array
-     - tomo_index: tuple(i,j,k)
-     - gtruth: 3d numpy array (same size as tomo)
-     - pixel_pitch: float
-     - sensor_dim: tuple(float,float) -> (hor,ver)
+       tomo:        3d numpy array
+       tomo_index:  tuple(i,j,k)
+       gtruth:      3d numpy array (same size as tomo)
+       pixel_pitch: float
+       sensor_dim:  tuple(float,float) -> (hor,ver)
+    Return:
+       score:       Dictionary containing scores in range [0-1] for each label
     
     Idea: The problem of mapping between pixels in ground truth and tomogram is
     made more complicated due to the non-trivial geometry of the acquisition
@@ -225,7 +247,15 @@ def evaluate_segmentation(tomo, tomo_index, gtruth, pixel_pitch):
 
     return score
 
-def plot_all_axes(tomo, idxs=None, hist=False):
+def plot_all_axes(tomo:np.ndarray, idxs:Union[None, Tuple[int,int,int]]=None, hist:bool=False) -> None:
+    """Convenience function to plot along 3 dimensions.
+    
+    Input:
+       tomo: 3d numpy array to be plotted
+       idxs: If None half of dimension-size is used, otherwise uses provided tuple
+       hist: Boolean that determines whether to show histograms or images
+    """
+
     if not idxs:
         cx, cy, cz = (i//2 for i in tomo.shape)
     else:
@@ -250,14 +280,33 @@ def plot_all_axes(tomo, idxs=None, hist=False):
     plt.show()
     return
 
-def minmaxnorm(x):
-    # convert from arbitrary float range to uint16
-    I = (x-np.min(x))/(np.max(x)-np.min(x))
-    I *= int(2**16)
+def minmaxnorm(arr:np.ndarray) -> np.ndarray:
+    """Convert from arbitrary float range to uint16.
+    
+    Input:
+       arr: Numpy array to be normalized
+    Return:
+       I:   Numpy array in range 0-65535 in uint16.
+    """
+    # first convert to 0-1 range
+    I = (arr-np.min(arr))/(np.max(arr)-np.min(arr))
+    # multiply by max value in wanted uint16 range
+    I *= int(2**16-1)
     I = I.astype(np.uint16)
     return I
 
-def kmeans(vol, zslice, nclasses):
+def kmeans(vol:np.ndarray, zslice:int, nclasses:int) -> np.ndarray:
+    """K-Means clustering.
+
+    Input:
+       vol:      Numpy array containig 3d tomogram
+       zslice:   Integer that determins slice
+       nclasses: Determines how many classes to look for
+    Return:
+       tomo:     Labelled tomogram
+    
+    From: https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans
+    """
 
     image = vol[zslice,:,:]
     original_shape = image.shape
@@ -307,17 +356,26 @@ def kmeans(vol, zslice, nclasses):
 
     return new_img
 
-def multiscale_otsu(vol, zslice, nclasses):
-    # FIXME: screws up for nclasses<4 ??
+def multiscale_otsu(vol:np.ndarray, zslice:int, nclasses:int) -> np.ndarray:
+    """Multi-class Otsu thresholding.
 
-    """
-    # https://stackoverflow.com/a/53883887
-    # developed by- SUJOY KUMAR GOSWAMI
-    # source paper- https://people.ece.cornell.edu/acharya/papers/mlt_thr_img.pdf
+    Input:
+       vol:      Numpy array containig 3d tomogram
+       zslice:   Integer that determins slice
+       nclasses: Determines how many classes to look for
+    Return:
+       tomo:     Labelled tomogram
+
+    Source paper: https://people.ece.cornell.edu/acharya/papers/mlt_thr_img.pdf
+    Implemenation used: https://stackoverflow.com/a/53883887
+                        developed by: Sujoy Kumar Goswami
+
+    Note:
     It seems to work OK for most slices along the z-dimension, but not all. It has a hard time
     differentiating between blood and bone - which makes sense and is also good for us. Also it
     does not correlate any classes between slices in the z-direction either.
     """
+    # FIXME: screws up for nclasses<4 ??
 
     # for now extract single z-slice
     image = vol[zslice,:,:]
@@ -417,14 +475,29 @@ def multiscale_otsu(vol, zslice, nclasses):
 
     return regions
 
-def simplify_tomo(tomo, level):
-    """ When using other segmentation methods, we want to make comparison more fair.
+def simplify_tomo(tomo:np.ndarray, level:int) -> np.ndarray:
+    """Mask away components of tomogram, based on chosen level.
 
-    We introduce multiple levels of masking, to verify what difference it makes to
-    keep air, implant and resin. For the implant, it is of course not possible to remove
-    the bleeding edges with altered intensity values from the implant, even though it has
-    been masked away. This is a result of the difficulty of the essential problem we are
-    trying to solve.""" 
+    Input:
+       tomo:  Numpy array containig 3d tomogram
+       level: Integer in range {0,1,2,3} with increasing numbers removing more
+              and more components.
+    Return:
+       tomo:  Masked numpy array containing 3d tomogram with fewer components.
+              All masked components have been mapped to zero.
+    
+    When comparing two tomograms, we sometimes want to remove certain
+    components, to make the comparison more fair. For example when comparing
+    with other segmentation methods, we introduce multiple levels of masking, to
+    verify what difference it makes to keep air, implant and resin. This helps
+    to illustrate how robust a method is, by making the segmentation problem
+    harder/easier dependent on the number of components.
+    
+    Note that when masking away regions, we do not mask any effects/artifacts
+    resulting from these regions. For example, when masking away the implant, we
+    still see    the bleeding edges that have altered intensity values from the
+    implant.
+    """ 
 
     with h5py.File("masks/bone_masks/770c_pag_8x.h5", "r") as hf:
         cut_cylinder_bone = hf["cut_cylinder_bone/mask"][:].astype(np.uint8)
@@ -464,7 +537,7 @@ if __name__ == "__main__":
     tomo = minmaxnorm(tomo)
 
     # verify tomogram
-    #plot_all_axes(tomo)
+    plot_all_axes(tomo)
     #plot_all_axes(tomo, hist=True)
 
     """ load ground truth matrix """
