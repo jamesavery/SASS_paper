@@ -112,7 +112,16 @@ def accuracy_score(segm:np.ndarray, gtruth:np.ndarray) -> dict[str,float]:
        gtruth: 3d numpy array containing actual ground truth
     Return: 
        score:  Dictionary containing scores in range [0-1] for each label
+    
+    Please remember to adapt gtruth labeling to match that used by segm. Each
+    algorithm will have some arbitrary mapping, and this will affect the score.
     """
+    assert segm.shape == gtruth.shape, "segmentation matrix and gtruth must have same dimensions"
+
+    if len(segm.shape) > 2:
+        # since shapes are identical, same conditions is fulfilled for gtruth
+        segm = segm.flatten()
+        gtruth = gtruth.flatten()
 
     # generate label LUT and map identified values as a labels
     label_lut = make_label_lut(maxval=np.max(gtruth))
@@ -174,7 +183,6 @@ def evaluate_segmentation(tomo:np.ndarray, tomo_index:Tuple[int,int,int], gtruth
     truth is obviously trivial, since ground truth is built from segmentation
     masks made with Osteo.
     """
-    # TODO: correct docstring formatting
 
     # For now it is a requirement that the tomogram and the ground truth matrix
     # have same shapes, but making a new gtruth matrix of a specific size is
@@ -295,76 +303,66 @@ def minmaxnorm(arr:np.ndarray) -> np.ndarray:
     I = I.astype(np.uint16)
     return I
 
-def kmeans(vol:np.ndarray, zslice:int, nclasses:int) -> np.ndarray:
+def kmeans(vol:np.ndarray, nclasses:int) -> np.ndarray:
     """K-Means clustering.
 
     Input:
-       vol:      Numpy array containig 3d tomogram
-       zslice:   Integer that determins slice
+       vol:      3d or 2d numpy array containing either full tomogram or single slice
        nclasses: Determines how many classes to look for
     Return:
-       tomo:     Labelled tomogram
+       tomo:     labelled tomogram
     
     From: https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans
+
+    Note that the algorithm is highly unpredictable and can vary wildly for
+    different seeds of random_state.
     """
+    print("... running KMeans segmentation")
 
-    image = vol[zslice,:,:]
-    original_shape = image.shape
-    all_pixels = image.reshape((-1,1))
+    original_shape = vol.shape
+    all_pixels = vol.reshape((-1,1))
 
-    dominant_colors = nclasses
-
-    km = KMeans(n_clusters=dominant_colors)
+    km = KMeans(random_state=1, n_clusters=nclasses)
     km.fit(all_pixels)
 
     centers = km.cluster_centers_
-    print(centers) # In RGB Format
 
     # Convert to Integer format
     centers = np.array(centers,dtype='uint8')
 
-    i = 1
-
-    plt.figure(0,figsize=(8,2))
-
     # Storing info in color array
     colors = []
-
     for each_col in centers:
-        plt.subplot(1,4,i)
-        plt.axis("off")
-        i+=1
-        colors.append(each_col)
-        # Color Swatch
-        a = np.zeros((100,100,3),dtype='uint8')
-        a[:,:,:] = each_col
-        plt.imshow(a)
-       
-    plt.show()
+        colors.append(each_col[0])
 
-    new_img = np.zeros((432*432),dtype='uint8')
+    new_img = np.zeros(original_shape,dtype='uint8').flatten()
 
     # Iterate over the image
     for ix in range(new_img.shape[0]):
         new_img[ix] = colors[km.labels_[ix]]
 
     new_img = new_img.reshape((original_shape))
-    plt.imshow(new_img)
-    plt.show()
 
-    print(f"KMeans found {len(centers)} clusters.")
+    if nclasses == 4:
+        new_img[new_img==1]=0
+        new_img[new_img==4]=1
+        new_img[new_img==2]=4
+        new_img[new_img==3]=2
+        # bone: 190.0
+        # blood: 153.0
+        # air: 113.0
+        # implant: 23.0
 
     return new_img
 
-def multiscale_otsu(vol:np.ndarray, zslice:int, nclasses:int) -> np.ndarray:
+def multiclass_otsu(vol:np.ndarray, nclasses:int, plot:bool) -> np.ndarray:
     """Multi-class Otsu thresholding.
 
     Input:
-       vol:      Numpy array containig 3d tomogram
-       zslice:   Integer that determins slice
+       vol:      3d or 2d numpy array containing either full tomogram or single slice
        nclasses: Determines how many classes to look for
     Return:
-       tomo:     Labelled tomogram
+       tomo:     labelled tomogram
 
     Source paper: https://people.ece.cornell.edu/acharya/papers/mlt_thr_img.pdf
     Implemenation used: https://stackoverflow.com/a/53883887
@@ -375,10 +373,8 @@ def multiscale_otsu(vol:np.ndarray, zslice:int, nclasses:int) -> np.ndarray:
     differentiating between blood and bone - which makes sense and is also good for us. Also it
     does not correlate any classes between slices in the z-direction either.
     """
+    print("... running multi-class Otsu segmentation")
     # FIXME: screws up for nclasses<4 ??
-
-    # for now extract single z-slice
-    image = vol[zslice,:,:]
 
     a = 0 # minimum value
     b = (2**16)-1 # maximum value
@@ -402,11 +398,11 @@ def multiscale_otsu(vol:np.ndarray, zslice:int, nclasses:int) -> np.ndarray:
         return m,s
 
     for i in range(int(n/2-1)):
-        image = np.array(image)
-        t1 = (image>=a)
-        t2 = (image<=b)
+        vol = np.array(vol)
+        t1 = (vol>=a)
+        t2 = (vol<=b)
         X = np.multiply(t1,t2)
-        Y = np.multiply(image,X)
+        Y = np.multiply(vol,X)
         mu = np.sum(Y)/np.sum(X)
 
         Z = Y - mu
@@ -417,8 +413,8 @@ def multiscale_otsu(vol:np.ndarray, zslice:int, nclasses:int) -> np.ndarray:
         T1 = mu - k*sigma
         T2 = mu + k*sigma
 
-        x, y = sujoy(image, a, T1)
-        w, z = sujoy(image, T2, b)
+        x, y = sujoy(vol, a, T1)
+        w, z = sujoy(vol, T2, b)
 
         thresholds.append(x)
         thresholds.append(w)
@@ -429,40 +425,41 @@ def multiscale_otsu(vol:np.ndarray, zslice:int, nclasses:int) -> np.ndarray:
 
     T1 = mu
     T2 = mu+1
-    x, y = sujoy(image, a, T1)
-    w, z = sujoy(image, T2, b)    
+    x, y = sujoy(vol, a, T1)
+    w, z = sujoy(vol, T2, b)    
     thresholds.append(x)
     thresholds.append(w)
     thresholds.sort()
 
-    print(f"Multi-scale Otsu found {len(thresholds)} thresholds: {thresholds}.")
+    #print(f"Multi-scale Otsu found {len(thresholds)} thresholds: {thresholds}.")
 
     # plotting part is copied from skimage multi-otsu example:
     # https://scikit-image.org/docs/stable/auto_examples/segmentation/plot_multiotsu.html 
 
 
     # Using the threshold values, we generate the three regions.
-    regions = np.digitize(image, bins=thresholds)
+    regions = np.digitize(vol, bins=thresholds)
 
-    # make plot of: original image + histogram with obtained thresholds + segmentation map
-    # FIXME: add legend to imshow with class 1,2,3 etc
-    fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
+    if plot:
+        # make plot of: original image + histogram with obtained thresholds + segmentation map
+        # FIXME: add legend to imshow with class 1,2,3 etc
+        fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
 
-    ax[0].imshow(image, 'viridis')
-    ax[0].set_title('Tomogram')
+        ax[0].imshow(vol, 'viridis')
+        ax[0].set_title('Tomogram')
 
-    ax[1].hist(image.ravel(), bins=255, range=(1,image.max()))
-    ax[1].set_title('Histogram')
-    for thresh in thresholds:
-        ax[1].axvline(thresh, color='r', linestyle='--', alpha=0.5)
+        ax[1].hist(vol.ravel(), bins=255, range=(1,vol.max()))
+        ax[1].set_title('Histogram')
+        for thresh in thresholds:
+            ax[1].axvline(thresh, color='r', linestyle='--', alpha=0.5)
 
-    ax[2].imshow(regions, cmap='jet')
-    ax[2].set_title('Multi-Otsu segmentation')
+        ax[2].imshow(regions, cmap='jet')
+        ax[2].set_title('Multi-Otsu segmentation')
 
-    plt.subplots_adjust()
-    plt.tight_layout()
-    #plt.savefig("multi_otsu.png", facecolor="w", pad_inches=0, dpi=200)
-    plt.show()
+        plt.subplots_adjust()
+        plt.tight_layout()
+        #plt.savefig("multi_otsu.png", facecolor="w", pad_inches=0, dpi=200)
+        plt.show()
 
     # Other models don't know if label 1 should be bone or blood or ...
     # so we manually map their labels to match those arbitrarily chosen for the ground truth
@@ -500,7 +497,7 @@ def simplify_tomo(tomo:np.ndarray, level:int) -> np.ndarray:
     """ 
 
     with h5py.File("masks/bone_masks/770c_pag_8x.h5", "r") as hf:
-        cut_cylinder_bone = hf["cut_cylinder_bone/mask"][:].astype(np.uint8)
+        #cut_cylinder_bone = hf["cut_cylinder_bone/mask"][:].astype(np.uint8)
         cut_cylinder_air = hf["cut_cylinder_air/mask"][:].astype(np.uint8)
         bone_region = hf["bone_region/mask"][:].astype(np.uint8)
         implant_region = hf["implant/mask"][:].astype(np.uint8)
@@ -523,6 +520,16 @@ def simplify_tomo(tomo:np.ndarray, level:int) -> np.ndarray:
         # classes remaining: blood + bone
         tomo[~bone_region.astype(bool)] = 0
     return tomo
+
+def compare_tomograms(segm, gtruth, zslice):
+    zslice = 216
+    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10,6))
+    ax[0].imshow(segm[zslice,:,:]); ax[0].set_title("segmentation")
+    ax[1].imshow(gtruth[zslice,:,:]); ax[1].set_title("gtruth")
+    plt.suptitle("Visual comparison of segmentation and ground truth")
+    plt.tight_layout()
+    plt.show()
+    return
 
 
 if __name__ == "__main__":
@@ -547,29 +554,32 @@ if __name__ == "__main__":
         gtruth = hf["data"][:]
 
     # verify ground truth matrix
-    #plot_all_axes(gtruth)
+    plot_all_axes(gtruth)
 
     """ Alternative segmentation methods """
 
-    level = 2
+    # prepare volumes
+    level = 0
     nclasses = 4
-    zslice = 216
+    # note that for:
+    # level=0 there are maximally n=4 classes
+    # level=1 there are maximally n=4 classes
+    # level=2 there are maximally n=3 classes
+    # level=3 there are maximally n=2 classes
 
-    #tomo = simplify_tomo(tomo=tomo, level=level)
-    #gtruth = simplify_tomo(tomo=gtruth, level=level)
+    tomo = simplify_tomo(tomo=tomo, level=level)
+    gtruth = simplify_tomo(tomo=gtruth, level=level)
+
     # Multi-scale Otsu
-    #segm = multiscale_otsu(vol=tomo, zslice=zslice, nclasses=nclasses)
+    segm = multiclass_otsu(vol=tomo, nclasses=nclasses, plot=False)
+
     # KMeans
-    segm = kmeans(vol=tomo, zslice=zslice, nclasses=nclasses)
+    #segm = kmeans(vol=tomo, nclasses=nclasses)
 
     """ output score """
 
-    score = accuracy_score(segm=segm, gtruth=gtruth[zslice,:,:])
-    print("score:\n", score)
+    score = accuracy_score(segm=segm, gtruth=gtruth)
+    print("score: ", score)
     
-    fig, ax = plt.subplots(nrows=1, ncols=2)
-    ax[0].imshow(segm); ax[0].set_title("segmentation")
-    ax[1].imshow(gtruth[216,:,:]); ax[1].set_title("gtruth")
-    plt.title("Visual comparison of segmentation and ground truth")
-    plt.tight_layout()
-    plt.show()
+    # visual comparison
+    compare_tomograms(segm, gtruth, zslice=216)
