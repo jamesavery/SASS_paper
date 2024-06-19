@@ -1,70 +1,58 @@
 \section{Introduction}
 \label{sec:intro}
 
+Bone samples are most commonly analysed by extracting histologies and examining
+their two-dimensional structure with light microscopy. This method has several
+drawbacks. First and foremost, it is destructive: In addition to the obvious
+issue that the histology must be cut from the full sample, the sawing process
+can contaminate soft tissue with bone dust, or leave surface scratches that
+complicate automatic image analysis. Secondly, histology by its nature only
+gives a two-dimensional slice of the full three-dimensional picture - most
+important biological structures are inherently three-dimensional, and limiting
+analysis to 2D severely restricts the types of questions we can answer.
 
-\subsection{Image data}
+Synchrotron Radiation micro-tomography (SR$\mu$CT) offers a non-destructive
+high-quality alternative to histology for detailed analysis of bone biopsies.
+\cite{torsten2018} quantified the uncertainty of 2D histology for four common
+bone analyses, and found that the choice of sampling plane for histological
+analysis incurred a significant uncertainty in the results, whereas the full
+volumetric analysis of SR$\mu$CT tomograms did not.
 
-Bone samples are most commonly analysed by extracting histologies and examining their
-two-dimensional structure with light microscopy. This method has several drawbacks. First and
-foremost, it is destructive: In addition to the obvious issue that the histology must be cut
-from the full sample, the sawing process can contaminate soft tissue with bone dust, or leave
-surface scratches that complicate automatic image analysis. Secondly, histology by its nature
-only gives a two-dimensional slice of the full three-dimensional picture. Most important
-biological structures are inherently three-dimensional, and limiting analysis to 2D severely
-restricts the types of questions we can answer.
+The high brilliance and collimation of synchrotron radiation yields
+particularly faithful 3D images, as common distortive X-ray effects seen in
+hospital-grade setups such as beam hardening and projection artefacts are
+minimized. The high fidelity makes SR$\mu$CT attractive for conducting advanced
+medical image analyses with trustworthy results.
 
-Synchrotron Radiation micro-tomography (SR$\mu$CT) offers a non-destructive high-quality
-alternative to histology for detailed analysis of bone biopsies. \cite{torsten2018}
-quantified the uncertainty of 2D histology for four common bone analyses, and found that the
-choice of sampling plane for histological analysis incurred a significant uncertainty in the
-results, whereas the full volumetric analysis of SR$\mu$CT tomograms did not.
+However, while image distortion effects are much reduced compared to laboratory
+X-ray tomography, they are not eliminated, and numerical analysis and
+computations on the images must still be conducted carefully. Boundary effects
+near sample surfaces, ring artefacts from sensor faults, and especially
+distortion near high-contrast transitions, make accurate tissue classification
+difficult in regions where this distortion is significant. \cite{sporring}
+found that, while they could accurately classify bone tissue in the middle
+regions of the tomograms, they were not able to obtain good bone-to-implant
+contact evaluation (BIC), as evidenced by poor correlation with histological
+analysis of the same samples.
 
-The high brilliance and collimation of synchrotron radiation yields particularly
-faithful 3D images, as common distortive X-ray effects seen in hospital-grade setups such
-as beam hardening and projection artefacts are minimized. The high fidelity makes SR$\mu$CT
-attractive for conducting advanced medical image analyses with trustworthy results.
+PLACEHOLDER FOR LITERATURE REVIEW - why are the current methods not good
+enough?
 
-However, while image distortion effects are much reduced compared to laboratory X-ray tomography,
-they are not eliminated, and numerical analysis and computations on the images must still be
-conducted carefully. Boundary effects near sample surfaces, ring artefacts from sensor faults, and especially
-distortion near high-contrast transitions, make accurate tissue classification difficult in
-regions where this distortion is significant. \cite{sporring} found that, while
-they could accurately classify bone tissue in the middle regions of the tomograms, they were
-not able to obtain good bone-to-implant contact evaluation (BIC), as evidenced by poor correlation
-with histological analysis of the same samples.
-
-The present work presents a fully automatic computational method which discovers probabilistic
-models for the distortions incurred by the physical effects in high-resolution X-ray CT such
-as SR$\mu$CT in order to reverse them and produce accurate tissue classification even in regions
-where these effects are significant. It exploits two properties, which are needed to hold for
-the method to work: i) very high resolution is used to build statistical models as functions
-of space, and ii) the effects to be countered must vary continuously over space, so that we can
-track how voxel frequency distributions are distorted throughout the image.
-We apply the method to the
-same dataset of micrometer-resolution SR$\mu$CT bone tomograms studied in \cite{torsten2018}
-and in \cite{sporring}, to achieve faithful tissue classification all the way to the titanium
-implant surface.
-
-Our goal is to obtain good conditional probability distributions $\Pof{m\vert v}{\xx}$
-that model the likelihood of a voxel having material type $m$ as a function
-both on its value $v$ and its position $\xx$ in the tomogram. We want to make sure that these distribution
-functions vary smoothly across space, to ensure that we can identify the materials correctly across the entire
-image: even though the frequency distributions look completely different
-close to the titanium implant compared to the middle region or sample surface,
-we can track the unbroken, smooth deformation to assign a global material
-identity.
-
-The aims of the current work is:
-\begin{enumerate}
-\item To design a fully automatic \textbf{spatially aware segmentation algorithm} that
-  improves segmentation quality of tissues in bone-SR$\mu$CT in all regions, including near high-contrast interfaces.
-\item To implement this method efficiently in open-source software for GPU and multi-core CPU using out-of-core techniques, to
-  facilitate analysis of 3D SR$\mu$CT images that exceed system memory.
-\item To use the new method to evaluate bone-to-implant contact closer to implant surfaces than previously feasible. 
-\end{enumerate}
-
-
-
+The present work presents a fully automatic computational method which
+discovers probabilistic models for the distortions incurred by the physical
+effects in high-resolution X-ray CT such as SR$\mu$CT to reverse them and
+produce accurate tissue classification even in regions where these effects are
+significant. It exploits two properties, which are needed to hold for the
+method to work: i) very high resolution is used to build statistical models as
+functions of space, and ii) the effects to be countered must vary continuously
+over space so that we can track how voxel frequency distributions are distorted
+throughout the image. We apply the method to the same dataset of
+micrometer-resolution SR$\mu$CT bone tomograms studied in \cite{torsten2018}
+and in \cite{sporring}, to achieve faithful tissue classification close to the
+titanium implant surface. The implementation is open-source, targets multi-CPU
+and multi-GPU systems, and is available at
+\href{https://github.com/jamesavery/maxibone}
+{https://github.com/jamesavery/maxibone}.
 
 %%% Local Variables:
 %%% mode: latex
