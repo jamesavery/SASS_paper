@@ -1,13 +1,24 @@
 \section{Background}
 \label{sec:background}
 
+
 %TODO: Rephrase
 % In this section, we will briefly go through the physical composition of our samples, and how the
 % data is acquired. Then we will look at the noise sources typical for this type of data, and show
 % the effects that noise has on regions around the implant and biological tissue.
+The methods presented in this paper were devised as part of development of a larger software toolbox
+for fully automatic analysis of very-high resolution SR$\mu$CT bone tomograms.
+Presently, the work is focused on automatic analysis of an experiment conducted to evaluate
+four different methodologies for stimulating bone regeneration in goat mandibles, described below. The software
+system is also being developed as preparatory work for analysis of SR$\mu$CT bone tomograms from 150 human patients
+in the MAXIBONE project (\url{www.maxibone.eu}). This project aims to create personalized maxillary bone regeneration by using culture
+expanded autologous bone marrow stem cells and biomaterials, for which clinical trials are presently being conducted.
+The data set used in the present work is 35 high-resolution tomograms of old and regenerated goat mandible bone samples, in order to
+evaluate the amount and health of regenerated bone, and in particular zooming in on ossointegration against the titanium implants
+closer than was previously done. 
 
 \subsection{Background for the medical experiment} Installation of a dental implant initiates the
-regional acceleratory phenomenon (RAP), which implies acceleration of the different healing stages.
+Regional Acceleratory Phenomenon (RAP), which implies acceleration of the different healing stages.
 RAP begins a few days after implant installation, peaks at 1-2 months, and subsides after 6-24
 months~\cite{frost1989}. In cortical bone, the non-vital mineralized tissue initially needs to be
 resorbed prior to bone formation. In the cancellous compartment, the implant installation mainly
@@ -34,7 +45,8 @@ Gothenburg University, Sweden. The specimens were initially fixated in 4\% paraf
 Dehydration of the specimens was performed in increasing concentrations of ethanol to eliminate fat
 and water content. Furthermore, specimens were infiltrated with methylmethacrylate (MMA) and
 embedded in molds 12 mm in diameter and 20 mm in height~\citep{NELDAM2015682}. They were scanned at
-the ESRF in Grenoble, France. The advantage of using MMA is greater tissue penetration than
+the European Synchrotron Radiation Facility (ESRF) in Grenoble, France.
+The advantage of using MMA is greater tissue penetration than
 water-soluble methacrylates.  This is an advantage when preparing larger specimens such as bone
 biopsies containing dental implants. Furthermore, the histological quality of bone sections is
 generally higher for MMA embedded specimens compared to water-soluble
@@ -51,9 +63,9 @@ cavities containing resin, air, blood vessels and other fibrous tissue.
 \begin{figure}
   \centering
   \begin{tabular}{cc}
-    (a) & \begin{tabular}{c} \includegraphics[width=0.96\columnwidth]{770c_pag-full-xy-1x.png}\end{tabular}\\
-    (b) & \begin{tabular}{c} \includegraphics[width=0.96\columnwidth]{770c_pag-full-yz-1x.png}\end{tabular}\\
-    (c) & \begin{tabular}{c} \includegraphics[width=0.96\columnwidth]{770c_pag-full-xz-1x.png}\end{tabular}
+    (a) & \begin{tabular}{c} \includegraphics[width=0.5\textwidth]{770c_pag-full-xy-1x.png}\end{tabular}\\
+    (b) & \begin{tabular}{c} \includegraphics[width=0.5\textwidth]{770c_pag-full-yz-1x.png}\end{tabular}\\
+    (c) & \begin{tabular}{c} \includegraphics[width=0.5\textwidth]{770c_pag-full-xz-1x.png}\end{tabular}
   \end{tabular}
 \caption{Cut sample seen as cross sections in XY, YZ and XZ-planes respectively. A voxel has a size
 of 1.875$\mu$m. Red voxels are numerically low, while blue voxels are high.}
@@ -89,12 +101,12 @@ accelerator, and is not standard medical or laboratory equipment. However, SR$\m
 better spatial resolution of up to 0.1 $\mu$m, and much higher image quality due to fewer distortive
 X-ray effects. The resulting beams are high in brilliance and collimation, which gives a very clear
 signal. Artifacts from beam-hardening are minimized due to synchrotron radiation X-rays being
-characeterised by their practically mono-energetic spectrum.
+characterized by their practically mono-energetic spectrum.
 
-The tomograms prestened here have been acquired at the ID19 beam line at the European Synchrotron
+The tomograms presented here have been acquired at the ID19 beam line at the European Synchrotron
 Radiation Facility (ESRF) in Grenoble, France. They were reconstructed\citep{sporring} at the ID19
 beamline. A standard filtered back-projection algorithm was applied via the ESRF in-house developed
-software PyHST~\citep{NELDAM2015682}\citep{pyhst}. PyHST was applied to improve reconstruction
+software PyHST~\citep{NELDAM2015682,pyhst}. PyHST was applied to improve reconstruction
 quality, hence reducing ring artefacts, and to reduce the required data volume if
 necessary~\cite{MIRONE201441}. The tomograms were acquired at 50 KeV.
 
@@ -102,20 +114,22 @@ necessary~\cite{MIRONE201441}. The tomograms were acquired at 50 KeV.
 
 The physical field-of-view of a single image sample is about 6.5mm in each direction. Each sample
 contains voxels with a spatial resolution of 1.875$\mu$m. The samples are scanned in chunks of 4-6
-sub-volumes through the height of the implant, depending on the initial size of a sample.  For
-computational purposes, the pixel size has been cropped to be divisible by a power $2^N$ or more
-specifically $2^5=32$ was used in our case. This gives a size of $(3456,3456,846)$ pixels per
-sub-volume, where the last axis gets stacked for a full volume. This gives a single image containing
-4 subvolumes the dimensions $(3480,3480,3384)$ pixels in total. Before being stacked, we need to
-volume match any overlapping regions. The overlaps are only shifted in the last dimension.  This
-made it possible to find the best overlap by simply minimizing the pixel-wise Eucledian distance
-between the volumes. The depth of the shifted volumes decreases from 846 to 810.
+sub-volumes through the height of the implant, depending on the initial size of a sample.
 
-In image \Cref{fig:3viewsample} (YZ- and XZ-planes) we clearly see dark edges around the border of
-the volume matched subvolumes at their overlaps. This creates an offset which is very prominent
-within the implant, but the large relative contrast due to its high density, makes this easier to
-ignore.  Even worse is the contribution of misrepresented voxels in the transitional regions where
-bone and tissue contains visible jagged edges.
+As the scans slightly overlap, we first compute the overlaps between
+volumes, by shifting along the $Z$-axis until the square 3D image
+differences are minimized over the overlap volume, producing the best
+volume match. This allows us to combine the sub-volumes into a single coherent 3D image of the full sample.
+The images are represented in a custom hierarchical image format to facilitate fast multiresolution analysis.
+The full image has resolution $(3456,3456,3360)$ (ensured to be divisible by $32=2^5$), and
+has 5 coarse layers at resolution divided by 2, 4, 8, 16, and 32.
+
+%JA: Er ikke klar over, hvad der menes her! Kan redigeres og tilføjes igen senere.
+% In image \Cref{fig:3viewsample} (YZ- and XZ-planes) we see dark edges around the border of
+% the volume matched subvolumes at their overlaps. This creates an offset which is very prominent
+% within the implant, but the large relative contrast due to its high density, makes this easier to
+% ignore.  Even worse is the contribution of misrepresented voxels in the transitional regions where
+% bone and tissue contains visible jagged edges.
 
 
 %%% Local Variables:

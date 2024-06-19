@@ -1,8 +1,10 @@
-\section{Method}\label{sec:method}
+\section{Method}
+\label{sec:method}
+
 % Spatial correlation 2d histograms (den nemme, 1 2d hist)
 In this section, we will describe the method for exploiting spatial correlation based on the
 2D-histograms of the tomographies. We will start by motivating the problem, then give an overview
-of how we solve the problem, with a final detailed walkthrough of each step in the overall workflow.
+of how we solve the problem, with a final detailed walk-through of each step in the overall workflow.
 
 \subsection{1-dimensional histograms}
 %diskuter overlappende materialer
@@ -27,16 +29,18 @@ the data by removing redundant information.
 % Since the values of the implant material is well-separated from the rest of the sample, obtaining
 % the rough implant mask through global thresholding is trivial, as the orange line in~\Cref{fig:1d-hist}
 % shows. This mask is then refined, along with the internal gaps being closed, giving us the implant mask.
-We first compute a coarse
-bone-region using a crude segmentation, and through a direct geometric
-analysis of the implant determines the sample coordinate system, with the origin
-on the back-plane of the sawed-through implants and principal axes coordinate system vectors
-$\mathbf{u}$ pointing up towards the implant top, $\mathbf{v}$ pointing forward away from the back-plane,
-and $\mathbf{w}$ point right, parallel to the back-plane. An automatic wave-analysis of the threads
-computationally determines the macro-threaded recipient bone region, and the micro-threaded de-novo regenerated bone region.
-We then perform the spatially-aware segmentation analysis restricted to the bone-regions in order to
-not expand effort on the parts of the segmentation problem that can be solved with simpler methods.
-Note that the process is fully automatic, and does not require human intervention.
+We first compute a coarse bone-region using a crude segmentation. Through a
+direct geometric analysis of the implant, we determine the sample coordinate
+system, with the origin on the back-plane of the sawed-through implants and
+principal axes coordinate system vectors $\mathbf{u}$ pointing up towards the
+implant top, $\mathbf{v}$ pointing forward away from the back-plane, and
+$\mathbf{w}$ point right, parallel to the back-plane. An automatic
+wave-analysis of the threads computationally determines the macro-threaded
+recipient bone region, and the micro-threaded de-novo regenerated bone region.
+We then perform the spatially-aware segmentation analysis restricted to the
+bone-regions in order to not expand effort on the parts of the segmentation
+problem that can be solved with simpler methods. Note that the process is fully
+automatic, and does not require human intervention.
 
 %TODO: Måske medtage disse detaljer, men er for træt til at renskrive.
 % , we are also able to remove the air making up half of the sample cylinder. This is depicted
@@ -55,18 +59,20 @@ Note that the process is fully automatic, and does not require human interventio
 \subsection{Exploiting spatial information}
 % Show the correlation of x,y,z,r to histograms 2d
 Our goal is to discover how the value distributions for the different materials -- bone, blood vessels, etc. --
-change as a function of space. In other words, we wish to uncover information about the conditional probabilities $P(m|v,\xx)$ that a voxel with value $v$ and
+change as a function of space. In other words, we wish to uncover information about the conditional probabilities $\Pof{m}{v,\xx}$: that a voxel with value $v$ and
 position $\xx$ represents material $m$. We cannot compute this directly using only the image, as only one voxel occupies position $\xx$. 
 
 However, if we fix one axis $x$, $y$, or $z$, the image {\em does} contain millions of voxels with that fixed value, enough to make good statistical
-models for e.g.~the conditional probabilities $P(m|v,x)$, $P(m|v,y)$, and $P(m|v,z)$. To this end, we compute 2D histograms that simply count voxel frequencies
+models for e.g.~the conditional probabilities $\Pof{m}{v,x}$, $\Pof{m}{v,y}$, and $\Pof{m}{v,z}$. To this end, we compute 2D histograms that count voxel frequencies
 both conditioned on value $v$ and coordinate value along either $x$, $y$, or $z$. 
 
 Figure \ref{fig:2dhists}(a)
 shows the histogram for our model tomogram (implant excluded) as a function of the $y$ coordinate: each row in the image is a histogram for a fixed value of $y$.
 Figure \ref{fig:3viewsample}(a) helps us see what happens: For $y<2400\micron$, there is only air, then we reach a thin layer of resin, after which we enter
 the region where we find bone, soft tissue, resin, and air. The air voxels are brightened as we approach the implant, shifting the peaks smoothly rightwards.
-Figure \ref{fig:2dhists}(b) shows a similar 2D histogram for the radial coordinate $r=\sqrt{x^2+y^2+z^2}$.
+A better coordinate system for capturing both the distortive edge-effects, and the glow from the implant, is to use cylindrical coordinates with respect
+to the implant center line. This is computed automatically as the centers for the least-squares optimal circles with respect to the implant along the principal axis. 
+Figure \ref{fig:2dhists}(b) shows a similar 2D histogram for the radial cylinder coordinate $r=\sqrt{\left( x-c_x(z)\right)^2+\left( y-c_y(z)\right)^2}$.
 From this plot, we see two prominent distributions that change along the $r$ axis. The radius correlates with distance to the sample surface
 (capturing edge effects), and for medium $r$, it is a good proxy for distance to the implant, and we see a brightening with smaller $r$, and a darkening and
 broadening of the distributions for large $r$. Each {\em view} provides us with additional information about how voxel values are distorted throughout space:
@@ -79,12 +85,12 @@ The next section describes the latter.
 %    \caption{2-dimensional histograms. Allocation also implies zero initialization.}
 %    \label{alg:2dhists}
 %    \begin{algorithmic}
-%        \Function {2D\_hist} {$voxels[n_z,n_y,n_x],c_x,c_y,n_{bins},v_{min},v_{max}$}
+%        \Function {2D\_hist} {$\voxels[n_z,n_y,n_x],c_x,c_y,n_{bins},v_{min},v_{max}$}
 %            \State $n_r \gets \left\lfloor\sqrt{\left\lfloor \frac{n_x}{2} \right\rfloor^2 + \left\lfloor \frac{n_y}{2} \right\rfloor^2}\right\rfloor+1$
 %            \State \textbf{allocate} $h_z[n_z,n_{bins}], h_y[n_y,n_{bins}]$
 %            \State \textbf{allocate} $h_x[n_x,n_{bins}], h_r[n_r,n_{bins}]$
 %            \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
-%                \State $v \gets voxels[z,y,x]$
+%                \State $v \gets \voxels[z,y,x]$
 %                \If {$v_{min} \leq v \leq v_{max}$}
 %                    \State $v_{i} \gets (n_{bins}-1) \cdot \frac{v - v_{min}}{v_{max} - v_{min}}$
 %                    \State $r \gets \left\lfloor\sqrt{(x-c_x)^2 + (y-c_y)^2}\right\rfloor$
@@ -94,28 +100,29 @@ The next section describes the latter.
 %                    \State $h_r[r,v_{i}]{+}{+}$
 %                \EndIf
 %            \EndFor
-%            \Return $h_z,h_y,h_z,h_r$
+%            \State \Return $h_z,h_y,h_z,h_r$
 %        \EndFunction
 %    \end{algorithmic}
 %\end{algorithm}
 
-\begin{algorithm}
-    \caption{2-dimensional radius histogram.}
-    \label{alg:2dhists}
-    \begin{algorithmic}
-        \Function {hist\_r} {$voxels[n_z,n_y,n_x],c_x,c_y,n_{bins},v_{min},v_{max}$}
-            \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
-                \State $v \gets voxels[z,y,x]$
-                \If {$v_{min} \leq v \leq v_{max}$}
-                    \State $v_{i} \gets (n_{bins}-1) \cdot \frac{v - v_{min}}{v_{max} - v_{min}}$
-                    \State $r \gets \left\lfloor\sqrt{(x-c_x)^2 + (y-c_y)^2}\right\rfloor$
-                    \State $h_r[r,v_{i}]{+}{+}$
-                \EndIf
-            \EndFor
-            \Return $h_r$
-        \EndFunction
-    \end{algorithmic}
-\end{algorithm}
+% TODO Jeg har hevet den ud, da den ikke bliver brugt. Vi nævner den kun i metode beskrivelsen for at motivere EDT + Diffusion.
+%\begin{algorithm}
+%    \caption{2-dimensional radius histogram.}
+%    \label{alg:2dhists}
+%    \begin{algorithmic}
+%        \Function {hist\_r} {$|voxels|[n_z,n_y,n_x],c_x,c_y,n_{bins},v_{min},v_{max}$}
+%            \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
+%                \State $v \gets |voxels|[z,y,x]$
+%                \If {$v_{min} \leq v \leq v_{max}$}
+%                    \State $v_{i} \gets (n_{bins}-1) \cdot \frac{v - v_{min}}{v_{max} - v_{min}}$
+%                    \State $r \gets \left\lfloor\sqrt{(x-c_x)^2 + (y-c_y)^2}\right\rfloor$
+%                    \State $h_r[r,v_{i}]{+}{+}$
+%                \EndIf
+%            \EndFor
+%            \State \Return $h_r$
+%        \EndFunction
+%    \end{algorithmic}
+%\end{algorithm}
 
 \begin{figure}
     \centering
@@ -124,9 +131,9 @@ The next section describes the latter.
     %\includegraphics[width=.49\linewidth]{xb-bone_region3.png}
     %\includegraphics[width=\linewidth]{rb-bone_region3.png}
     \begin{tabular}{cc}
-      \!\!\!\!\!\!(a) \begin{tabular}{c}\includegraphics[width=0.96\columnwidth]{yb-full3.png}\end{tabular}\\
-      \!\!\!\!\!\!(b) \begin{tabular}{c}\includegraphics[width=0.96\columnwidth]{rb-full3.png}\end{tabular}\\
-      \!\!\!\!\!\!(c) \begin{tabular}{c}\includegraphics[width=0.96\columnwidth]{fb-edt-full2.png}\end{tabular}\\                        
+      \!\!\!\!\!\!(a) \begin{tabular}{c}\includegraphics[width=0.7\columnwidth]{yb-full3.png}\end{tabular}\\
+      \!\!\!\!\!\!(b) \begin{tabular}{c}\includegraphics[width=0.7\columnwidth]{rb-full3.png}\end{tabular}\\
+      \!\!\!\!\!\!(c) \begin{tabular}{c}\includegraphics[width=0.7\columnwidth]{fb-edt-full2.png}\end{tabular}\\                        
 %      \includegraphics[width=\linewidth]{rb-bone_region3.png}\\      
     \end{tabular}
     \caption{Examples of 2D histograms for the full tomogram: (a) along the $y$-axis, (b) as a function of
@@ -142,7 +149,7 @@ The next section describes the latter.
 \subsection{Field histograms}
 %Show that the fields can perfectly separate
 %discuss all the way to implant contact
-In the present work, the main distortion we want to invert is the brightening of voxels near the high-contrast interface between
+In the present work, the main distortion that we want to invert is the brightening of voxels near the high-contrast interface between
 titanium implant and biological tissue, in order to accurately determine tissue-implant contact.
 To this end, we can group the voxels according to their distance to the implant using the
 {\em Euclidean Distance Transform} (EDT). \Cref{fig:2dhists}(c) shows the corresponding 2D histogram, which shows a darkening effect for large distances
@@ -156,39 +163,10 @@ the same distance from the implant receives much less. To resolve brightening of
 to use a diffusion field, as shown in \Cref{fig:field-slice}. 
 
 
-%TODO: Figuren er forkert (blå pile viser ikke afstand).
 \begin{figure}
-    \vspace{-1.5cm}
     \centering
-    \begin{tikzpicture}[scale=2.0]
-        \draw[gray,line width=5pt] (0,0)
-        .. controls (1,3) and (2,-3) .. (3,0)
-        \foreach \p in {0,5,...,100} {
-          node[sloped,inner sep=0cm,above,pos=\p*0.01,
-          anchor=south,
-          minimum height=1.0cm,minimum width=1.0cm]
-          (N \p){}
-        }
-        \foreach \p in {0,5,...,100} {
-          node[midway,above,inner sep=0cm,above,pos=\p*0.01,
-          anchor=south,
-          minimum height=1.0cm,minimum width=1.0cm]
-          (N2 \p){}
-        }
-        ;
-        \foreach \p in {0,5,...,100} {
-          \draw[-latex,ForestGreen, very thick] (N \p.south) -- (N \p.north);
-%          \draw[-latex,blue,densely dotted, very thick] (N2 \p.south) -- (N2 \p.north);
-        }
-        \draw[red, line width=0.5mm] (0.55,1.20) circle (0.05cm);
-        \node at (0.55,1.60) {$p_2$};
-        \draw[red, line width=0.5mm] (2.35,-0.5) circle (0.05cm);
-        \node at (2.35,-1.10) {$p_1$};
-        \draw[black, line width=0.5mm, dotted] (-0.5,1.8) -- (3.0,1.8);
-        \node at (2.35,1.60) {radius};
-      \end{tikzpicture}
-      \vspace{-3.5cm}
-      \caption{Visualization of glowing effect close to the implant surface, shown in the YZ plane. 
+    \includegraphics{glowing-crop}
+    \caption{Visualization of glowing effect close to the implant surface, shown in the YZ plane. 
         The two points $p_1$ and $p_2$, marked in red, have the same distance to the implant, but receive markedly different brightening effect.
         Diffusion is depicted in green, where we see multiple arrows contributing to the value of $p_1$. The dotted line depicts a constant radius from the tomogram center.}
     \label{fig:edt-vs-diffusion}
@@ -201,7 +179,7 @@ to use a diffusion field, as shown in \Cref{fig:field-slice}.
     \label{fig:field-slice}
 \end{figure}
 
-Using a diffusion field to model the glow from the implant, we are able to describe the brightening effect even very close to the implant, but the field is nearly
+By using a diffusion field to model the glow from the implant, we are able to describe the brightening effect even very close to the implant, but the field is nearly
 zero everywhere else. In order
 to construct a single field that separates voxels well according to the major contributions of distortion, we construct a combined EDT+diffusion field. We will see
 in the next section that this is enough to produce a high-quality segmentation throughout the tomogram, both near the implant surface and far away from it.
@@ -212,62 +190,38 @@ in the next section that this is enough to produce a high-quality segmentation t
 % is surrounded by more implant.
 
 %TODO: Adskil METODE, altsaa SASS, fra ANVENDELSE, altsaa BIC. 
-\subsection{Walkthrough of the method}
+\subsection{Walk-through of the method}
 This section will describe each step of our method in detail. Going from tomography to a segmented tomography.
 
 \subsubsection{Overview}
 %Coarse steps, explain the idea
 In order to reach the tissue-bone implant contact metric, we have the three coarse steps: compute the fields, segmentation using the fields, and extraction of the contact from the segmented tomography.
-
+%
 The steps of the field computation are:
 \begin{enumerate}
     \item Compute the EDT and Diffusion fields to give each voxel spatial information about its relation to the implant.
     \item Compute frequency distributions of voxel values as functions of field values as 2D histograms.
 \end{enumerate}
-    
+%    
 Then, in order to segment using the fields:
 \begin{enumerate}
     \item[3] Find the material ridges within the 2D histograms, using image processing techniques.
     \item[4] From the ridges, compute initial approximate frequency distributions of each material, which are then optimized to fit the 2D histograms.
-          From the optimized distributions, we derive probability distributions for material classification. These distributions approximate the conditional probabilities $P(m|v,x)$ that a particular voxel belongs to material $m$ given that it has voxel value $v$ and field value $x$.
+          From the optimized distributions, we derive probability distributions for material classification. These distributions approximate the conditional probabilities $\Pof{m}{v,x}$ that a particular voxel belongs to material $m$ given that it has voxel value $v$ and field value $x$.
     \item[5] Apply the probability distributions to the tomography, segmenting the voxels into the different materials.
 \end{enumerate}
-    
+%   
 In the present paper, we use the improved segmentation to evaluate bone-implant contact and blood-implant contact.
 \begin{enumerate}
-\item[6] From the segmented tomography, we compute the network of blood vessels and the osteocyte network. Voxels are classified as bone, if they are in a connected compentnt of bone-mineral and within a maximal distance from blood supply and osteocytes.
+\item[6] From the segmented tomography, we compute the network of blood vessels and the osteocyte network. Voxels are classified as bone, if they are in a connected component of bone-mineral and within a maximal distance from blood supply and osteocytes.
 \item[7] Perform the tissue-to-implant contact analysis.
 \end{enumerate}
-
+%
 These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
 
 \begin{figure}
-    \centering
-    \begin{tikzpicture}
-        \fill[red!40] (-4,.5) rectangle (4,-1.5);
-        \fill[blue!40] (-4,-1.5) rectangle (4,-4.5);
-        \fill[yellow!40] (-4,-4.5) rectangle (4,-6.5);
-        \node[rotate=90, anchor=north] (field) at (-4,-.5) {Fields};
-        \node[rotate=90, anchor=north] (segment) at (-4,-3) {Segmentation};
-        \node[rotate=90, anchor=north] (bicc) at (-4,-5.5) {BIC};
-
-        \node       (prep)  at (0, 1) {Preprocessing};
-        \node[draw, fill=black!10, rounded corners] (field) at (0, 0) {1. Compute fields};
-        \node[draw, fill=black!10, rounded corners] (hists) at (0,-1) {2. Compute 2D histograms};
-        \node[draw, fill=black!10, rounded corners] (curvs) at (0,-2) {3. Find Ridges};
-        \node[draw, fill=black!10, rounded corners] (probs) at (0,-3) {4. Compute probabilities};
-        \node[draw, fill=black!10, rounded corners] (segm)  at (0,-4) {5. Segment the voxels};
-        \node[draw, fill=black!10, rounded corners] (blood) at (0,-5) {6. Compute blood network and osteocytes};
-        \node[draw, fill=black!10, rounded corners] (bic)   at (0,-6) {7. Compute tissue properties};
-
-        \path[draw, ->] (prep)  -- (field);
-        \path[draw, ->] (field) -- (hists);
-        \path[draw, ->] (hists) -- (curvs);
-        \path[draw, ->] (curvs) -- (probs);
-        \path[draw, ->] (probs) -- (segm);
-        \path[draw, ->] (segm)  -- (blood);
-        \path[draw, ->] (blood) -- (bic);
-    \end{tikzpicture}
+  \centering
+  \includegraphics{steps}
     \caption{Flowchart depicting the steps of the method.}
     \label{fig:flowchart}
 \end{figure}
@@ -279,9 +233,9 @@ the algorithm where applicable, along with the the intermediate results.
 \vspace{\baselineskip}
 \noindent\textit{\textbf{Step 1: Field computations}}\\
 Both fields are computed from the implant mask, as described in~\Cref{sec:preprocess}.
-EDT is computed in parallel using W.~Silversmith's implentation of Meijster's algorithm \cite{pypi-edt},
+EDT is computed in parallel using W.~Silversmith's implementation of Meijster's algorithm \cite{pypi-edt},
 % the Python package \texttt{edt}~\cite{pypi-edt}. %Den er implementeret i C++
-yielding a 3D in which every non-implant voxel becomes the Eucledian distance of the nearest implant voxel.
+yielding a 3D image in which every non-implant voxel is the Euclidean distance to the nearest implant voxel.
 
 For diffusion, rather than solving a full diffusion equation, we approximate it using repeated convolutions
 of a 3D-Gaussian kernel, implemented by separating into 1D convolutions, as seen in~\Cref{alg:diffusion}, and the XZ-plane in~\Cref{fig:field-slice}.
@@ -290,26 +244,26 @@ of a 3D-Gaussian kernel, implemented by separating into 1D convolutions, as seen
     \caption{Diffusion approximation.}
     \label{alg:diffusion}
     \begin{algorithmic}
-        \Function {Diffusion} {$voxels[n_z*n_y*n_x]$, $repitions$, \newline \indent \indent $kernel[2*k+1]$}
+        \Function {Diffusion} {voxels$[n_z*n_y*n_x]$, $n_\text{repetitions}$, \newline \indent \indent kernel$[2*k+1]$}
             \State $S \gets [n_y * n_x, n_x, 1]$
             \State $N \gets [n_z, n_y, n_x]$
-            \State $buf_0[:] \gets voxels[:]$
-            \For {$rep$ \textbf{in} $repitions$}
-                \For {$dim$ \textbf{in} $dimensions$}
+            \State $\text{buf}_0[:] \gets \text{voxels}[:]$
+            \For {$\text{rep}$ \textbf{in} $0{:}n_\text{repetitions}$}
+                \For {$\text{dim}$ \textbf{in} $0{:}3$}
                     \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
                         \State $X \gets [z,y,x]$
-                        \State $i_{start} \gets - \min (k, X[dim])$
-                        \State $i_{end} \gets \min (k, N[dim] - X[dim] - 1)$
-                        \State $i_{global} \gets z*S[0] + y*S[1] + x*S[2]$
-                        \For {$i$ \textbf{in} $i_{start}:i_{end}$}
-                            \State $i_{offset} \gets i_{global} + i*S[dim]$
-                            \State $buf_1[index] \gets buf_0[i_{offset}] * kernel[i+k]$
+                        \State $i_\text{start} \gets - \min (k, X[\text{dim}])$
+                        \State $i_\text{end} \gets \min (k, N[\text{dim}] - X[\text{dim}] - 1)$
+                        \State $i_\text{global} \gets z*S[0] + y*S[1] + x*S[2]$
+                        \For {$i$ \textbf{in} $i_\text{start}:i_\text{end}$}
+                            \State $i_\text{offset} \gets i_\text{global} + i*S[\text{dim}]$
+                            \State $\text{buf}_1[i_\text{global}] \gets \text{buf}_0[i_\text{offset}] * \text{kernel}[i+k]$
                         \EndFor
                     \EndFor
-                    \State $buf_0[:] \gets buf_1[:]$
+                    \State $\text{buf}_0[:] \gets \text{buf}_1[:]$
                 \EndFor
             \EndFor
-            \Return $buf_0$
+            \State \Return $\text{buf}_0$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -327,7 +281,7 @@ single one as shown in~\Cref{eq:field-comb}.
 %            \State $r \gets r - \min (f_{dif})$
 %            \State $r \gets \frac{r}{\max (f_{dif})}$
 %
-%            \Return $r$
+%            \State \Return $r$
 %        \EndFunction
 %    \end{algorithmic}
 %\end{algorithm}
@@ -352,19 +306,20 @@ where the diffusion field changes rapidly.
     \caption{Field 2D histograms.}
     \label{alg:field-hist}
     \begin{algorithmic}
-        \Function {Field\_hist} {$voxels[n_z,n_y,n_x]$, $field[n_z,n_y,n_x]$, $v_{bins}$, \indent \indent $v_{min}$, $v_{max}$, $f_{bins}$, $f_{min}$, $f_{max}$}
+        \Function {Field\_hist} {$\text{voxels}[n_z,n_y,n_x]$, $\text{field}[n_z,n_y,n_x]$, $v_\text{bins}$, $v_
+        \text{min}$, $v_\text{max}$, $f_\text{bins}$, $f_\text{min}$, $f_\text{max}$}
             \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
-                \State $v \gets voxels[z,y,x]$
-                \If {$v_{min} \leq v \leq v_{max}$}
-                    \State $f \gets voxels[z,y,x]$
-                    \If {$f_{min} \leq f \leq f_{max}$}
-                        \State $v_i \gets (v_{bins} - 1) - \frac{v - v_{min}}{v_{max} - v_{min}}$
-                        \State $f_i \gets (f_{bins} - 1) - \frac{f - f_{min}}{f_{max} - f_{min}}$
+                \State $v \gets \text{voxels}[z,y,x]$
+                \If {$v_\text{min} \leq v \leq v_\text{max}$}
+                    \State $f \gets \text{field}[z,y,x]$
+                    \If {$f_\text{min} \leq f \leq f_\text{max}$}
+                        \State $v_i \gets (v_\text{bins} - 1) - \frac{v - v_\text{min}}{v_\text{max} - v_\text{min}}$
+                        \State $f_i \gets (f_\text{bins} - 1) - \frac{f - f_\text{min}}{f_\text{max} - f_\text{min}}$
                         \State $h[f_i,v_i]{+}{+}$
                     \EndIf
                 \EndIf
             \EndFor
-            \Return $h$
+            \State \Return $h$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -384,7 +339,7 @@ the different materials present in the tomogram, we first identify the {\em ridg
 i.e., the peaks in the 1D histograms that are persistent and vary continuously with the field value.
 Thus we can expect each ridge to represent the {\em expectation values} for a particular material
 as a function of the field value, i.e., as a function of the voxel's position in space.
-
+%
 Any ridge-finding method will do: we compute it through the series of image processing operations shown in
 \Cref{alg:material}.
 % The next step is to isolate the different materials spatially, which is done through the field-histogram.
@@ -405,22 +360,22 @@ Any ridge-finding method will do: we compute it through the series of image proc
     \caption{2D histogram ridge-finding.}
     \label{alg:material}
     \begin{algorithmic}
-        \Function {Ridges} {$h[f_{bins}$, $v_{bins}]$, $\sigma$, $peak_{min}$, $k_x$, $k_y$, \newline \indent \indent $i_{dilate}$,$i_{erode}$, $t$}
-            \For {$row$ \textbf{in} $0{:}f_{bins}$}
-                \State $r \gets gaussian\_smooth(h[row,:], \sigma)$
-                \State $p \gets find\_peaks(r, peak_{min})$
-                \State $ps[p] \gets 1$
+        \Function {Ridges} {$h[f_\text{bins}$, $v_\text{bins}]$, $\sigma$, $\text{peak}_\text{min}$, $k_x$, $k_y$, \newline \indent \indent $i_\text{dilate}$,$i_\text{erode}$, $t$}
+            \For {$\text{row}$ \textbf{in} $0{:}f_\text{bins}$}
+                \State $r \gets \text{gaussian\_smooth}(h[\text{row},:], \sigma)$
+                \State $p \gets \text{find\_peaks}(r, \text{peak}_\text{min})$
+                \State $\text{peaks}[\text{row}, p] \gets 1$
             \EndFor
-            \State $kernel = cross\_kernel(k_x, k_y)$
-            \State $d \gets dilate(ps, i_{dilate}, kernel)$
-            \State $e \gets erode(d, i_{erode}, kernel)$
-            \State $cs \gets find\_contours(e)$
-            \For {$i$ \textbf{in} $0{:}|cs|$}
-                \If {$size(cs[i]) > t$}
-                    \State $l \gets draw\_contour(l, cs[i], i+1)$
+            \State $\text{kernel} = \text{cross\_kernel}(k_x, k_y)$
+            \State $d \gets \text{dilate}(\text{peaks}, i_{\text{dilate}}, \text{kernel})$
+            \State $e \gets \text{erode}(d, i_{\text{erode}}, \text{kernel})$
+            \State $\text{contours} \gets \text{find\_contours}(e)$
+            \For {$i$ \textbf{in} $0{:}\text{contours}$}
+                \If {$\text{size}(\text{contours}[i]) > t$}
+                    \State $l \gets \text{draw\_contour}(l, \text{contours}[i], i+1)$
                 \EndIf
             \EndFor
-            \Return $l$
+            \State \Return $l$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -447,31 +402,107 @@ Any ridge-finding method will do: we compute it through the series of image proc
 
 \vspace{\baselineskip}
 \noindent\textbf{Step 4: Compute models for material probability distributions} \\
-\input{prob.tex}
+Our goal is to obtain good conditional probability distributions $\Pof{m}{v,\xx}$
+that model the likelihood of a voxel having material type $m$ as a function
+both on its value $v$ and its position $\xx$ in space. For the probabilities
+conditioned on the field values (distance or diffusion field), we model
+the probability distributions $\Pof{m}{v,f(\xx)}$ conditioned on
+voxel- and field values. We want to make sure that these distribution
+functions vary smoothly across space (or as a function of field values),
+to ensure that we can identify the materials correctly across the entire
+image: i.e., even though the frequency distributions look completely different
+close to the titanium implant compared to the middle region or sample surface,
+we can track the unbroken, smooth deformation to assign a global material
+identity.
+
+To this end, we first {\it model the frequency distributions} using the
+2D histograms. Given that we are modeling materials $m=1,\ldots,M$,
+we write the full 2D histogram as a sum of distributions
+$g_m(\fval,v)$ representing the modeled part, and a
+residual $r(\xx,v)$.
+\begin{equation}
+  \label{eq:hist}
+  H(\fval,v) = \sum_{m=1}^M g_m(\fval,v) + r(\fval,v)
+\end{equation}
+The residual is constrained to be non-negative, i.e., we must not explain
+more voxels than the image contains.
+The distribution functions can be chosen in any way that approximately
+model the observed frequencies: we first used Gaussians with passable success,
+but found that they dropped off too rapidly. We instead found excellent results
+with the next-simplest model, leaving the exponential power $d_m(x)$ as a free parameter:
+\begin{equation}
+  \label{eq:dist-form}
+  g_m(\fval,v) = a_m(\fval) e^{-b_m(\fval) \vert v-c_m(\fval)\vert^{d_m(\fval)}}
+\end{equation}
+In Eq.~\eqref{eq:dist-form}, each field value $\fval$
+$a(\fval)$ is the distribution height at the center $v=c(\fval)$;
+$b(\fval)$ is the exponential falloff rate; and $d(\fval)$ is
+the exponential power ($d=2$ yields a Gaussian, $d=1$ a simple exponential).
+In practice we found $1.5\le d \le 2$ to best match the actual frequency
+distribution decay rates.
+
+Using the ridges found in the previous step, we generate good starting
+guesses and constraints for the distribution parameters
+$a,b,c,d$:
+For each field-value $\fval$ (corresponding to a row in the 2D histogram),
+we initialize the starting approximation as:
+\begin{equation}
+  \label{eq:starting-guesses}
+  \begin{array}{lll}
+    c_m(\fval) &= \mathop{\mathtt{argmax}}_{v \text{ with }\lab[\fval,v] = m} H(\fval,v)  & \text{Peak position}  \\
+    a_m(\fval) &= H(\fval,c_m(\fval)) & \text{Peak value}\\
+    b_m(\fval) &= 3/\mathrm{width}_m(\fval)^2  & \text{Decay rate}\\
+    d_m(\fval) &= 2 & \text{Exponential power}
+  \end{array}
+\end{equation}
+where we use half the distance to the center of ridge $m+1$ as the width
+$\mathrm{width_m}(\fval)$, using the relation that $b = 3/w^d$ yields
+a $5\%$ cutoff at $w$ for any $1\le d \le 2$. This approximation
+already yields a good approximation. Thus, the subsequent
+optimization using the constrained quasi-Newton optimization method L-BFGS-B\cite{BFGS}
+converges rapidly to an excellent fit. Each 1D histogram row is first optimized
+independently in parallel: The resulting numerical functions
+$a_m(\fval),\ldots,d_m(\fval)$ are then converted into piecewise cubic
+functions using a least squares-based algorithm that ensures continuity
+and differentiability across the piecewise segments. This lets us interpolate across
+outliers due to noise, but equally important:
+extrapolate our models smoothly into the regions very close to the implant, where
+we don't have enough voxels to produce good statistics.
+
+We finally obtain the {\it conditional probabilities} from the material frequency distribution
+models $g_m$ as:
+\begin{equation}
+  \label{eq:Pm}
+  \Pof{m}{v,f(\xx)} = \frac{g_m(v,f(\xx))}{H(v,f(\xx))}
+\end{equation}
+(well-defined where $H(v,\fval) > 0$, zero outside this region as $0\le g_m \le H$).
+
 
 \vspace{\baselineskip}
 \noindent\textbf{Step 5: Perform segmentation} \\
-The final step of the segmentation process is to use the probabilities for segmentation.
-This process is fairly straightforward, as each voxel is looked up in the probability distribution,
-which carries the same shape as the field-histogram.
+The final step of the segmentation process is to apply these probabilities for segmentation.
+For each voxel, we obtain its voxel value and field value, which are then used to lookup in the probability distributions, giving us a probability that the voxel belongs to a certain class.
+The voxel is then assigned the class with the highest probability, meaning we have effectively classified the voxel based of its voxel intensity and spatial position. In addition,
+the segmentation confidence is quantified by the probability.
 
 \begin{algorithm}
     \caption{Final segmentation from the probability distributions.}
     \label{alg:segment}
     \begin{algorithmic}
-        \Function {Segment} {$voxels[n_z,n_y,n_x], p[f_{bins},v_{bins}],$ \newline \indent \indent $v_{bins}, v_{min}, v_{max}, f_{bins}, f_{min}, f_{max}$}
+        \Function {Segment} {$\text{voxels}[n_z,n_y,n_x], p[n_\text{classes},f_\text{bins},v_\text{bins}],$ \newline \indent \indent $v_\text{bins}, v_\text{min}, v_\text{max}, f_\text{bins}, f_\text{min}, f_\text{max}$}
             \For {$z,y,x$ \textbf{in} $0{:}n_z,0{:}n_y,0{:}n_x$}
-                \State $v \gets voxels[z,y,x]$
-                \If {$v_{min} \leq v \leq v_{max}$}
-                    \State $f \gets voxels[z,y,x]$
-                    \If {$f_{min} \leq f \leq f_{max}$}
-                        \State $v_i \gets (v_{bins} - 1) - \frac{v - v_{min}}{v_{max} - v_{min}}$
-                        \State $f_i \gets (f_{bins} - 1) - \frac{f - f_{min}}{f_{max} - f_{min}}$
-                        \State $result[z,y,x] \gets p[f_i, v_i]$
+                \State $v \gets \text{voxels}[z,y,x]$
+                \If {$v_\text{min} \leq v \leq v_\text{max}$}
+                    \State $f \gets \text{voxels}[z,y,x]$
+                    \If {$f_\text{min} \leq f \leq f_\text{max}$}
+                        \State $v_i \gets (v_\text{bins} - 1) - \frac{v - v_\text{min}}{v_\text{max} - v_\text{min}}$
+                        \State $f_i \gets (f_\text{bins} - 1) - \frac{f - f_\text{min}}{f_\text{max} - f_\text{min}}$
+                        \State $\text{probabilities} \gets p[:,f_i,v_i]$
+                        \State $\text{result}[z,y,x] \gets \text{argmax}(\text{probabilities}) + 1$
                     \EndIf
                 \EndIf
             \EndFor
-            \Return $result$
+            \State \Return $\text{result}$
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
@@ -483,28 +514,32 @@ Here we present the final output from the steps described above.
 \begin{figure}
     \centering
     \begin{subfigure}[b]{\linewidth}
-        \includegraphics[width=\linewidth]{figures/blood_old_bone_100.png}
+    \centering
+        \includegraphics[width=.7\linewidth]{figures/blood_old_bone_100.png}
         % TODO opdater hvis en anden slice størrelse bliver brugt. voxel size = 3.75
-        \caption{3D render of a $375\mu m \times 4230\mu m \times 6480\mu m$ slice of the blood network in the old bone region.}
+        \caption{A $375\mu m \times 4230\mu m \times 6480\mu m$ slice of the blood network in the old bone region.}
         \label{fig:blood-old-slice}
     \end{subfigure}
     \begin{subfigure}[b]{\linewidth}
-        \includegraphics[width=\linewidth]{figures/blood_new_bone_100.png}
-        \caption{3D render of a $375\mu m \times 4230\mu m \times 6480\mu m$ slice of the blood network in the new bone region.}
+    \centering      
+        \includegraphics[width=.7\linewidth]{figures/blood_new_bone_100.png}
+        \caption{A $375\mu m \times 4230\mu m \times 6480\mu m$ slice of the blood network in the new bone region.}
         \label{fig:blood-new-slice}
     \end{subfigure}
-    \begin{subfigure}[b]{.45\linewidth}
-        \includegraphics[width=\linewidth,height=\linewidth]{figures/blood_old_cube.png}
-        \caption{3D render of a $1mm \times 1 mm \times 1 mm$ cube of the blood network in the old bone region.}
+    \begin{subfigure}[b]{.48\linewidth}
+    \centering      
+        \includegraphics[width=.9\linewidth,height=\linewidth]{figures/blood_old_cube.png}
+        \caption{A $1mm \times 1 mm \times 1 mm$ cube of the blood network in the old bone region.}
         \label{fig:blood-old-cube}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{.45\linewidth}
-        \includegraphics[width=\linewidth,height=\linewidth]{figures/blood_new_cube.png}
-        \caption{3D render of a $1mm \times 1 mm \times 1 mm$ cube of the blood network in the new bone region.}
+    \begin{subfigure}[b]{.48\linewidth}
+    \centering      
+        \includegraphics[width=.9\linewidth,height=\linewidth]{figures/blood_new_cube.png}
+        \caption{A $1mm \times 1 mm \times 1 mm$ cube of the blood network in the new bone region.}
         \label{fig:blood-new-cube}
     \end{subfigure}
-    \caption{3D renders of the blood network. All of the samples are generated from a 2x downsample of the full resolution. Note the difference between the the capillary network in the old bone region (\ref{fig:blood-old-slice},\ref{fig:blood-old-cube}) compared to the newly grown bone region (\ref{fig:blood-new-slice},\ref{fig:blood-new-cube}).}
+    \caption{3D renders of the blood network. Note the difference between the the capillary network in the old bone region (\ref{fig:blood-old-slice},\ref{fig:blood-old-cube}) compared to the newly grown bone region (\ref{fig:blood-new-slice},\ref{fig:blood-new-cube}).}
     \label{fig:blood-network}
 \end{figure}
 
@@ -529,7 +564,7 @@ the potential osteocyte shape.
     \includegraphics[width=\linewidth]{770c_pag-bic-xy-1x} \\
     \includegraphics[width=\linewidth]{770c_pag-bic-P01-xy-1x}
   \end{tabular}
-  \caption{XY slices of the original tomography (top), and the classified (bottom). The voxels are coloured according to the modeled probability functions $P(m|x,\fval)$ between 0 and 1: completely red voxels have $P(0|v,\fval) = 1$, completely yellow voxels have $P(1|v,\fval) = 1$, and uncertain voxels become progressively gray.
+  \caption{XY slices of the original tomography (top), and the classified (bottom). The voxels are coloured according to the modeled probability functions $P(m\vert v,\fval)$ between 0 and 1: completely red voxels have $P(m=0\vert v,\fval) = 1$, completely yellow voxels have $P(m=1\vert v,\fval)\ = 1$, and uncertain voxels become progressively gray.
   }
   \label{fig:histology-comparison1}
 \end{figure}
@@ -537,8 +572,8 @@ the potential osteocyte shape.
 \begin{figure}
   \centering
   \begin{tabular}{c}
-    \includegraphics[width=.9\linewidth]{770c_pag-full-P01-yz-1x-gimp} \\
-    \includegraphics[width=\linewidth]{770c_pag-bic-P01-yz-1x}
+    \hspace{-0.5cm}\includegraphics[width=.7\linewidth]{770c_pag-full-P01-yz-1x-gimp} \\
+    \includegraphics[width=.7\linewidth]{770c_pag-bic-P01-yz-1x}
   \end{tabular}
   \caption{ZY slices of the segmentation seen far away (top) and zoomed in (bottom). Yellow depicts bone and red depicts soft-tissue. Note that the segmentation correctly classifies the materials close to the implant, even in the grooves of the screw threads..}
   \label{fig:histology-comparison2}
@@ -550,7 +585,7 @@ Euclidean Distance Transform (EDT) from the implant, restricted to the bone regi
 simply mask the voxels that are within a thin shell of distances, $d_{min} < d(x,y,z) \le d_{max}$,
 for example $d_{min} = 1\mu m$ to $d_{max} = 5\mu m$. We then sum over the masked voxels of each
 tissue type to obtain and divide by the total to obtain the tissue-to-implant contact per area,
-or study the distribution across the surface area qualitatively.
+or study the distribution across the surface area qualitatively. %TODO: Gør det!
 
 A larger quantitative study is planned that analyses the full data set against recently conducted 
 histological microscopy taken from the same biopsies. In the present work, we evaluate qualitatively:
@@ -562,8 +597,8 @@ the success of the automatic classification.
 Figures \ref{fig:histology-comparison1} and \ref{fig:histology-comparison2} show the same 2D slices
 as were shown in Figures \ref{fig:3viewsample} and \ref{fig:slices}, allowing us to visually inspect
 them side by side. The voxels are coloured according to the segmentation confidence, with
-degree of red proportional to the modeled probability $P(0|v,\fval)$ and degree of yellow proportional
-to $P(1|v,\fval)$. Grey voxels indicate low model probabilities of both: either due to the voxel belonging
+degree of red proportional to the modeled probability $\Pof{0}{v,\fval}$ and degree of yellow proportional
+to $\Pof{1}{v,\fval}$. Grey voxels indicate low model probabilities of both: either due to the voxel belonging
 to another material, or simply low computed confidence of the model.
 By comparing against Figures \ref{fig:histology-comparison1} and \ref{fig:histology-comparison2},
 we see that the computed classification matches the human classification everywhere where it
@@ -595,8 +630,6 @@ can be retrieved through a deconvolution - or simply a more precise version of t
 %     and can now be shown in a flat plot.}
 %   \label{fig:cylinder1}
 % \end{figure}
-
-
 
 
 

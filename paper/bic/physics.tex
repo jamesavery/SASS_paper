@@ -44,9 +44,8 @@ intensities within the same sample.
 In \Cref{fig:slices}, we see zoomed in regions of the XY- and YZ-planes of the same sample as shown
 in \Cref{fig:3viewsample}.  Both planes display a broad selection of the various type of noise
 sources found in the data.
-
-\paragraph{Beam hardening}
-Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artefacts around high
+\begin{itemize}
+\item \textbf{Beam hardening:} Medical CT and $\mu$CT both utilize poly-energetic beams, which can cause artefacts around high
 density regions. This effect is called beam-hardening \citep{beam-hardening}, and occurs when rays
 with lower energy are attenuated more frequently, thus shifting the remaining photon energy to a
 higher effective average value. This offsets the local contrast, by overestimating the attenuation,
@@ -64,23 +63,23 @@ trivially be rejected that some noise does occur from poly-energetic incident ra
 distinct effects typically seen as a result of beam-hardening are in dark and bright streaks and
 cupping artefacts in high density regions.
 
-\paragraph{Dark and bright streaks} Streaking artefacts occur at the dense implant region, but also
+\item \textbf{Dark and bright streaks:} Streaking artefacts occur at the dense implant region, but also
 in the transition from bone to softer tissue. This effect is mostly seen in regions of large
 heterogeneity. When X-ray beams pass at angles containing multiple dense obstacles, the beam is
 hardened more. Then for angles with fewer dense obstacles the energy spectrum is preserved better.
 This produced the dark and bright streaks seen in \Cref{fig:slices}.
-
+%
 For a hardened beam, softer x-rays are absorbed instead of successfully penetrating the object, and
 will not contribute to image formation. High density structures such as the titanium implant break
 the isotropy, making the projected X-ray mean energy spectrum dependent on incident orientation
 \citep{srnoise}.
 
-\paragraph{Cupping effect} A common artefact that occurs when beams pass more homogeneous
+\item \textbf{Cupping effect:} A common artefact that occurs when beams pass more homogeneous
 cylindrical objects. Since beams passing the middle will traverse more material compared to the
 edges, the beam is hardened more towards the center and intensity becomes lower as a result. This
 can manifest itself in what erroneously looks to be dense peripheral regions at the edges.
 
-\paragraph{Phase contrast} Phase contrast is an effect whose consequences are not very unlike those
+\item \textbf{Phase contrast:} Phase contrast is an effect whose consequences are not very unlike those
 of beam-hardening.  Although used as an advantage in holotomography\citep{holotomography} and phase
 contrast tomography\citep{phasecontrast}, it induces noise in regular tomography such as used here.
 It typically results in fringes around edges of regions within the image\citep{srnoise}. Similar to
@@ -88,10 +87,7 @@ dark and bright streaks mentioned above, they show as misrepresentations of the 
 case we see them especially at the transitional edges between the titanium implant and the
 biological tissue and bone.
 
-\subsection{Other noise and artifacts}
-\label{sec:noise-artefacts}
-
-\paragraph{Ring artefacts} Looking at the XY-plane in \Cref{fig:slices}(a) we see clear concentric ring
+\item \textbf{Ring artefacts:} Looking at the XY-plane in \Cref{fig:slices}(a) we see clear concentric ring
 artefacts emanating from the center of the sample, and at strong edges of the titanium implant. It
 propagates strongly through the large region of air behind the implant. Compared to the other
 artefacts mentioned, this effect is arising from imperfections in the scanner setup. These types of
@@ -99,12 +95,12 @@ artefacts can typically come from uncalibrated or defect adjacent detector eleme
 radiation sources it can also occur from shifts and vibrations in the monochromator crystal
 \citep{ringartefacts}.
 
-\paragraph{Projection artefacts} Bright streaks with strong edges are seen from the sharp corners of
+\item \textbf{Projection artefacts:} Bright streaks with strong edges are seen from the sharp corners of
 the titanium implant. When doing back projection, a symmetry break is seen as smeared lines across
 the sample. This can occur from the high pass filter used during filtered back projection, which
 exaggerates the differences between adjacent elements \citep{ctnoise}.
 
-\paragraph{Compton scattering} Lower energy rays contribute mostly with noise from scattering
+\item \textbf{Compton scattering:} Lower energy rays contribute mostly with noise from scattering
 effects. A ray will propagate through a material, get scattered and diffract from its initial
 trajectory. This gives a misrepresentation of the attenuation along its initial trajectory. The
 artefacts seen from scattering are similar in nature to those formed by beam hardening. This is
@@ -113,12 +109,10 @@ the data presented here, of 50 KeV and above, Compton scattering is the dominant
 \citep{Compton}.  The scattering occurs due to photon-electron interaction between X-ray beam and
 the material it passes through. Like beam-hardening, scattering will cause dark streaks across the
 image, where attenuation was highest.
-
-\subsection{Dealing with artefacts}
-\label{sec:dealwithit}
+\end{itemize}
 
 The distortions that come from the class of physical effects and noise artefacts discussed in this
-section, will vary continously as a function of the spatial coordinates. This allows the possibility
+section, will vary continuously as a function of the spatial coordinates. This allows the possibility
 for a method, which can correctly identify materials despite varying voxel values.
 % FIXME: Would like a reference for the continous argument
 % It is also mentioned in the last sentences of the first paragraph in
