@@ -11,17 +11,17 @@ gives a two-dimensional slice of the full three-dimensional picture - most
 important biological structures are inherently three-dimensional, and limiting
 analysis to 2D severely restricts the types of questions we can answer.
 
-Synchrotron Radiation micro-tomography (SR$\mu$CT) offers a non-destructive
+Synchrotron Radiation micro-tomography (SRµCT) offers a non-destructive
 high-quality alternative to histology for detailed analysis of bone biopsies.
 \cite{torsten2018} quantified the uncertainty of 2D histology for four common
 bone analyses, and found that the choice of sampling plane for histological
 analysis incurred a significant uncertainty in the results, whereas the full
-volumetric analysis of SR$\mu$CT tomograms did not.
+volumetric analysis of SRµCT tomograms did not.
 
 The high brilliance and collimation of synchrotron radiation yields
 particularly faithful 3D images, as common distortive X-ray effects seen in
 hospital-grade setups such as beam hardening and projection artifacts are
-minimized. The high fidelity makes SR$\mu$CT attractive for conducting advanced
+minimized. The high fidelity makes SRµCT attractive for conducting advanced
 medical image analyses with trustworthy results.
 
 However, while image distortion effects are much reduced compared to laboratory
@@ -40,14 +40,14 @@ enough?
 
 The present work presents a fully automatic computational method which
 discovers probabilistic models for the distortions incurred by the physical
-effects in high-resolution X-ray CT such as SR$\mu$CT to reverse them and
+effects in high-resolution X-ray CT such as SRµCT to reverse them and
 produce accurate tissue classification even in regions where these effects are
 significant. It exploits two properties, which are needed to hold for the
 method to work: i) very high resolution is used to build statistical models as
 functions of space, and ii) the effects to be countered must vary continuously
 over space so that we can track how voxel frequency distributions are distorted
 throughout the image. We apply the method to the same dataset of
-micrometer-resolution SR$\mu$CT bone tomograms studied in \cite{torsten2018}
+micrometer-resolution SRµCT bone tomograms studied in \cite{torsten2018}
 and in \cite{sporring}, to achieve faithful tissue classification close to the
 titanium implant surface. The implementation is open-source, targets multi-CPU
 and multi-GPU systems, and is available at
