@@ -66,19 +66,28 @@ However, if we fix one axis $x$, $y$, or $z$, the image {\em does} contain milli
 models for e.g.~the conditional probabilities $\Pof{m}{v,x}$, $\Pof{m}{v,y}$, and $\Pof{m}{v,z}$. To this end, we compute 2D histograms that count voxel frequencies
 both conditioned on value $v$ and coordinate value along either $x$, $y$, or $z$. 
 
-Figure \ref{fig:2dhists}(a)
-shows the histogram for our model tomogram (implant excluded) as a function of the $y$ coordinate: each row in the image is a histogram for a fixed value of $y$.
-Figure \ref{fig:3viewsample}(a) helps us see what happens: For $y<2400\micron$, there is only air, then we reach a thin layer of resin, after which we enter
-the region where we find bone, soft tissue, resin, and air. The air voxels are brightened as we approach the implant, shifting the peaks smoothly rightwards.
-A better coordinate system for capturing both the distortive edge-effects, and the glow from the implant, is to use cylindrical coordinates with respect
-to the implant center line. This is computed automatically as the centers for the least-squares optimal circles with respect to the implant along the principal axis. 
-Figure \ref{fig:2dhists}(b) shows a similar 2D histogram for the radial cylinder coordinate $r=\sqrt{\left( x-c_x(z)\right)^2+\left( y-c_y(z)\right)^2}$.
-From this plot, we see two prominent distributions that change along the $r$ axis. The radius correlates with distance to the sample surface
-(capturing edge effects), and for medium $r$, it is a good proxy for distance to the implant, and we see a brightening with smaller $r$, and a darkening and
-broadening of the distributions for large $r$. Each {\em view} provides us with additional information about how voxel values are distorted throughout space:
-analogous to casting shadows along different axes to obtain more information about a 3D object. We can either use Bayesian statistics to combine information
-from multiple axes, or construct a spatial grouping that is particularly suited to capture the effects of the distortive effects that we want to counter.
-The next section describes the latter.
+Figure \ref{fig:2dhists}(a) shows the histogram for our model tomogram (implant
+excluded) as a function of the $y$ coordinate: each row in the image is a
+histogram for a fixed value of $y$. Figure \ref{fig:3viewsample}(a) helps us
+see what happens: For $y<2400\text{µm}$, there is only air, then we reach a thin
+layer of resin, after which we enter the region where we find bone, soft
+tissue, resin, and air. The air voxels are brightened as we approach the
+implant, shifting the peaks smoothly rightwards. A better coordinate system for
+capturing both the distortive edge effects and the glow from the implant is to
+use the cylindrical coordinates from the tomography center line. Figure
+\ref{fig:2dhists}(b) shows a similar 2D histogram for the radial cylinder
+coordinate $r=\sqrt{\left( x-c_x(z)\right)^2+\left( y-c_y(z)\right)^2}$. From
+this plot, we see two prominent distributions that change along the $r$ axis.
+The radius correlates with distance to the sample surface (capturing edge
+effects), and for medium $r$, it is a good proxy for distance to the implant,
+and we see a brightening with smaller $r$, and a darkening and broadening of
+the distributions for large $r$. Each {\em view} provides us with additional
+information about how voxel values are distorted throughout space: analogous to
+casting shadows along different axes to obtain more information about a 3D
+object. We can either use Bayesian statistics to combine information from
+multiple axes or construct a spatial grouping that is particularly suited to
+capture the effects of the distortive effects that we want to counter. The next
+section describes the latter.
 
 % Kept for historical reasons.
 %\begin{algorithm}
