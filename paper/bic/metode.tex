@@ -238,9 +238,9 @@ In the present paper, we use the improved segmentation to evaluate bone- and
 blood-implant contact.
 \begin{enumerate}
     \item[6.] From the segmented tomography, we compute the network of blood
-        vessels and the osteocyte network. Voxels are classified as bone if
-        they are in a connected component of bone-mineral and within a maximal
-        distance from the blood supply and osteocytes.
+        vessels as the largest connected component of the soft-tissue material.
+        Bone is classified as the largest connected component of the bone
+        material that is within a certain distance of the blood vessel network.
 
     \item[7.] Perform the implant contact analysis.
 \end{enumerate}
