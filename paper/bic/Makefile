@@ -5,6 +5,8 @@ SN-main.pdf: main.tex
 	bibtex main
 	pdflatex main
 
+fast: main.tex
+	pdflatex main
 
 clean:
 	rm -f *.aux *.log *.toc *.spl *.out *.bbl *.blg *~ \#*\#
