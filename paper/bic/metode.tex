@@ -204,26 +204,45 @@ This section will describe each step of our method in detail. Going from tomogra
 
 \subsubsection{Overview}
 %Coarse steps, explain the idea
-In order to reach the tissue-bone implant contact metric, we have the three coarse steps: compute the fields, segmentation using the fields, and extraction of the contact from the segmented tomography.
+To reach the tissue-bone implant contact metric, we have the three coarse
+steps: compute the fields, segmentation using the fields, and extraction of the
+contact from the segmented tomography.
 %
 The steps of the field computation are:
 \begin{enumerate}
-    \item Compute the EDT and Diffusion fields to give each voxel spatial information about its relation to the implant.
-    \item Compute frequency distributions of voxel values as functions of field values as 2D histograms.
+    \item[1.] Compute the EDT and Diffusion fields to give each voxel spatial
+        information about its relation to the implant.
+
+    \item[2.] Compute frequency distributions of voxel values as functions of
+        field values as 2D histograms.
 \end{enumerate}
 %    
-Then, in order to segment using the fields:
+Then, to segment using the fields:
 \begin{enumerate}
-    \item[3] Find the material ridges within the 2D histograms, using image processing techniques.
-    \item[4] From the ridges, compute initial approximate frequency distributions of each material, which are then optimized to fit the 2D histograms.
-          From the optimized distributions, we derive probability distributions for material classification. These distributions approximate the conditional probabilities $\Pof{m}{v,x}$ that a particular voxel belongs to material $m$ given that it has voxel value $v$ and field value $x$.
-    \item[5] Apply the probability distributions to the tomography, segmenting the voxels into the different materials.
+    \item[3.] Find the material ridges within the 2D histograms, using image
+        processing techniques.
+
+    \item[4.] From the ridges, compute the initial approximate frequency
+        distributions of each material, which are then optimized to fit the 2D
+        histograms. From the optimized distributions, we derive probability
+        distributions for material classification. These distributions
+        approximate the conditional probabilities $\Pof{m}{v,x}$ that a
+        particular voxel belongs to material $m$ given that it has voxel value
+        $v$ and field value $x$.
+
+    \item[5.] Apply the probability distributions to the tomography, segmenting
+        the voxels into the different materials.
 \end{enumerate}
 %   
-In the present paper, we use the improved segmentation to evaluate bone-implant contact and blood-implant contact.
+In the present paper, we use the improved segmentation to evaluate bone- and
+blood-implant contact.
 \begin{enumerate}
-\item[6] From the segmented tomography, we compute the network of blood vessels and the osteocyte network. Voxels are classified as bone, if they are in a connected component of bone-mineral and within a maximal distance from blood supply and osteocytes.
-\item[7] Perform the tissue-to-implant contact analysis.
+    \item[6.] From the segmented tomography, we compute the network of blood
+        vessels and the osteocyte network. Voxels are classified as bone if
+        they are in a connected component of bone-mineral and within a maximal
+        distance from the blood supply and osteocytes.
+
+    \item[7.] Perform the implant contact analysis.
 \end{enumerate}
 %
 These steps are also summarized in the flow chart in~\Cref{fig:flowchart}.
