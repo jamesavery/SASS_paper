@@ -317,7 +317,10 @@ single one as shown in~\Cref{eq:field-comb}.
 \begin{equation}
     \label{eq:field-comb}
     \begin{split}
-        f_{combined} &= \frac{f_{diffusion} - \frac{f_{edt}}{\max (f_{edt})} \min (f_{diffusion})}{\max (f_{diffusion})}
+        f_{\text{diffusion\_norm}} &= \frac{f_{\text{diffusion}} - \min (f_{\text{diffusion}})}{\max (f_{\text{diffusion}})} \\
+        f_{\text{edt\_norm}} &= \frac{f_{\text{edt}} - \min (f_{\text{edt}})}{\max (f_{\text{edt}})} \\
+        f_{\text{combined}} &= f_{\text{diffusion\_norm}} - f_{\text{edt\_norm}} \\
+        f_{\text{combined\_norm}} &= \frac{f_{\text{combined}} + \|\min (f_{\text{combined}})\|}{\max (f_{\text{combined}})}
     \end{split}
 \end{equation}
 
