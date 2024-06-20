@@ -72,12 +72,14 @@ fibrous tissue.
 \begin{figure}
   \centering
   \begin{tabular}{cc}
-    (a) & \begin{tabular}{c} \includegraphics[width=0.5\textwidth]{770c_pag-full-xy-1x.png}\end{tabular}\\
-    (b) & \begin{tabular}{c} \includegraphics[width=0.5\textwidth]{770c_pag-full-yz-1x.png}\end{tabular}\\
-    (c) & \begin{tabular}{c} \includegraphics[width=0.5\textwidth]{770c_pag-full-xz-1x.png}\end{tabular}
+    (a) & \begin{tabular}{c} \includegraphics[width=0.81\linewidth]{generated/770c_pag_full_yx.pdf}\end{tabular}\\
+    (b) & \begin{tabular}{c} \includegraphics[width=0.81\linewidth]{generated/770c_pag_full_zx.pdf}\end{tabular}\\
+    (c) & \begin{tabular}{c} \includegraphics[width=0.81\linewidth]{generated/770c_pag_full_zy.pdf}\end{tabular}
   \end{tabular}
-\caption{Cut sample seen as cross sections in XY, YZ and XZ-planes respectively. A voxel has a size
-of 1.875µm. Red voxels are numerically low, while blue voxels are high.}
+  \caption{
+    Cross sections of a sample in YX-, ZX- and ZY-planes respectively. A voxel
+    has a size of 1.875µm.
+  }
 \label{fig:3viewsample}
 \end{figure}
 
@@ -130,15 +132,6 @@ The physical field of view of a single image sample is about 6.5mm in each
 direction. Each sample contains voxels with a spatial resolution of 1.875µm.
 The samples are scanned in chunks of 4-6 sub-volumes through the height of the
 implant, depending on the initial size of a sample.
-
-% TODO Move to preprocessing
-%As the scans slightly overlap, we first compute the overlaps between
-%volumes, by shifting along the $Z$-axis until the square 3D image
-%differences are minimized over the overlap volume, producing the best
-%volume match. This allows us to combine the sub-volumes into a single coherent 3D image of the full sample.
-%The images are represented in a custom hierarchical image format to facilitate fast multiresolution analysis.
-%The full image has resolution $3456 \times 3456 \times 3360$ (ensured to be divisible by $32=2^5$), and
-%has 5 coarse layers at resolution divided by 2, 4, 8, 16, and 32.
 
 %%% Local Variables:
 %%% mode: latex
