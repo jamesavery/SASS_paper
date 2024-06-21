@@ -1,13 +1,13 @@
 \section{Verification and analysis}
 \label{sec:verification}
 
-Once segmented, tissue in contact with the implant can be studied using the EDT
-from the implant, restricted to the bone region. We can simply mask the voxels
-that are within a thin shell of distances, $d_{min} < d(x,y,z) \le d_{max}$,
-for example, $d_{min} = 1 \text{µm}$ to $d_{max} = 5 \text{µm}$. We then sum
-over the masked voxels of each tissue type to obtain and divide by the total to
-obtain the tissue-to-implant contact per area or study the distribution across
-the surface area qualitatively.
+In this section, we present the verification of the segmentation method
+described in \Cref{sec:method}. We first qualitatively verify the method by
+comparing the segmentation results to the original tomography. We then
+quantitatively verify the method by generating synthetic data, creating ground
+truth, and comparing the results to other methods. Finally, we analyze the
+segmented data to study the blood vessel network in the bone region and produce
+statistics on the tissue-to-implant contact.
 
 %TODO: Gør det!
 
@@ -40,6 +40,15 @@ Classic CV
 ML-based methods
 
 \subsection{Dataset analysis}
+
+Once segmented, tissue in contact with the implant can be studied using the EDT
+from the implant, restricted to the bone region. We can simply mask the voxels
+that are within a thin shell of distances, $d_{min} < d(x,y,z) \le d_{max}$,
+for example, $d_{min} = 1 \text{µm}$ to $d_{max} = 5 \text{µm}$. We then sum
+over the masked voxels of each tissue type to obtain and divide by the total to
+obtain the tissue-to-implant contact per area or study the distribution across
+the surface area qualitatively.
+
 A larger quantitative study is planned that analyses the full data set against
 recently conducted histological microscopy taken from the same biopsies. In the
 present work, we evaluate qualitatively: Since the SRµCT tomograms are clear
