@@ -280,7 +280,43 @@ steps are summarized in \Cref{fig:flowchart}.
 
 \begin{figure}
     \centering
-    \includegraphics{steps}
+    %\includegraphics{steps}
+    \begin{adjustbox}{width=\linewidth}
+        \begin{tikzpicture}
+            \fill[yellow!30] (-3,-3.5) rectangle (2.5,1.5);
+            \fill[red!30] (-3,-3.5) rectangle (2.5,-6.5);
+            \fill[blue!30] (-3,-6.5) rectangle (2.5,-9.5);
+
+            \node[rotate=90] (bonelab) at (-2.75,-1) {Bone region};
+            \node[rotate=90] (softlab) at (-2.75,-5) {Fields};
+            \node[rotate=90] (bonelab) at (-2.75,-8) {Probabilities};
+
+            \node[draw, fill=black!10, rounded corners, rectangle] (hist1d) at (0,1) {Compute 1D histogram};
+            \node[draw, fill=black!10, rounded corners, rectangle] (implant) at (0,0) {Segment implant};
+            \node[draw, fill=black!10, rounded corners, rectangle] (implantfor) at (0,-1) {Compute implant orientation};
+            \node[draw, fill=black!10, rounded corners, rectangle] (air) at (0,-2) {Remove air};
+            \node[draw, fill=black!10, rounded corners, rectangle] (bone) at (0,-3) {Compute bone region};
+            \node[draw, fill=black!10, rounded corners, rectangle] (edt) at (0,-4) {Compute EDT field};
+            \node[draw, fill=black!10, rounded corners, rectangle] (diffusion) at (0,-5) {Compute diffusion field};
+            \node[draw, fill=black!10, rounded corners, rectangle] (combined) at (0,-6) {Combine fields};
+            \node[draw, fill=black!10, rounded corners, rectangle] (otsu) at (0,-7) {Otsu thresholding};
+            \node[draw, fill=black!10, rounded corners, rectangle] (fit) at (0,-8) {Fit curve};
+            \node[draw, fill=black!10, rounded corners, rectangle] (prob) at (0,-9) {Compute probabilities};
+            \node[draw, fill=black!10, rounded corners, rectangle] (segment) at (0,-10) {Segmentation};
+
+            \draw[->] (hist1d) -- (implant);
+            \draw[->] (implant) -- (implantfor);
+            \draw[->] (implantfor) -- (air);
+            \draw[->] (air) -- (bone);
+            \draw[->] (bone) -- (edt);
+            \draw[->] (edt) -- (diffusion);
+            \draw[->] (diffusion) -- (combined);
+            \draw[->] (combined) -- (otsu);
+            \draw[->] (otsu) -- (fit);
+            \draw[->] (fit) -- (prob);
+            \draw[->] (prob) -- (segment);
+        \end{tikzpicture}
+    \end{adjustbox}
     \caption{Flowchart depicting the steps of the method.}
     \label{fig:flowchart}
 \end{figure}
