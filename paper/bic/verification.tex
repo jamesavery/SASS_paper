@@ -15,7 +15,7 @@ statistics on the tissue-to-implant contact.
 
 Figures \Cref{fig:histology-comparison1} and \Cref{fig:histology-comparison2}
 show the same 2D slices as were shown in Figures \Cref{fig:3viewsample} and
-\Cref{fig:slices}, allowing us to visually inspect them side by side. The voxels
+\Cref{fig:slices}, allows us to visually inspect them side by side. The voxels
 are colored according to the segmentation confidence, with the degree of red
 being proportional to the modeled probability $\Pof{0}{v,\fval}$ and the degree
 of yellow being proportional to $\Pof{1}{v,\fval}$. Grey voxels indicate low
@@ -23,13 +23,19 @@ model probabilities of both: either due to the voxel belonging to another
 material or simply low computed confidence of the model. By comparing Figures
 \Cref{fig:histology-comparison1} and \Cref{fig:histology-comparison2}, we see
 that the computed classification matches the human classification everywhere
-where it is possible to visually distinguish the voxels. However, in a thin
-1-voxel border to the implant, we cannot verify the segmentation, as the voxel
-values are so blended together with the implant voxel values that they become
+where it is possible to visually distinguish the voxels.
+
+We see that the segmentation is overall successful, classifying the internal
+darker regions as soft tissue and the lighter regions as bone. This is further
+confirmed in \Cref{sec:blood-network}. However, extremely close to the implant
+(a few voxels), we cannot verify the segmentation, as the voxel values are so
+blended together with the implant voxel values that they become
 indistinguishable. A further strengthening of the analysis is needed to reach
 this layer. It is possible that the information is irretrievably lost, or
 perhaps it can be retrieved through a deconvolution - or simply a more precise
-version of the present analysis.
+version of the present analysis. It also fails within some of the soft tissue
+blobs, which is due to air bubbles in the resin, which have a very low density
+and thus a very low absorption.
 
 \subsection{Quantitative verification}
 \subsubsection{Generating synthetic data}
@@ -91,6 +97,7 @@ histological microscopy.
 \end{figure}
 
 \subsubsection{Blood vessel network}
+\label{sec:blood-network}
 
 With a good separation of soft tissue and bone, we map out the blood vessel
 network using connected components analysis, which is visualized in the 3D
