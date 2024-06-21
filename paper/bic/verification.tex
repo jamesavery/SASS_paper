@@ -9,9 +9,18 @@ truth, and comparing the results to other methods. Finally, we analyze the
 segmented data to study the blood vessel network in the bone region and produce
 statistics on the tissue-to-implant contact.
 
-%TODO: Gør det!
-
 \subsection{Qualitative verification}
+
+% TODO In case of ground truth; rephrase to "We first qualitatively verify the method by comparing the segmentation results to the ground truth. We then quantitatively verify the method by generating synthetic data, creating ground truth, and comparing the results to other methods."
+
+Since the SRµCT tomograms are clear enough that humans can distinguish between
+blood vessels and bone, as our mammalian visual cortex automatically corrects
+for the distortion effects, we can verify the success of the automatic
+classification. We can compare the automatic classification with the manual
+classification of the histological microscopy. A larger quantitative study is
+planned that analyses the full data set against recently conducted histological
+microscopy taken from the same biopsies. As such, we can only present a
+qualitative verification of the method in this paper.
 
 Figures \Cref{fig:histology-comparison1} and \Cref{fig:histology-comparison2}
 show the same 2D slices as were shown in Figures \Cref{fig:3viewsample} and
@@ -24,45 +33,6 @@ material or simply low computed confidence of the model. By comparing Figures
 \Cref{fig:histology-comparison1} and \Cref{fig:histology-comparison2}, we see
 that the computed classification matches the human classification everywhere
 where it is possible to visually distinguish the voxels.
-
-We see that the segmentation is overall successful, classifying the internal
-darker regions as soft tissue and the lighter regions as bone. This is further
-confirmed in \Cref{sec:blood-network}. However, extremely close to the implant
-(a few voxels), we cannot verify the segmentation, as the voxel values are so
-blended together with the implant voxel values that they become
-indistinguishable. A further strengthening of the analysis is needed to reach
-this layer. It is possible that the information is irretrievably lost, or
-perhaps it can be retrieved through a deconvolution - or simply a more precise
-version of the present analysis. It also fails within some of the soft tissue
-blobs, which is due to air bubbles in the resin, which have a very low density
-and thus a very low absorption.
-
-\subsection{Quantitative verification}
-\subsubsection{Generating synthetic data}
-\subsubsection{Ground truth generation}
-\subsubsection{Comparison to other methods}
-Global thresholding
-Classic CV
-ML-based methods
-
-\subsection{Dataset analysis}
-
-Once segmented, tissue in contact with the implant can be studied using the EDT
-from the implant, restricted to the bone region. We can simply mask the voxels
-that are within a thin shell of distances, $d_{min} < d(x,y,z) \le d_{max}$,
-for example, $d_{min} = 1 \text{µm}$ to $d_{max} = 5 \text{µm}$. We then sum
-over the masked voxels of each tissue type to obtain and divide by the total to
-obtain the tissue-to-implant contact per area or study the distribution across
-the surface area qualitatively.
-
-A larger quantitative study is planned that analyses the full data set against
-recently conducted histological microscopy taken from the same biopsies. In the
-present work, we evaluate qualitatively: Since the SRµCT tomograms are clear
-enough that it is possible as humans to distinguish between blood vessels and
-bone, as our mammalian visual cortex automatically corrects for the distortion
-effects, we can verify the success of the automatic classification. We can
-compare the automatic classification with the manual classification of the
-histological microscopy.
 
 \begin{figure}
     \centering
@@ -95,6 +65,36 @@ histological microscopy.
     }
     \label{fig:histology-comparison2}
 \end{figure}
+
+We see that the segmentation is overall successful, classifying the internal
+darker regions as soft tissue and the lighter regions as bone. This is further
+confirmed in \Cref{sec:blood-network}. However, extremely close to the implant
+(a few voxels), we cannot verify the segmentation, as the voxel values are so
+blended together with the implant voxel values that they become
+indistinguishable. A further strengthening of the analysis is needed to reach
+this layer. It is possible that the information is irretrievably lost, or
+perhaps it can be retrieved through a deconvolution - or simply a more precise
+version of the present analysis. It also fails within some of the soft tissue
+blobs, which is due to air bubbles in the resin, which have a very low density
+and thus a very low absorption.
+
+
+
+\subsection{Quantitative verification}
+\subsubsection{Generating synthetic data}
+\subsubsection{Ground truth generation}
+\subsubsection{Comparison to other methods}
+Global thresholding
+Classic CV
+ML-based methods
+
+\subsection{Dataset analysis}
+
+% TODO better seque
+Having verified the method qualitatively and quantitatively, we can now analyze
+the segmented data. We are interested in the blood vessel network in the bone
+region and the tissue-to-implant contact. We will first analyze the blood
+vessel network and then the tissue-to-implant contact.
 
 \subsubsection{Blood vessel network}
 \label{sec:blood-network}
@@ -154,10 +154,15 @@ ones.
 \subsubsection{Implant contact}
 \label{sec:contact}
 
-The bone-to-implant contact can be studied by looking at the distance to the
-implant surface, alongside the tissue-to-implant contact. In particular, we are
-interested in the difference between the old and new bone regions. We define
-the metric as follows:
+Tissue in contact with the implant can be studied using the EDT from the
+implant, restricted to the bone region. We can simply mask the voxels that are
+within a thin shell of distances, $d_{min} < d(x,y,z) \le d_{max}$, for
+example, $d_{min} = 1 \text{µm}$ to $d_{max} = 5 \text{µm}$. We then sum over
+the masked voxels of each tissue type to obtain and divide by the total to
+obtain the tissue-to-implant contact per area or study the distribution across
+the surface area qualitatively. In particular, we are interested in the
+difference between the old and new bone regions. We define the metric as
+follows:
 
 \begin{equation}
     BIC = \frac{\sum_{i : \text{field}(i) < 5} \text{bone}(i)}{\sum_{i : \text{field}(i) < 5} \text{voxels}(i)}
