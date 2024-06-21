@@ -150,3 +150,28 @@ ones.
     }
     \label{fig:blood-network}
 \end{figure}
+
+\subsubsection{Implant contact}
+\label{sec:contact}
+
+The bone-to-implant contact can be studied by looking at the distance to the implant surface, alongside the tissue-to-implant contact.
+In particular, we are interested in the difference between the old and new bone regions.
+We define the metric as follows:
+\begin{equation}
+    BIC = \frac{\sum_{i : \text{field}(i) < 5} \text{bone}(i)}{\sum_{i : \text{field}(i) < 5} \text{voxels}(i)}
+\end{equation}
+
+We find the old and new bone regions at different $z$ levels, based on the threading of the implant, with new bone being near the small threads and old bone being near the large threads.
+
+\begin{table}
+    \caption{The bone-to-implant contact (BIC) in the old and new bone regions for each of our samples.}
+    \label{tab:bic}
+    \centering
+    \begin{tabular}{lcc}
+        \toprule
+        Sample & Old bone & New bone \\
+        \midrule
+        770c\_pag & 0.85 & 0.92 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
