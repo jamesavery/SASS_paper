@@ -1,22 +1,22 @@
-Synchrotron Radiation micro-CT (SRµCT) produces 3D images at extremely high
-fidelity. While distortive X-ray effects such as beam hardening are minimized
-due to the highly brilliant monochromatic beams, they are not eliminated. This
-becomes particularly evident when attempting to obtain accurate tissue
-classification near high-contrast interfaces, such as those presented by metal
-implants.
+Synchrotron Radiation micro-CT (SRµCT) produces 3D images at large spatial
+resolution and high signal-to-noise ratio.  While corruptive X-ray effects such
+as beam hardening are minimized due to the practically monochromatic
+beams\ref{adv_in_srmicroct}, they are not eliminated. This becomes particularly
+evident when attempting to obtain accurate tissue classification near
+high-contrast interfaces, such as those introduced by metal implants.
 
-We present a computational method that discovers image distortion as a function
-of space and produces continuous probabilistic models of material
+We present a computational method that discovers voxel intensity corruption as
+a function of space and produces continuous probabilistic models of material
 classification functions. Using the derived models, we can accurately classify
 tissue throughout the full image, even at high-contrast transition interfaces.
 We apply the method to solve the notoriously difficult problem of accurately
-classifying biological tissue in contact with a titanium implant.
+classifying soft biological tissue in contact with a dense titanium implant.
 
-The new tissue classification method was used to evaluate bone-to-implant
+This new tissue classification method is used to evaluate bone-to-implant
 contact (BIC) in micrometer-resolution SRµCT images. In a previous study, we
 were unable to obtain accurate results for BIC, due to difficulties in
 accurately classifying the tissue types near the titanium implant surface. In
-the present work, we invert the distortive effects and obtain accurate tissue
+the present work, we overcome the corruptive effects and obtain accurate tissue
 classification close to the implant surface.
 %TODO: Issue #1. MANGLER TAL HER. Disse skal beregnes.
 The method is open-source, implemented in C++ and Python, and targets
