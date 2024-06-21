@@ -280,7 +280,8 @@ def blood_network(voxel_size):
     f.close()
 
 def segmented_slices(scale):
-    voxel_size = 1.825 * scale
+    voxels, voxel_size = load_voxels(sample, scale)
+    del voxels
     postfix = ''
     brightness = 0
     implant_boost = 2
@@ -302,7 +303,7 @@ def segmented_slices(scale):
 
     names = ['yx', 'zx', 'zy']
     planes = [
-        voxels[nz//4,:,:],
+        voxels[nz//2,:,:],
         voxels[:,ny//2,:],
         voxels[:,:,nx//2]
     ]
@@ -334,12 +335,12 @@ def segmented_slices(scale):
     p1 = np.memmap(f'{base_dir}/binary/segmented/gauss+edt/P1/{scale}x/{sample}{postfix}.uint16', dtype=np.uint16, mode='r', shape=(nz, ny, nx))
 
     bloods = [
-        p0[nz//4,:,:],
+        p0[nz//2,:,:],
         p0[:,ny//2,:],
         p0[:,:,nx//2]
     ]
     bones = [
-        p1[nz//4,:,:],
+        p1[nz//2,:,:],
         p1[:,ny//2,:],
         p1[:,:,nx//2]
     ]
@@ -384,6 +385,69 @@ def load_voxels(sample, scale):
 
     return np.memmap(f'{base_dir}/binary/voxels/{scale}x/{sample}.uint16', dtype=np.uint16, mode='r', shape=tuple(global_shape)), voxel_size * scale
 
+def global_thresholding(scale, hist_scale, mask_scale):
+    with h5py.File(f'{base_dir}/masks/{mask_scale}x/{sample}.h5', 'r') as f:
+        mask = f['bone_region']['mask'][:]
+
+    voxels, voxel_size = load_voxels(sample, hist_scale)
+    voxels = voxels * mask
+
+    bins, hist = np.histogram(voxels, bins=256, range=(1, voxels.max()))
+    # Smooth bins before finding peaks
+    bins = scipy.ndimage.gaussian_filter1d(bins, 2)
+    peaks = scipy.signal.find_peaks(bins, height=0.01)[0]
+    print (peaks)
+    # Find the valley between the first two peaks
+    valley = np.argmin(bins[peaks[0]:peaks[1]]) + peaks[0]
+    print (valley)
+
+    plt.plot(hist[:-1], bins)
+    plt.vlines([hist[peaks[0]], hist[peaks[1]]], 0, np.max(bins), colors='blue')
+    plt.vlines([hist[valley]], 0, np.max(bins), colors='red')
+    plt.savefig(f'{output_dir}/{sample}_global_hist_1d.pdf', bbox_inches='tight')
+    plt.clf()
+
+    thresh = hist[valley]
+    print (thresh)
+
+    voxels, voxel_size = load_voxels(sample, scale)
+    nz, ny, nx = voxels.shape
+    names = ['yx', 'zx', 'zy']
+    planes = [ voxels[nz//2,:,:], voxels[:,ny//2,:], voxels[:,:,nx//2] ]
+    bone_masks = [ mask[nz//mask_scale//2,:,:], mask[:,ny//mask_scale//2,:], mask[:,:,nx//mask_scale//2] ]
+    colorbar_scales = [ .8, .75, .75 ]
+    crops = [ # in micrometers
+        np.array([3000, 4000, 1000, 3000]),
+        np.array([0, 2000, 0, 1000]),
+        np.array([3000, 4500, 3500, 5000])
+    ]
+    crops = [ np.floor((crop // voxel_size)).astype(int) for crop in crops ]
+
+    for name, plane, bone_mask, crop, colorbar_scale in zip(names, planes, bone_masks, crops, colorbar_scales):
+        ax0, ax1 = name
+
+        segmented = np.zeros(plane.shape + (3,), dtype=np.uint8)
+        segmented[plane < thresh] = red
+        segmented[plane >= thresh] = yellow
+        this_front = np.repeat(np.repeat(bone_mask, mask_scale, axis=0), mask_scale, axis=1)
+        segmented = segmented[:this_front.shape[0]] * this_front[:,:,np.newaxis]
+
+        plt.figure(figsize=(10, 10))
+        plt.imshow(segmented[crop[0]:crop[1],crop[2]:crop[3]])
+        plt.ylabel(f'{ax0}/µm')
+        plt.xlabel(f'{ax1}/µm')
+        xticks = np.array(plt.xticks()[0][1:-1])
+        xticks_labels = np.round((xticks + crop[2]) * voxel_size).astype(int)
+        plt.xticks(xticks, xticks_labels)
+        yticks = np.array(plt.yticks()[0][1:-1])
+        yticks_labels = np.round((yticks + crop[0]) * voxel_size).astype(int)
+        plt.yticks(yticks, yticks_labels)
+        #plt.colorbar(shrink=colorbar_scale, aspect=20*colorbar_scale)
+        plt.tight_layout()
+        plt.savefig(f'{output_dir}/{sample}_global_{name}.pdf', bbox_inches='tight')
+        plt.clf()
+
+
 if __name__ == '__main__':
     # Figure 1
     #voxels, voxel_size = load_voxels('770c_pag', 1)
@@ -411,7 +475,13 @@ if __name__ == '__main__':
     # Figure 9
     #otsu()
 
-    # Figure 10
+    # Figure 10 is the flowchart
+
+    # Figure 11, 12
+    segmented_slices(1)
+
+    # Figure 13
     #blood_network(1)
 
-    segmented_slices(1)
+    # Figure 14
+    global_thresholding(1, 8, 8)
