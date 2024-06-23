@@ -7,12 +7,19 @@ import os
 import scipy.signal
 import vedo
 
-base_dir = '/home/carljohnsen/git/maxibone/data_tmp/MAXIBONE/Goats/tomograms'
+#base_dir = '/home/carljohnsen/git/maxibone/data_tmp/MAXIBONE/Goats/tomograms'
+base_dir = '/data_fast/MAXIBONE/Goats/tomograms'
 output_dir = '../generated'
-sample = '770c_pag'
+sample = '811_pag'
 #scale = 1
 plane_cmap = 'RdYlBu'
 histogram_cmap = 'coolwarm'
+
+# sample : [[ystart, yend, xstart, xend], [ystart, yend, zstart, zend], [xstart, xend, zstart, zend]]
+crop_map = {
+    '770_pag' : [ np.array((3000, 4000, 3000, 4000)), np.array((0, 2000, 1000, 3000)), np.array((0, 2000, 3000, 4000))],
+}
+default_crop = [ np.array((3000, 4000, 1000, 3000)), np.array((3000, 5000, 1000, 3000)), np.array((3000, 4500, 3500, 5000)) ]
 
 red = np.array([255, 0, 0])
 orange = np.array([255, 128, 0])
@@ -50,7 +57,10 @@ def roi_planes(voxels, voxel_size):
     nz, ny, nx = voxels.shape
     names = ['yx', 'zx', 'zy']
     planes = [ voxels[nz//2,:,:], voxels[:,ny//2,:], voxels[:,:,nx//2] ]
-    crops = [ np.array((3000, 4000, 1000, 3000)), np.array((0, 100, 0, 100)), np.array((3000, 4500, 3500, 5000)) ]
+    if sample in crop_map:
+        crops = crop_map[sample]
+    else:
+        crops = default_crop
     crops = [ np.floor(crop // voxel_size).astype(int) for crop in crops ]
     colorbar_scales = [ .4, .8, .8 ]
 
@@ -79,13 +89,44 @@ def hist_1d(voxels):
     bins[0] = 0
     bins = (bins / np.sum(bins)) * 100
 
+    # sample : air, blood, bone, implant
+    peak_map = {
+        '770_pag' : [0, 1, 2, 3],
+        '770c_pag' : [(0,1), 3, 4, 5],
+        '771c_pag' : [(0, 1), 2, 3, 4],
+        '772_pag' : [None, 0, 1, 2],
+        '775c_pag' : [(0, 1), 2, 3, 4],
+        '810c_pag' : [(0, 1), 2, 3, (4,5)],
+        '811_pag' : [(0, 1), (2,3), 5, 6],
+    }
+
     # Find the peaks
     peaks, info = scipy.signal.find_peaks(bins, height=0.1)
     scaled_peaks = np.array(peaks) * (vmax - vmin) / 256 + vmin
-    air = (scaled_peaks[0] + scaled_peaks[1]) / 2
-    blood = scaled_peaks[3]
-    bone = scaled_peaks[4]
-    implant = scaled_peaks[5]
+    #air = (scaled_peaks[0] + scaled_peaks[1]) / 2
+    print (peaks)
+    if len(scaled_peaks) == 4:
+        peak_air, peak_blood, peak_bone, peak_implant = 0, 1, 2, 3
+    else:
+        peak_air, peak_blood, peak_bone, peak_implant = peak_map[sample]
+    if type(peak_air) is tuple:
+        air = np.mean([scaled_peaks[i] for i in peak_air])
+    elif peak_air is None:
+        air = 0
+    else:
+        air = scaled_peaks[peak_air]
+    if type(peak_blood) is tuple:
+        blood = np.mean([scaled_peaks[i] for i in peak_blood])
+    else:
+        blood = scaled_peaks[peak_blood]
+    if type(peak_bone) is tuple:
+        bone = np.mean([scaled_peaks[i] for i in peak_bone])
+    else:
+        bone = scaled_peaks[peak_bone]
+    if type(peak_implant) is tuple:
+        implant = np.mean([scaled_peaks[i] for i in peak_implant])
+    else:
+        implant = scaled_peaks[peak_implant]
     xmin = hist[0]
     xmax = hist[-1]
     ymin = -0.1
@@ -307,11 +348,10 @@ def segmented_slices(scale):
         voxels[:,ny//2,:],
         voxels[:,:,nx//2]
     ]
-    crops = [ # in micrometers
-        np.array([3000, 4000, 1000, 3000]),
-        np.array([0, nz, 0, 1000]),
-        np.array([3000, 4500, 3500, 5000])
-    ]
+    if sample in crop_map:
+        crops = crop_map[sample]
+    else:
+        crops = default_crop
     crops = [ np.floor((crop // voxel_size)).astype(int) for crop in crops ]
 
     for name, plane, crop in zip(names, planes, crops):
@@ -386,7 +426,7 @@ def load_voxels(sample, scale):
     return np.memmap(f'{base_dir}/binary/voxels/{scale}x/{sample}.uint16', dtype=np.uint16, mode='r', shape=tuple(global_shape)), voxel_size * scale
 
 def global_thresholding(scale, hist_scale, mask_scale):
-    with h5py.File(f'{base_dir}/masks/{mask_scale}x/{sample}.h5', 'r') as f:
+    with h5py.File(f'{base_dir}/masks/{hist_scale}x/{sample}.h5', 'r') as f:
         mask = f['bone_region']['mask'][:]
 
     voxels, voxel_size = load_voxels(sample, hist_scale)
@@ -409,18 +449,21 @@ def global_thresholding(scale, hist_scale, mask_scale):
 
     thresh = hist[valley]
     print (thresh)
+    if sample == '772_pag':
+        thresh = hist[136] # Manually extracted
 
     voxels, voxel_size = load_voxels(sample, scale)
     nz, ny, nx = voxels.shape
     names = ['yx', 'zx', 'zy']
     planes = [ voxels[nz//2,:,:], voxels[:,ny//2,:], voxels[:,:,nx//2] ]
+    with h5py.File(f'{base_dir}/masks/{mask_scale}x/{sample}.h5', 'r') as f:
+        mask = f['bone_region']['mask'][:]
     bone_masks = [ mask[nz//mask_scale//2,:,:], mask[:,ny//mask_scale//2,:], mask[:,:,nx//mask_scale//2] ]
     colorbar_scales = [ .8, .75, .75 ]
-    crops = [ # in micrometers
-        np.array([3000, 4000, 1000, 3000]),
-        np.array([0, 2000, 0, 1000]),
-        np.array([3000, 4500, 3500, 5000])
-    ]
+    if sample in crop_map:
+        crops = crop_map[sample]
+    else:
+        crops = default_crop
     crops = [ np.floor((crop // voxel_size)).astype(int) for crop in crops ]
 
     for name, plane, bone_mask, crop, colorbar_scale in zip(names, planes, bone_masks, crops, colorbar_scales):
@@ -450,30 +493,30 @@ def global_thresholding(scale, hist_scale, mask_scale):
 
 if __name__ == '__main__':
     # Figure 1
-    #voxels, voxel_size = load_voxels('770c_pag', 1)
-    #full_planes(voxels, voxel_size)
+    voxels, voxel_size = load_voxels(sample, 1)
+    full_planes(voxels, voxel_size)
 
     # Figure 2
-    #voxels, voxel_size = load_voxels('770c_pag', 1)
-    #roi_planes(voxels, voxel_size)
+    voxels, voxel_size = load_voxels(sample, 1)
+    roi_planes(voxels, voxel_size)
 
     # Figure 3
-    #voxels, _ = load_voxels('770c_pag', 8)
-    #hist_1d(voxels)
+    voxels, _ = load_voxels(sample, 8)
+    hist_1d(voxels)
 
     # Figure 4
-    #implant_mask(sample, 2)
+    implant_mask(sample, 2)
 
     # Figure 5 (2dhists) + 6 (fieldhists)
-    #hist_2d(sample, '-bone_region')
+    hist_2d(sample, '-bone_region')
 
     # Figure 7 is the "glowing in valleys" plot
 
     # Figure 8
-    #diffusion_slice(2)
+    diffusion_slice(2)
 
     # Figure 9
-    #otsu()
+    otsu()
 
     # Figure 10 is the flowchart
 
@@ -484,4 +527,4 @@ if __name__ == '__main__':
     #blood_network(1)
 
     # Figure 14
-    global_thresholding(1, 8, 8)
+    global_thresholding(1, 8, 2)
