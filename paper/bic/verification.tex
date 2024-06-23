@@ -34,37 +34,44 @@ material or simply low computed confidence of the model. By comparing Figures
 that the computed classification matches the human classification everywhere
 where it is possible to visually distinguish the voxels.
 
-\begin{figure}
+\begin{figure*}
     \centering
-    \begin{tabular}{c}
-        \includegraphics[width=.95\linewidth]{generated/770c_pag_segmented_yx_raw.pdf} \\
-        \includegraphics[width=.95\linewidth]{generated/770c_pag_segmented_yx_colored.pdf}
+    \begin{tabular}{cc}
+        \includegraphics[width=.45\linewidth]{generated/770c_pag_segmented_yx_raw.pdf} &
+        \\
+        \includegraphics[width=.45\linewidth]{generated/770c_pag_segmented_yx_colored.pdf} &
+        \includegraphics[width=.45\linewidth]{generated/770c_pag_global_yx.pdf} \\
     \end{tabular}
     \caption{
-        YX slices of the original tomography (top), and the classified
-        (bottom). The voxels are colored according to the modeled probability
-        functions $P(m\vert v,\fval)$ between 0 and 1: completely red voxels
-        have $P(m=0\vert v,\fval) = 1$, completely yellow voxels have
-        $P(m=1\vert v,\fval)\ = 1$, and uncertain voxels become progressively
-        gray.
+        YX slices of the original tomography (top left), our classification
+        (bottom left), and global threshold classification (bottom right). For
+        our classification, the voxels are colored according to the modeled
+        probability functions $P(m\vert v,\fval)$ between 0 and 1: completely
+        red voxels have $P(m=0\vert v,\fval) = 1$, completely yellow voxels
+        have $P(m=1\vert v,\fval)\ = 1$, and uncertain voxels become
+        progressively gray.
     }
     \label{fig:histology-comparison1}
-\end{figure}
+\end{figure*}
 
-\begin{figure}
+\begin{figure*}
     \centering
-    \begin{tabular}{c}
-        \includegraphics[width=.7\linewidth]{generated/770c_pag_segmented_zy_raw.pdf} \\
-        \includegraphics[width=.7\linewidth]{generated/770c_pag_segmented_zy_colored.pdf}
+    \begin{tabular}{cc}
+        \includegraphics[width=.45\linewidth]{generated/770c_pag_segmented_zy_raw.pdf} &
+        \\
+        \includegraphics[width=.45\linewidth]{generated/770c_pag_segmented_zy_colored.pdf} &
+        \includegraphics[width=.45\linewidth]{generated/770c_pag_global_zy.pdf} \\
     \end{tabular}
     \caption{
-        YZ slices of the original tomography (top) and the classified (bottom).
-        Yellow depicts bone and red depicts soft tissue. Note that the
+        YZ slices of the original tomography (top left), our classification
+        (bottom left), and global threshold classification (bottom right).
+        Yellow depicts bone and red depicts soft tissue. Note that our
         segmentation correctly classifies the materials close to the implant,
-        even in the grooves of the screw threads.
+        even in the grooves of the screw threads, whereas the global threshold
+        classification fails.
     }
     \label{fig:histology-comparison2}
-\end{figure}
+\end{figure*}
 
 We see that the segmentation is overall successful, classifying the internal
 darker regions as soft tissue and the lighter regions as bone. This is further
