@@ -1,17 +1,18 @@
 import matplotlib
 matplotlib.use('Agg')
+import cv2
 import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import scipy.signal
+from skimage.filters import threshold_otsu
+from tqdm import tqdm
 import vedo
 
-#base_dir = '/home/carljohnsen/git/maxibone/data_tmp/MAXIBONE/Goats/tomograms'
 base_dir = '/data_fast/MAXIBONE/Goats/tomograms'
 output_dir = '../generated'
-sample = '811_pag'
-#scale = 1
+sample = '770c_pag'
 plane_cmap = 'RdYlBu'
 histogram_cmap = 'coolwarm'
 
@@ -19,17 +20,23 @@ histogram_cmap = 'coolwarm'
 crop_map = {
     '770_pag' : [ np.array((3000, 4000, 3000, 4000)), np.array((0, 2000, 1000, 3000)), np.array((0, 2000, 3000, 4000))],
 }
-default_crop = [ np.array((3000, 4000, 1000, 3000)), np.array((3000, 5000, 1000, 3000)), np.array((3000, 4500, 3500, 5000)) ]
+default_crop = [ np.array((3000, 4000, 1000, 3000)), np.array((3000, 4000, 1500, 2500)), np.array((3000, 4500, 3500, 5000)) ]
 
+# Colors
 red = np.array([255, 0, 0])
 orange = np.array([255, 128, 0])
 blue = np.array([64, 128, 255])
 yellow = np.array([255, 255, 0])
 gray = np.array([32, 32, 32])
 
+# Segmentation color parameters
+blood_base = .7
+blood_boost = 1
+bone_base = .7
+bone_boost = 1
+
 os.makedirs(output_dir, exist_ok=True)
 
-# TODO check if labels and such are matched correctly
 def full_planes(voxels, voxel_size):
     nz, ny, nx = voxels.shape
     names = ['yx', 'zx', 'zy']
@@ -391,7 +398,7 @@ def segmented_slices(scale):
         ax0, ax1 = name
         display = np.zeros(implant.shape + (3,), dtype=np.float64)
         display += brightness # Improve overall brightness
-        display += implant[:,:,np.newaxis] * gray * implant_boost
+        #display += implant[:,:,np.newaxis] * gray * implant_boost
         blo = (blood[:,:,np.newaxis] + blood_base )
         blo[blo < blood_base + .001] = 0
         blo /= blo.max()
@@ -440,6 +447,25 @@ def global_thresholding(scale, hist_scale, mask_scale):
     # Find the valley between the first two peaks
     valley = np.argmin(bins[peaks[0]:peaks[1]]) + peaks[0]
     print (valley)
+    thresh = hist[valley]
+
+    split = np.argwhere(hist > thresh)[0][0]-1
+    soft = bins[:split]
+    hard = bins[split:]
+    soft = (soft - soft.min()) / (soft.max() - soft.min())
+    soft += blood_base
+    soft[soft < 0 + .001] = 0
+    soft /= soft.max()
+    soft *= blood_boost
+    hard = (hard - hard.min()) / (hard.max() - hard.min())
+    hard += bone_base
+    hard[hard < 0 + .001] = 0
+    hard /= hard.max()
+    hard *= bone_boost
+    probs = np.zeros(bins.shape + (3,), dtype=np.float64)
+    probs[:split] = soft[:,np.newaxis] * red
+    probs[split:] = hard[:,np.newaxis] * yellow
+    probs = np.clip(probs, 0, 255).astype(np.uint8)
 
     plt.plot(hist[:-1], bins)
     plt.vlines([hist[peaks[0]], hist[peaks[1]]], 0, np.max(bins), colors='blue')
@@ -447,8 +473,6 @@ def global_thresholding(scale, hist_scale, mask_scale):
     plt.savefig(f'{output_dir}/{sample}_global_hist_1d.pdf', bbox_inches='tight')
     plt.clf()
 
-    thresh = hist[valley]
-    print (thresh)
     if sample == '772_pag':
         thresh = hist[136] # Manually extracted
 
@@ -469,9 +493,26 @@ def global_thresholding(scale, hist_scale, mask_scale):
     for name, plane, bone_mask, crop, colorbar_scale in zip(names, planes, bone_masks, crops, colorbar_scales):
         ax0, ax1 = name
 
-        segmented = np.zeros(plane.shape + (3,), dtype=np.uint8)
-        segmented[plane < thresh] = red
-        segmented[plane >= thresh] = yellow
+        # Step 1: Find bin_idx for each entry in plane
+        # Expand dimensions of plane and hist for broadcasting
+        plane_expanded = plane[..., np.newaxis]  # Add an axis for broadcasting
+        hist_expanded = hist[np.newaxis, :]  # Add an axis for broadcasting
+
+        # Create a boolean array where True indicates hist > e
+        hist_comparison = hist_expanded > plane_expanded
+
+        # Find the first True index along the last axis (hist axis)
+        bin_idx = np.argmax(hist_comparison, axis=-1)
+
+        # Step 2: Find the corresponding probability in probs for each bin_idx
+        segmented = probs[bin_idx-1]
+
+        # 'probabilities' now contains the corresponding probability for each entry in 'plane'
+
+        # Global thresholding
+        #segmented = np.zeros(plane.shape + (3,), dtype=np.uint8)
+        #segmented[plane < thresh] = red
+        #segmented[plane >= thresh] = yellow
         this_front = np.repeat(np.repeat(bone_mask, mask_scale, axis=0), mask_scale, axis=1)
         segmented = segmented[:this_front.shape[0]] * this_front[:,:,np.newaxis]
 
@@ -485,38 +526,125 @@ def global_thresholding(scale, hist_scale, mask_scale):
         yticks = np.array(plt.yticks()[0][1:-1])
         yticks_labels = np.round((yticks + crop[0]) * voxel_size).astype(int)
         plt.yticks(yticks, yticks_labels)
-        #plt.colorbar(shrink=colorbar_scale, aspect=20*colorbar_scale)
         plt.tight_layout()
         plt.savefig(f'{output_dir}/{sample}_global_{name}.pdf', bbox_inches='tight')
+        plt.clf()
+
+def otsu_thresholding(scale, mask_scale):
+    voxels, voxel_size = load_voxels(sample, scale)
+
+    with h5py.File(f'{base_dir}/masks/{mask_scale}x/{sample}.h5', 'r') as f:
+        mask = f['bone_region']['mask'][:]
+    bone_region = np.repeat(np.repeat(np.repeat(mask, mask_scale, axis=0), mask_scale, axis=1), mask_scale, axis=2)
+
+    nz, ny, nx = bone_region.shape
+
+    names = ['yx', 'zx', 'zy']
+    block_size = 50
+
+    slabs = [
+        voxels[nz//2-block_size:nz//2+block_size,:,:],
+        voxels[:-1,ny//2-block_size:ny//2+block_size,:].transpose(1,0,2),
+        voxels[:-1,:,nx//2-block_size:nx//2+block_size].transpose(2,0,1)
+    ]
+    mask_slabs = [
+        bone_region[nz//2-block_size:nz//2+block_size,:,:],
+        bone_region[:,ny//2-block_size:ny//2+block_size,:].transpose(1,0,2),
+        bone_region[:,:,nx//2-block_size:nx//2+block_size].transpose(2,0,1)
+    ]
+    slabs = [ mask_slabs[i] * slabs[i] for i in range(3) ]
+
+    crops = [ np.floor((crop // voxel_size)).astype(int) for crop in default_crop ]
+
+    for name, slab, crop, mask in zip(names, slabs, crops, mask_slabs):
+        ax0, ax1 = name
+        th3 = np.zeros(slab.shape[1:] + (3,), dtype=np.uint8)
+        for y in tqdm(range(crop[0], crop[1])):
+            for x in range(crop[2], crop[3]):
+                ystart, yend = max(y-block_size, 0), min(y+block_size, slab.shape[1])
+                xstart, xend = max(x-block_size, 0), min(x+block_size, slab.shape[2])
+                window = slab[:, ystart:yend, xstart:xend]
+                ma = np.ma.masked_array(window, window == 0)
+                if ma.count() == 0:
+                    continue
+                bins_otsu, hist_otsu = np.histogram(ma.compressed(), bins=128, range=(1, window.max()))
+                thr = threshold_otsu(ma.compressed())
+                if np.sum(hist_otsu > thr) == 0:
+                    continue
+                split = np.argwhere(hist_otsu > thr)[0][0]-1
+                soft, hard = bins_otsu[:split], bins_otsu[split:]
+                # Normalize and adjust soft and hard segments
+                soft = np.clip((soft - soft.min()) / (soft.ptp() + .001), 0, None) * blood_boost + blood_base
+                hard = np.clip((hard - hard.min()) / (hard.ptp() + .001), 0, None) * bone_boost + bone_base
+                # soft = bins_otsu[:split]
+                # hard = bins_otsu[split:]
+                # soft = (soft - soft.min()) / (soft.max() - soft.min())
+                # soft += blood_base
+                # soft[soft < blood_base + .001] = 0
+                # soft /= soft.max()
+                # soft *= blood_boost
+                # hard = (hard - hard.min()) / (hard.max() - hard.min())
+                # hard += bone_base
+                # hard[hard < bone_base + .001] = 0
+                # hard /= hard.max()
+                # hard *= bone_boost
+                otsu_probs = np.concatenate([soft, hard])
+                # otsu_probs = np.zeros_like(bins_otsu, dtype=np.float64)
+                # otsu_probs[:split] = soft
+                # otsu_probs[split:] = hard
+                pixel = slab[block_size, y, x]
+
+                if np.sum(hist_otsu > pixel) == 0:
+                    continue
+                bin_idx = np.argwhere(hist_otsu > pixel)[0][0]
+                p = otsu_probs[bin_idx-1]
+                if pixel > thr:
+                    th3[y,x] = yellow * p
+                else:
+                    th3[y,x] = red * p
+        th3 = th3 * mask[block_size,:,:,np.newaxis]
+
+        plt.figure(figsize=(10, 10))
+        plt.imshow(th3[crop[0]:crop[1],crop[2]:crop[3]], cmap='gray')
+        plt.ylabel(f'{ax0}/µm')
+        plt.xlabel(f'{ax1}/µm')
+        xticks = np.array(plt.xticks()[0][1:-1])
+        xticks_labels = np.round((xticks + crop[2]) * voxel_size).astype(int)
+        plt.xticks(xticks, xticks_labels)
+        yticks = np.array(plt.yticks()[0][1:-1])
+        yticks_labels = np.round((yticks + crop[0]) * voxel_size).astype(int)
+        plt.yticks(yticks, yticks_labels)
+        plt.tight_layout()
+        plt.savefig(f'{output_dir}/{sample}_global_{name}_otsu.pdf', bbox_inches='tight')
         plt.clf()
 
 
 if __name__ == '__main__':
     # Figure 1
-    voxels, voxel_size = load_voxels(sample, 1)
-    full_planes(voxels, voxel_size)
+    #voxels, voxel_size = load_voxels(sample, 1)
+    #full_planes(voxels, voxel_size)
 
     # Figure 2
-    voxels, voxel_size = load_voxels(sample, 1)
-    roi_planes(voxels, voxel_size)
+    #voxels, voxel_size = load_voxels(sample, 1)
+    #roi_planes(voxels, voxel_size)
 
     # Figure 3
-    voxels, _ = load_voxels(sample, 8)
-    hist_1d(voxels)
+    #voxels, _ = load_voxels(sample, 8)
+    #hist_1d(voxels)
 
     # Figure 4
-    implant_mask(sample, 2)
+    #implant_mask(sample, 2)
 
     # Figure 5 (2dhists) + 6 (fieldhists)
-    hist_2d(sample, '-bone_region')
+    #hist_2d(sample, '-bone_region')
 
     # Figure 7 is the "glowing in valleys" plot
 
     # Figure 8
-    diffusion_slice(2)
+    #diffusion_slice(2)
 
     # Figure 9
-    otsu()
+    #otsu()
 
     # Figure 10 is the flowchart
 
@@ -527,4 +655,5 @@ if __name__ == '__main__':
     #blood_network(1)
 
     # Figure 14
-    global_thresholding(1, 8, 2)
+    #global_thresholding(1, 8, 2)
+    #otsu_thresholding(1, 2)
