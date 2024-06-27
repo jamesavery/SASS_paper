@@ -28,6 +28,7 @@ orange = np.array([255, 128, 0])
 blue = np.array([64, 128, 255])
 yellow = np.array([255, 255, 0])
 gray = np.array([32, 32, 32])
+green = np.array([0, 255, 0])
 
 # Segmentation color parameters
 blood_base = .7
@@ -618,6 +619,34 @@ def otsu_thresholding(scale, mask_scale):
         plt.savefig(f'{output_dir}/{sample}_global_{name}_otsu.pdf', bbox_inches='tight')
         plt.clf()
 
+def bone_health(scale=1):
+    voxels, voxel_size = load_voxels(sample, scale)
+    nz, ny, nx = voxels.shape
+    bone_prob = np.memmap(f'{base_dir}/binary/segmented/gauss+edt/P1/{scale}x/{sample}.uint16', dtype=np.uint16, mode='r').reshape((nz, ny, nx))
+    health_mask = np.load(f'{base_dir}/binary/fields/healthy_bone/{scale}x/{sample}.npy', mmap_mode='r')
+
+    names = ['yx', 'zx', 'zy']
+    bone_planes = [ bone_prob[nz//2,:,:], bone_prob[:,ny//2,:], bone_prob[:,:,nx//2] ]
+    health_planes = [ health_mask[nz//2,:,:], health_mask[:,ny//2,:], health_mask[:,:,nx//2] ]
+
+    for name, bone_plane, health_plane in zip(names, bone_planes, health_planes):
+        display = np.zeros(bone_plane.shape + (3,), dtype=np.uint8)
+        display[bone_plane > 0] = yellow
+        display[health_plane > 0] = green
+
+        plt.figure(figsize=(10, 10))
+        plt.imshow(display)
+        plt.ylabel(f'{name[0]}/µm')
+        plt.xlabel(f'{name[1]}/µm')
+        xticks = np.array(plt.xticks()[0][1:-1])
+        xticks_labels = np.round(xticks * voxel_size).astype(int)
+        plt.xticks(xticks, xticks_labels)
+        yticks = np.array(plt.yticks()[0][1:-1])
+        yticks_labels = np.round(yticks * voxel_size).astype(int)
+        plt.yticks(yticks, yticks_labels)
+        plt.tight_layout()
+        plt.savefig(f'{output_dir}/{sample}_bone_health_{name}.pdf', bbox_inches='tight')
+        plt.clf()
 
 if __name__ == '__main__':
     # Figure 1
@@ -649,7 +678,7 @@ if __name__ == '__main__':
     # Figure 10 is the flowchart
 
     # Figure 11, 12
-    segmented_slices(1)
+    #segmented_slices(1)
 
     # Figure 13
     #blood_network(1)
@@ -657,3 +686,6 @@ if __name__ == '__main__':
     # Figure 14
     #global_thresholding(1, 8, 2)
     #otsu_thresholding(1, 2)
+
+    # Figure 15
+    bone_health(1)
