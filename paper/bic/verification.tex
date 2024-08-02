@@ -87,15 +87,68 @@ version of the present analysis. It also fails within some of the soft tissue
 blobs, which is due to air bubbles in the resin, which have a very low density
 and thus a very low absorption.
 
+\subsection{Quantitative evaluation}
 
+% Why it is a problem
+Reliably evaluating segmentation methods on medical data such as that
+presented in this paper is a challenging task. A satisfactory annotated ground
+truth does not exist, which makes quantitatively evaluating one method against
+another very hard. Furthermore, due to the very large number of voxels, using
+manual or semi-automatic methods quickly becomes impractical. One such example
+are neural networks, which need to be trained on multiple instances of similar
+data accompanied by an annotated ground truth. This is a very time consuming
+and expensive procedure, and does not easily translate to other data, which are
+only slightly dissimilar.
 
-\subsection{Quantitative verification}
-\subsubsection{Generating synthetic data}
-\subsubsection{Ground truth generation}
+In order to ensure a reliable and consistent verification of our method, we
+must tackle a common problem in medical physics. Namely that problems are often
+solved using approaches which can be hard to reproduce and therefore
+verify~\cite{replication-crisis}. We try to overcome this difficulty by
+creating synthetic reproducible data, accompanied by a consistent reference
+level ground truth. The generated data resembles our original data and shares
+many physical qualities, but instead of being acquired at ESRF, it is simulated
+using the software Novi-sim~\cite{novisim} on an affordable workstation using a
+consumer-grade GPU (Nvidia RTX 3080). This allows other researchers to not only
+reproduce but also modify our tomographic models and perform new experiments.
+This attempts to both extend the robustness of our proposed method, and make it
+less specific and dependent on our original data. In future experiments this
+also allows to extract 2D-slices of synthetic data and compare with manually
+inspected and annotated histologies.
+
+%TODO: inkluder link eller beskrivelse til tilgængelig data: original data, men
+% også STL modeller og simuleret data samt ground truth.
+% Original data and synthetic data, with STL files and ground truth are available
+% at github [link]
+
+\subsubsection{Ground truth and synthetic data}
+
+% How we use Novi-sim
+The presented segmentation pipeline results in a set of masks, one for each
+material.  Each mask is overlayed unto a single volume representing our
+artificial ground truth. By construction it will have a perfect overlap,
+correctly identifying each material using our method.  Furthermore the masks
+for each material are converted into meshes and used to generate STL files.
+The generated STL files are transformed to synthetic tomograms using Novisim.
+While the software is set up to simulate the original experiment at ESRF, it
+will naturally not be a perfect match. The generated ground truth is now
+perfectly accurate with the input, but deviates slightly but predictably from
+the generated tomogram due to experimental physical effects and artifacts. This
+allows us to use reproducible synthetic data to consistently compare our
+segmentation method with other, and also detect in which regions they differ
+the most. Since we expect regions very close and very far away from the implant
+to be difficult, any intermediate regions should be fairly consistent across
+methods. Finally we can inspect the differing regions visually to evaluate on
+the overall performance.
+
 \subsubsection{Comparison to other methods}
-Global thresholding
-Classic CV
-ML-based methods
+
+Having a reproducible tomogram with corresponding ground truth, allows us to
+make a comparison to other methods. The simplest approach is having a global
+threshold. This is used to illustrate why we cannot afford to rely on too
+simple methods.  Next we show how a more flexible multi-level automatic Otsu
+segmentation performs and its drawbacks. Finally we look at fully automatic
+ML-based methods and illustrate the assumptions that underlie their peformance
+and how they are not always sufficient or practical for data similar to ours.
 
 \subsection{Dataset analysis}
 
