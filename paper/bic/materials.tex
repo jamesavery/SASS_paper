@@ -1,5 +1,5 @@
-\section{Background}
-\label{sec:background}
+\section{Materials}
+\label{sec:materials}
 
 The methods presented in this paper were devised as part of the development of
 a larger software toolbox for fully automatic analysis of very-high-resolution
@@ -77,8 +77,11 @@ fibrous tissue.
     (c) & \begin{tabular}{c} \includegraphics[width=0.81\linewidth]{generated/770c_pag_full_zy.pdf}\end{tabular}
   \end{tabular}
   \caption{
-    Cross sections of a sample in YX-, ZX- and ZY-planes respectively. A voxel
-    has a size of 1.875µm.
+	The physical samples are scanned in chunks of 4-6 sub-volumes through the
+	height of the implant, depending on the initial size of a sample.  The
+	physical field of view of a single image sample is about 6.5mm in each
+	direction. A voxel has a size of 1.875µm.  Shown here are the cross
+	sections of a sample in YX-, ZX- and ZY-planes respectively.
   }
 \label{fig:3viewsample}
 \end{figure}
@@ -97,40 +100,35 @@ without destroying or manipulating the sample. X-ray computed tomography is a
 widely used tool for non-intrusive medical imaging. By exposing a subject to
 X-rays, we can map the linear attenuation coefficient of the passing rays. Each
 ray is attenuated relatively to the density and composition of the material it
-passes. By rotating either the scanner or the sample we can get a full 3D image
-representation of the inner structure of the sample. Each volumetric pixel
-(voxel) then represents the X-ray attenuation at its spatial position. In this
-way, X-rays can reliably be used to internally characterize samples in a
-non-intrusive and non-destructive manner. Medical CT scans can provide spatial
-resolutions on the order of submillimetre scale \citep{medicalct}. The more
-modern micro-computed tomography (µCT) can provide much higher spatial
-resolution on the micrometer scale \citep{srexptime}.
+passes. By rotating the sample we can reconstruct a 3D image representation of
+the inner structure of the sample. Each volumetric pixel (voxel) then
+represents the X-ray attenuation at its spatial position. In this way, X-rays
+can reliably be used to internally characterize samples in a non-intrusive and
+non-destructive manner. Medical CT scans can provide spatial resolutions on the
+order of submillimetre scale \citep{medicalct}. The more modern micro-computed
+tomography (µCT) can provide much higher spatial resolution on the micrometer
+scale \citep{srexptime}.
 
-This work focuses on a data set acquired by SRµCT. For this imaging technique,
-electrons are accelerated to ultra-relativistic speeds in trajectories directed
-by strong magnetic fields. The resulting X-ray beam provides a high photon flux
-allowing for very short exposure times \citep{srexptime}. This can help counter
-Poisson noise from suboptimal photon count \citep{srnoise}. Contrary to both CT
-and µCT, this approach requires a large particle accelerator and is not
-standard medical or laboratory equipment. However, SRµCT offers an even better
-spatial resolution of up to 0.1 µm, and much higher image quality due to fewer
-distortive X-ray effects. The resulting beams are high in brilliance and
-collimation, which gives a very clear signal. Artifacts from beam-hardening are
-minimized due to synchrotron radiation X-rays being characterized by their
-practically mono-energetic spectrum.
+This work focuses on data acquired by SRµCT.  Contrary to both CT and µCT, this
+is not standard medical or laboratory equipment, but requires a large scale
+particle accelerator facility.  For this imaging technique, electrons are
+accelerated to ultra-relativistic speeds in trajectories directed by strong
+magnetic fields. The resulting X-ray beam is narrow and of high photon flux
+allowing for quick scanning times \citep{srexptime}. This can help counter
+Poisson noise from suboptimal photon count \citep{srnoise}. Synchrotron
+radiation is high in brilliance and very well collimated, allowing a better
+spatial resolution and a very high signal to noise ratio.  Artifacts from
+beam-hardening are minimized due to synchrotron radiation X-rays being
+characterized by their practically mono-energetic spectrum \citep{srbeamquality}.
 
 The tomograms presented here have been acquired at the ID19 beamline at the
-European Synchrotron Radiation Facility (ESRF) in Grenoble, France. They were
-reconstructed~\citep{sporring} at the ID19 beamline. A standard filtered
-back-projection algorithm was applied via the ESRF in-house developed software
-PyHST~\citep{NELDAM2015682,pyhst}. PyHST was applied to improve reconstruction
-quality, hence reducing ring artifacts, and to reduce the required data volume
-if necessary~\cite{MIRONE201441}. The tomograms were acquired at 50 keV.
-
-The physical field of view of a single image sample is about 6.5mm in each
-direction. Each sample contains voxels with a spatial resolution of 1.875µm.
-The samples are scanned in chunks of 4-6 sub-volumes through the height of the
-implant, depending on the initial size of a sample.
+European Synchrotron Radiation Facility (ESRF) in Grenoble, France. They have
+been reconstructed~\citep{sporring} at the ID19 beamline, using a standard
+filtered back-projection algorithm applied via the ESRF in-house developed
+software PyHST~\citep{NELDAM2015682,pyhst}. PyHST was applied to improve
+reconstruction quality, hence reducing ring artifacts, and to reduce the
+required data volume if necessary~\cite{MIRONE201441}. The tomograms were
+acquired at 50 keV.
 
 %%% Local Variables:
 %%% mode: latex
