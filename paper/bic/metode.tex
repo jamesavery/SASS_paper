@@ -13,7 +13,7 @@ $3360 \times 3456 \times 3456$ and with three slices shown in
 From this volume, we first compute a 1D histogram of the voxel values, as shown
 in \Cref{fig:1d-hist}. We see that there are large overlaps between the
 different materials, making global thresholding infeasible. This is due to the
-voxel value not being globally defined, as explained in \Cref{sec:physics},
+voxel value not being globally defined, as explained in \Cref{sec:imaging},
 which illustrates how the different materials cover ranges of values that blend
 together in the histogram.
 
@@ -190,7 +190,7 @@ for small distances (top; the implant surface).
     \label{fig:fieldhists}
 \end{figure*}
 
-However, we can do better: As discussed in~\Cref{sec:physics}, the implant
+However, we can do better: As discussed in~\Cref{sec:imaging}, the implant
 produces a \textit{glowing} effect, which can be modeled physically by
 diffusion. \Cref{fig:edt-vs-diffusion} shows how a voxel inside the troughs of
 the threading receives brightening contributions from many sides, while a voxel
