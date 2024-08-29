@@ -73,7 +73,6 @@ affecting the reconstructed image.
 
 	% technically scattering also contributes to this
 
-
   \item \textbf{Cupping effect:} A commonly occurring artifact occurs when beams pass
     homogeneous cylindrical objects. Since beams passing the middle will have to
 	traverse more material compared to the edges, the beam is hardened more
@@ -146,13 +145,14 @@ artifacts discussed in this section, will vary continuously as a function of
 the spatial coordinates. This allows the possibility for a method, which can
 correctly identify materials despite varying voxel values.
 
-% FIXME: Would like a reference for the continous argument
-% ... How about something like this: Since the projections are acquired through
-% rotations using a very small step size (1/2000 of a degree) then the
-% reconstructed volume can be assumed to have smoothly/continuously varied
-% features and also artifacts. Also single projections are assumed to have
-% continuous varying artifacts because the projections are already heavily
-% denoised, and it is mostly noise which can be discontinuous.
+In order for our probability distributions to be suitable for reliable
+segmentation,  it is important to ensure that artifacts do in fact have a
+continuous imprint.  Since the projections are acquired through rotations using
+a very small step size (1/2000 of a degree) then the reconstructed volume can
+be assumed to have smoothly/continuously varied features and also artifacts.
+Also single projections are assumed to have continuous varying artifacts
+because the projections are already heavily denoised, and it is mostly noise
+which can be discontinuous.
 
 
 %%% Local Variables:
