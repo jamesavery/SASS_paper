@@ -2,16 +2,15 @@
 \label{sec:verification}
 
 In this section, we present the verification of the segmentation method
-described in \Cref{sec:method}. We first qualitatively verify the method by
-comparing the segmentation results to the original tomography. We then
-quantitatively verify the method by generating synthetic data, creating ground
-truth, and comparing the results to other methods. Finally, we analyze the
+described in \Cref{sec:method}. First we qualitatively verify that our method
+is sound by comparing the segmentation results to the original tomography and
+creating an artificial ground truth. Then we quantitatively verify our method
+by generating synthetic data, evaluating it on the created ground truth, and
+comparing the results to other existing methods. Finally, we analyze the
 segmented data to study the blood vessel network in the bone region and produce
 statistics on the tissue-to-implant contact.
 
 \subsection{Qualitative verification}
-
-% TODO In case of ground truth; rephrase to "We first qualitatively verify the method by comparing the segmentation results to the ground truth. We then quantitatively verify the method by generating synthetic data, creating ground truth, and comparing the results to other methods."
 
 Since the SRµCT tomograms are clear enough that humans can distinguish between
 blood vessels and bone, as our mammalian visual cortex automatically corrects
