@@ -8,12 +8,12 @@ The effects are manifested in the 3D-reconstruction as numerical shifts in
 voxel values as a function of their position. This is a direct result of a
 misrepresented attenuation along the axis of the incoming X-rays.  The
 dependency on orientation illustrates how voxel intensity values are not
-globally fixed. Instead, how a certain material is represented in intensity, is
+globally fixed. Instead, how a certain material is represented in intensity is
 highly dependent on its position relative to neighboring regions. The same
-material with the same density can thus be represented at multiple intensities
-within the same sample.  Some noise can this be uniformly distributed across
+material with the same density can thus be represented as multiple intensities
+within the same sample.  Some noise can thus be uniformly distributed across
 images, such as that removed by flat-field correction, while other noise is
-very spatially dependent on its surrounding regions.  Knowing the composition
+very spatially dependent on its surrounding regions. By knowing the composition
 and positioning of the materials being imaged, we can correct some of these
 effects during segmentation.
 
@@ -24,18 +24,27 @@ contain notable features.
 \begin{figure}
   \centering
   \begin{tabular}{cc}
-    \!\!\!\!\!\!(a)\!\!\!&\begin{tabular}{c}\includegraphics[width=0.85\columnwidth]{generated/770c_pag_roi_yx.pdf}\end{tabular}\\
+    \!\!\!\!\!\!(a)\!\!\!&\begin{tabular}{c}\includegraphics[width=0.85\columnwidth]{figures/770c_pag_segmented_yx_raw_annotated.pdf}\end{tabular}\\
     \!\!\!\!\!\!(b)\!\!\!&\begin{tabular}{c}\includegraphics[width=0.85\columnwidth]{generated/770c_pag_roi_zy.pdf}\end{tabular}\\
   \end{tabular}
   \caption{
-    To better see the distortion effects, we zoom in on two sub-regions of the
-    slices shown in \Cref{fig:3viewsample}. Our visual systems automatically
-    correct for most of the distortions, as they appear similar to illumination
-    effects. However, even some distance from the implant, blood vessel voxels
-    have higher values than bone voxels further out. As we approach the
-    implant, the value shifts accelerate and become highly non-linear.
-    % TODO highlight this using arrows and absolute values on final images
     (a) A 1 mm $\times$ 2 mm region of an image slice in the YX-plane.
+    % TODO: make sexy
+    % tjek at følgende er beskrevet:
+    % - usikkerhed på hvorvidt resin er kommet ind alle steder i blodårer
+    %   ellers er der blanding af luft og resin, hvilket vi ikke kan koorigere
+    %   ... dette ses også i vores data hvor luft er møre pletter i den ellers lysere resin
+    % 
+    % most pronounced effects are: streaks, glow, ring artifacts
+    % streaks kan ses nederst i højre side i figur 11
+    % LAV BILLEDE brug figur 11 øverst venstre, den inkluderer alle
+    % forklar også glow ift contrast forskel på resin kanter for øvre
+    % og nedre åre....
+    (a.1) Implant glow
+    (a.2) Ring artifacts
+    (a.3) Streaks
+    (a.4) Air/resin bubbles
+    (a.5) Contrast-shifted glow 
     (b) A 1.5 mm $\times$ 1.5 mm region of an image slice in the ZY-plane in the
     smaller threaded part of the titanium implant.
   }
@@ -43,14 +52,18 @@ contain notable features.
 \end{figure}
 
 In \Cref{fig:slices}, we see zoomed-in regions of the YX- and ZY-planes of the
-same sample as shown in \Cref{fig:3viewsample}. Both planes display a broad
-selection of the various types of noise sources found in the data.
-% TODO: as other note says... draw/explain in more detail... be specific
+same sample as shown in \Cref{fig:3viewsample}.  Our visual systems
+automatically correct for most of the distortions. However, at various
+distances from the implant, blood vessel voxels have higher values than bone
+voxels further out. As we approach the implant, the value shifts accelerate and
+become highly non-linear.  Both planes display a broad selection of the various
+types of noise sources found in the data.
 
 We shall go through the main phenomena that result in noise and artifacts
 affecting the reconstructed image.
 
 \begin{itemize}
+  % TODO: point to arrow 3
   \item \textbf{Dark and bright streaks:} Streaking artifacts occur close to
 	regions with very high absorption, such as metal implants, but also
 	to some degree in the transition from dense bone to softer
@@ -94,6 +107,7 @@ affecting the reconstructed image.
 	bone.
 
   \item \textbf{Ring artifacts:} Looking at the XY-plane in
+  % TODO: point to arrow 2
   	\Cref{fig:slices}(a) we see clear concentric ring artifacts emanating
 	from the center of the sample, and at strong edges of the
 	titanium implant. It propagates strongly through the large
@@ -104,6 +118,7 @@ affecting the reconstructed image.
 	vibrations in the monochromator crystal \citep{ringartefacts}.
 
   \item \textbf{Projection artifacts:} Bright streaks with strong edges are
+  % TODO: point to arrow 3
 	seen from the sharp corners of the titanium implant. When doing back
 	projection, sharp corners break the otherwise symmetric
 	smearing of projections across the sample.  This can occur from
@@ -112,6 +127,7 @@ affecting the reconstructed image.
 	\citep{ctnoise}.
 
   \item \textbf{Scattering:} Lower energy rays mostly contribute noise
+  % TODO: point to arrow 1
       from scattering effects. A ray will propagate through a material, get
       scattered and diffract from its initial trajectory. This gives a
       misrepresentation of the attenuation along its initial trajectory. The
@@ -140,10 +156,6 @@ affecting the reconstructed image.
    %Partial volume artefacts which are dependent on the voxel size and are mentioned briefly by Neldam et al.
 \end{itemize}
 
-The distortions that come from the class of physical effects and noise
-artifacts discussed in this section, will vary continuously as a function of
-the spatial coordinates. This allows the possibility for a method, which can
-correctly identify materials despite varying voxel values.
 
 In order for our probability distributions to be suitable for reliable
 segmentation,  it is important to ensure that artifacts do in fact have a
@@ -152,7 +164,8 @@ a very small step size (1/2000 of a degree) then the reconstructed volume can
 be assumed to have smoothly/continuously varied features and also artifacts.
 Also single projections are assumed to have continuous varying artifacts
 because the projections are already heavily denoised, and it is mostly noise
-which can be discontinuous.
+which can be discontinuous. Using these probability distributions, we can build
+a method to accurately identify materials across varying voxel values.
 
 
 %%% Local Variables:

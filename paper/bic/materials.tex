@@ -8,6 +8,9 @@ of an experiment conducted to evaluate four different methodologies for
 stimulating bone regeneration in goat mandibles, described below. The software
 system is also being developed as preparatory work for the analysis of SRµCT
 bone tomograms from 150 human patients in the MAXIBONE project
+% TODO: James, der issue #10 1.39 ift at snakke evaluering af brugen af metode
+% mht knogle m.v enten skal denne forward-reference, ellers skal den senere
+% backward-reference.
 (\url{www.maxibone.eu}). This project aims to create personalized maxillary
 bone regeneration by using culture-expanded autologous bone marrow stem cells
 and biomaterials, for which clinical trials are presently being conducted. The
@@ -77,16 +80,16 @@ fibrous tissue.
     (c) & \begin{tabular}{c} \includegraphics[width=0.81\linewidth]{generated/770c_pag_full_zy.pdf}\end{tabular}
   \end{tabular}
   \caption{
-	The physical samples are scanned in chunks of 4-6 sub-volumes through the
-	height of the implant, depending on the initial size of a sample.  The
-	physical field of view of a single image sample is about 6.5mm in each
-	direction. A voxel has a size of 1.875µm.  Shown here are the cross
-	sections of a sample in YX-, ZX- and ZY-planes respectively.
+	The physical samples are scanned in chunks of 4-6 sub-volumes through
+	the height of the implant, depending on the initial size of a sample.
+	The physical field of view of a single image sample is about 6.5mm in
+	each direction. A voxel has a size of 1.875µm.  Shown here are the
+	cross sections of a reconstructed sample in the YX-, ZX- and ZY-planes
+	respectively.
   }
 \label{fig:3viewsample}
 \end{figure}
 
-% TODO: description of color depends on final colormap -- still better than lighter/dark
 A cut sample is shown in three different cross-sectional views in
 \Cref{fig:3viewsample}. Each material has a unique density and thus absorption.
 The titanium implant shown in blue has a higher absorption level than bone.
@@ -114,21 +117,21 @@ is not standard medical or laboratory equipment, but requires a large scale
 particle accelerator facility.  For this imaging technique, electrons are
 accelerated to ultra-relativistic speeds in trajectories directed by strong
 magnetic fields. The resulting X-ray beam is narrow and of high photon flux
-allowing for quick scanning times \citep{srexptime}. This can help counter
-Poisson noise from suboptimal photon count \citep{srnoise}. Synchrotron
-radiation is high in brilliance and very well collimated, allowing a better
-spatial resolution and a very high signal to noise ratio.  Artifacts from
-beam-hardening are minimized due to synchrotron radiation X-rays being
-characterized by their practically mono-energetic spectrum \citep{srbeamquality}.
+allowing faster scanning times \citep{srexptime}, making efficient use of the
+beamtime and can also help counter Poisson noise from suboptimal photon count
+\citep{srnoise}. Synchrotron radiation is high in brilliance and very well
+collimated, allowing a better spatial resolution and a very high signal to
+noise ratio.  Artifacts from beam-hardening are minimized due to synchrotron
+radiation X-rays being characterized by their practically mono-energetic
+spectrum \citep{srbeamquality}.
 
 The tomograms presented here have been acquired at the ID19 beamline at the
 European Synchrotron Radiation Facility (ESRF) in Grenoble, France. They have
 been reconstructed~\citep{sporring} at the ID19 beamline, using a standard
 filtered back-projection algorithm applied via the ESRF in-house developed
 software PyHST~\citep{NELDAM2015682,pyhst}. PyHST was applied to improve
-reconstruction quality, hence reducing ring artifacts, and to reduce the
-required data volume if necessary~\cite{MIRONE201441}. The tomograms were
-acquired at 50 keV.
+reconstruction quality, hence reducing ring artifacts~\cite{MIRONE201441}. The
+tomograms were acquired at 50 keV.
 
 %%% Local Variables:
 %%% mode: latex
