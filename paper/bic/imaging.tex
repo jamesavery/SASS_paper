@@ -22,7 +22,8 @@ in the image, whereas artifacts are regarded as regions that falsely appear to
 contain notable features.
 
 % TODO Aleksandar: make arrows and numbers larger -- so they appear as large as caption text
-% perhaps figure itself needs to be bigger also. Perhaps reduce left side a bit?
+% should not crop or otherwise alter the size of the image, because this exact region is used
+% in other plots later on in the article.
 \begin{figure}
   \centering
   \begin{tabular}{cc}
@@ -30,19 +31,15 @@ contain notable features.
     \!\!\!\!\!\!(b)\!\!\!&\begin{tabular}{c}\includegraphics[width=0.85\columnwidth]{generated/770c_pag_roi_zy.pdf}\end{tabular}\\
   \end{tabular}
   \caption{
-    (a) A 1 mm $\times$ 2 mm region of an image slice in the YX-plane.
-    % TODO Aleksandar: make sexy
-    % tjek at følgende er beskrevet:
-    % - usikkerhed på hvorvidt resin er kommet ind alle steder i blodårer
-    %   ellers er der blanding af luft og resin, hvilket vi ikke kan koorigere
-    %   ... dette ses også i vores data hvor luft er møre pletter i den ellers lysere resin
-    % most pronounced effects are: streaks, glow, ring artifacts
+    (a) Region of size 1 mm $\times$ 2 mm within a slice in the YX-plane.
     (a.1) Implant glow, metal artifacts
     (a.2) Ring artifacts, also notice multiple concentric rings
-    (a.3) Streaks, which are actually also seen across whole 2d-slice along the horisontal direction
+    (a.3) Streaks, which are seen to continue through the full 2d-slice
     (a.4) Air bubbles in the resin-filled blood vessels
-    (a.5) Contrast-shifted glow, in upper vs lower blood vessel, displaying different numerical values in same resin
-    (b) A 1.5 mm $\times$ 1.5 mm region of an image slice in the ZY-plane in the
+    (a.5) Contrast-shifted glow, in upper vs lower blood vessel, displaying
+	  different numerical values in same resin
+    (b) Region of size 1.5 mm $\times$ 1.5 mm within a slice in the ZY-plane
+	around the
     smaller threaded part of the titanium implant.
   }
 \label{fig:slices}
@@ -56,56 +53,48 @@ voxels further out. As we approach the implant, the value shifts accelerate and
 become highly non-linear.  Both planes display a broad selection of the various
 types of noise sources found in the data.
 
-We shall go through the main phenomena that result in noise and artifacts
-affecting the reconstructed image.
+We shall go through only some of the dominant phenomena that result in noise
+and artifacts affecting the reconstructed image. Many other sources will
+likewise contribute noise and artifacts, but a full study is beyond the scope
+of this work.
 
+% most pronounced effects are: streaks, glow, ring artifacts
 \begin{itemize}
-  % TODO: point to arrow 3
+  \item \textbf{Erroneous volumes} During sample preparation, the resin has not
+	successfully filled out all crevices in the blood vessels. Instead
+	some air pockets are left within the resin, changing the
+	effective density and thereby absorption. This is an effect
+	which we cannot correct for, because it is in fact present in
+	our data. It appears in the tomographic slices
+	\Cref{fig:slices} as dark spots in the otherwise lighter resin. 
   \item \textbf{Dark and bright streaks:} Streaking artifacts occur close to
 	regions with very high absorption, such as metal implants, but also
 	to some degree in the transition from dense bone to softer
-	tissue.
-	This effect is also called photon starvation, due to the
-	lowered amount of photons reaching the detector.
-
-	The X-ray beams pass at angles containing
-	multiple dense obstacles, the beam is hardened more. Then for
-	angles with fewer dense obstacles, the energy spectrum is
-	preserved better. This produced the dark and bright streaks
-	seen in \Cref{fig:slices}.
-
-	For a hardened beam, softer X-rays are absorbed instead of
-	successfully penetrating the object, and will not contribute to
-	image formation.  High-density structures such as the titanium
-	implant break the isotropy, making the projected X-ray mean
-	energy spectrum dependent on incident orientation
-	\citep{srnoise}.
-
-	% technically scattering also contributes to this
-
-  \item \textbf{Cupping effect:} A commonly occurring artifact occurs when beams pass
-    homogeneous cylindrical objects. Since beams passing the middle will have to
-	traverse more material compared to the edges, the beam is hardened more
-	towards the center and intensity becomes lower as a result. This can
-	manifest itself in what erroneously looks to be dense peripheral
-	regions at the edges. A cupping effect also arises from scattering of
-	%TODO: xxx want to mention or not?
-	which leads to a reduction in low contrast sensetivity
-
+	tissue.  This effect is also called photon starvation, due to
+	the lowered amount of photons reaching the detector through
+	more hardened trajectories due to higher absorption
+	\citep{srnoise}. Scattering around high density regions also
+	makes up a significant contribution, adding to the streaking
+	artifacts \citep{scatter_sr_ct}.
+  \item \textbf{Cupping effect:} A commonly occurring artifact occurs when
+	beams pass homogeneous cylindrical objects. Since beams passing the
+	middle will have to traverse more material compared to the
+	edges, the beam is hardened more towards the center and
+	intensity becomes lower as a result. This can manifest itself
+	in what erroneously looks to be dense peripheral regions at the
+	edges. A cupping effect also arises from scattering which leads
+	to a reduction in low contrast sensetivity \citep{sr_streak_artifact_scatter}.
   \item \textbf{Phase contrast:} Phase contrast is used to enhance the contrast
 	around soft tissue where the contrast from pure absorption is
 	insufficient \citep{phasecontrast}. It can however also induce
 	noise, such as fringes around the edges between different
 	materials within the sample\citep{srnoise}. Similar to the dark
 	and bright streaks artifacts, these effects show up as
-	misrepresentations of the voxel values. For the data presented
-	here, this is especially prominent at the transitional edges
-	between the titanium implant and the biological tissue and
-	bone.
-
+	misrepresentations of the voxel values. This is especially
+	prominent at the transitional edges between biological tissue
+	and bone \citep{sr_streak_artifacts_scatter}.
   \item \textbf{Ring artifacts:} Looking at the XY-plane in
-  % TODO: point to arrow 2
-  	\Cref{fig:slices}(a) we see clear concentric ring artifacts emanating
+	 \Cref{fig:slices}(a) we see clear concentric ring artifacts emanating
 	from the center of the sample, and at strong edges of the
 	titanium implant. It propagates strongly through the large
 	region of air behind the implant. This effect arises from
@@ -113,47 +102,22 @@ affecting the reconstructed image.
 	uncalibrated or defect adjacent detector elements. For
 	synchrotron radiation sources it can also occur from shifts and
 	vibrations in the monochromator crystal \citep{ringartefacts}.
-
-  \item \textbf{Projection artifacts:} Bright streaks with strong edges are
-  % TODO: point to arrow 3
-	seen from the sharp corners of the titanium implant. When doing back
-	projection, sharp corners break the otherwise symmetric
-	smearing of projections across the sample.  This can occur from
-	the high pass filter used during filtered back projection,
-	which exaggerates the differences between adjacent elements
-	\citep{ctnoise}.
-
   \item \textbf{Scattering:} Lower energy rays mostly contribute noise
-  % TODO: point to arrow 1
-      from scattering effects. A ray will propagate through a material, get
-      scattered and diffract from its initial trajectory. This gives a
-      misrepresentation of the attenuation along its initial trajectory. The
-      artifacts seen from scattering are similar in nature to those formed by
-      beam hardening. This is because both phenomena effectively reduce the
-      measured attenuation. For energy levels relevant to the data presented
-      here, of 50 keV and above, Compton scattering is the dominant type
-      \citep{Compton}. The scattering occurs due to photon-electron interaction
-      between the X-ray beam and the material it passes through. Like
-      beam-hardening, scattering will cause dark streaks across the image,
-      where the attenuation was highest.
-
-      % reference for attenuation values for Ti, Ca, ...
-      \citep{attenuation-cross-sections}
-
-      % perhaps rename to scattering in general
-      % Ti @ 50 keV
-      % photoelectric absorption (dominating), changes contrast due to local absorption within sample of the secondary low energy characteristic x-ray photon.
-      % coherent scattering: elastic, not that dominating at 50 keV
-      % incoherent scattering: inelastic, adds overall haze/noise and reduces constrast in image, slightly dominates for Ti @ 50 kV, ref
-
-      % The compton scattered x-ray photon can have a significant portion of the energy of the incoming x-ray photon and be measured on the detector as noise.
-   \item \textbf{Motion lag:}
-   % Well what was the integration time and speed?
-   \item \textbf{Partial volume artifacts:}
-   %Partial volume artefacts which are dependent on the voxel size and are mentioned briefly by Neldam et al.
+ 	from scattering effects. A ray will propagate through a material, get
+ 	scattered and diffract from its initial trajectory. This gives a
+ 	misrepresentation of the attenuation along its initial trajectory. The
+ 	artifacts seen from scattering are similar in nature to those formed by
+ 	beam hardening, due to how both phenomena effectively misrepresent the
+ 	measured attenuation. For X-ray energy levels used for the data presented
+ 	here, of 50 keV and above, Compton scattering is the dominant type.
+ 	Coherent scattering is not very dominating at 50 keV, but
+ 	incoherent scattering slightly dominates for Titanium at 50
+ 	keV. Incoherent Compton scattering will add an overall haze and
+	reduce constrast in the image
+	\citep{Compton}\citep{xray-attenuation-10-kev-100-mev}\citep{attenuation-cross-sections}.
 \end{itemize}
 
-
+% Continuity argument
 In order for our probability distributions to be suitable for reliable
 segmentation,  it is important to ensure that artifacts do in fact have a
 continuous imprint.  Since the projections are acquired through rotations using
