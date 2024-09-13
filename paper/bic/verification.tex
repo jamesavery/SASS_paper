@@ -60,36 +60,51 @@ good segmenting in previously well segmented regions.
       \includegraphics[width=\linewidth]{generated/770c_pag_global_yx.pdf}
       \caption{Global threshold}
     \end{subfigure}
-  \caption{YX-slices of the original tomography, Otsu segmentation, our
-	segmentation, and global threshold segmentation.  For our segmentation,
-	the voxels are colored according to the modeled probability functions
-	$P(m\vert v,\fval)$ between 0 and 1: completely red voxels have
-	$P(m=0\vert v,\fval) = 1$, completely yellow voxels have $P(m=1\vert
-	v,\fval)\ = 1$, and uncertain voxels become progressively gray. Notice
-	how the global threshold fails to segment a large region of blood
-	vessel in the bottom right, leaving a clear streak pattern. This is due
-	to the shifted numerical values from the streak effects mentioned in
-	\Cref{fig:slices}.}
+  \caption{
+	  YX-slices of the original tomography, Otsu segmentation, our
+	  segmentation, and global threshold segmentation.  For our
+	  segmentation, the voxels are colored according to the modeled
+	  probability functions $P(m\vert v,\fval)$ between 0 and 1: completely
+	  red voxels have $P(m=0\vert v,\fval) = 1$, completely yellow voxels
+	  have $P(m=1\vert v,\fval)\ = 1$, and uncertain voxels become
+	  progressively gray. Notice how the global threshold fails to segment
+	  a large region of blood vessel in the bottom right, leaving a clear
+	  streak pattern. This is due to the shifted numerical values from the
+	  streak effects mentioned in \Cref{fig:slices}.
+    }
     \label{fig:histology-comparison1}
 \end{figure*}
 
 \begin{figure*}
-    \centering
-    \begin{tabular}{cc}
-        \includegraphics[width=.45\linewidth]{generated/770c_pag_segmented_zy_raw.pdf} &
-        \includegraphics[width=.45\linewidth]{generated/770c_pag_global_zy_otsu.pdf}
-        \\
-        \includegraphics[width=.45\linewidth]{generated/770c_pag_segmented_zy_colored.pdf} &
-        \includegraphics[width=.45\linewidth]{generated/770c_pag_global_zy.pdf} \\
-    \end{tabular}
-    \caption{
-	YZ-slices of the original tomography (top left), Otsu segmentation (top
-	right), our classification (bottom left), and global threshold
-	classification (bottom right).  Yellow depicts bone and red depicts
-	soft tissue. Note that our segmentation correctly classifies the
-	materials close to the implant, and particularly in the grooves of the
-	screw threads, whereas the global threshold and Otsu classification
-	fails.
+  \centering
+    \begin{subfigure}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{generated/770c_pag_segmented_zy_raw.pdf}
+      \caption{Original}
+    \end{subfigure}%
+    \begin{subfigure}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{generated/770c_pag_global_zy_otsu.pdf}
+      \caption{Otsu segmentation}
+    \end{subfigure}
+    \\
+    \begin{subfigure}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{generated/770c_pag_segmented_zy_colored.pdf}
+      \caption{Our segmentation}
+    \end{subfigure}%
+    \begin{subfigure}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{generated/770c_pag_global_zy.pdf}
+      \caption{Global threshold}
+    \end{subfigure}
+  \caption{
+	  YZ-slices of the original tomography, Otsu segmentation, our
+	  segmentation, and global threshold segmentation.  Yellow depicts bone
+	  and red depicts soft tissue. Note that our segmentation correctly
+	  classifies the materials close to the implant, and particularly in
+	  the grooves of the screw threads, whereas the global threshold and
+	  Otsu segmentation fails.
     }
     \label{fig:histology-comparison2}
 \end{figure*}
