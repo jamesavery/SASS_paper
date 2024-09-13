@@ -3,8 +3,6 @@
 
 Generated and simulated volumes are made available for external benchmarking and testing.
 
-% TODO (Alle): any suggestions for making this table smaller so it fits in a
-% single column would be great
 \begin{table*}
     \caption{Overview of the published data.}
     \label{tab:pubdata}
@@ -17,24 +15,20 @@ Generated and simulated volumes are made available for external benchmarking and
 	    Masks & Individual volumes for bone, blood, implant, osteocyt & HDF5 & UINT8 & (1/2/4/8)$\times$ \\
 	    Mesh models & Individual volumes for bone, blood, implant, osteocyt & STL & N/A & N/A \\
 	    Ground truth & Single volume & HDF5 & UINT8 & (1/2/4/8)$\times$ \\
-	    Tomograms & Single volume & HDF5 + RAW & FLOAT32 & (2/4/8)$\times$ \\
+	    Simulated tomograms & Single volume & HDF5 + RAW & FLOAT32 & (2/4/8)$\times$ \\
+	    Original tomograms & 4-5 subvolumes per tomogram & HDF5 + RAW & FLOAT32 & (1/2/4/8)$\times$ \\
     \bottomrule
     \end{tabular}
 \end{table*}
 
 For all volumes, the first index traverses through the depth of implant, the second index along the short side of the implant, the third and final index along the wide side of the implant. The full-size volumes, corresponding to 1$\times$ scaling, have (3272,3456,3456) voxels. Scalings of $(2,4,8)\times$ are also provided, where relevant. Each scaling effectively shortens each dimension to half of its previous scaling. Scaling $1\times$ thus has 8 times the number of voxels relative to scaling $2\times$.
 
-% Tilføj rådata tomogrammer til tabellen
+Notice that a full simulation of the $1\times$ scaled tomogram was not possible in Novisim, due to the program crashing. This might either be a software or hardware limitation.
 
-
-
-% TODO (Alle): should it be mentioned that 1x simulated tomogram is not generated
-% because Novisim could not handle it? Because I am relatively (but not 100%)
-% sure that it was not the amount of resources on the PC that made the
-% simulation halt. Windows has not been kind with information in this regard. 
-
-% TODO (Aleksandar): perhaps add something about what the individual integers in
-% the ground truth represent, and how this numerical structure is decided
-% (basically already described in code comment in masks/make_models.py)
+% TODO (Alle): Would also like tos add something about what the individual
+% integers in the ground truth represent, and how this numerical structure is
+% decided (basically already described in code comment in masks/make_models.py)
+% Otherwise, in order to not make this appendix too large, it should perhaps be
+% added to the Github repo in a README instead. What do you think?
 
 % TODO (James): add link to ERDA or whereever the data will finally be published.
