@@ -38,32 +38,38 @@ regions of the tomograms, they were not able to obtain good bone-to-implant
 contact evaluation (BIC), as evidenced by poor correlation with histological
 analysis of the same samples.
 
-% TODO (Aleksandar): PLACEHOLDER FOR LITERATURE REVIEW - why are the current methods not good enough?
-% kind of state-of-the-art subsection... omdøb til "position within state-of-the-art"
-% \subsection{State of the art}
-% 
-% Include weaknesses and limitations of:
-%  - Morphology-based-article
-%  - software approaches: Pore3D, Avizo, ITK-Snap, ..., no one-fits-all program
-%     - most are proprietary software, time-consuming and manual work already for much smaller volumes
-%  - ML-based-article with U-net
-%  - include article G with their systematic literature review also
-% TODO (James): tilføjer lidt hertil omkring Otsu
+\subsection{Position within state of the art}
 
-The present work presents a fully automatic computational method which
-discovers probabilistic models for the distortions incurred by the physical
-effects in high-resolution X-ray CT such as SRµCT to reverse them and
-produce accurate tissue classification even in regions where these effects are
-significant. It exploits two properties, which are needed to hold for the
-method to work: i) very high resolution is used to build statistical models as
-functions of space, and ii) the effects to be countered must vary continuously
-over space so that we can track how voxel frequency distributions are distorted
-throughout the image. We apply the method to the same dataset of
-micrometer-resolution SRµCT bone tomograms studied in \cite{torsten2018}
-and in \cite{sporring}, to achieve faithful tissue classification close to the
-titanium implant surface. The implementation is open-source, targets multi-CPU
-and multi-GPU systems, and is available at
-\href{https://github.com/jamesavery/maxibone}
+Numerous techniques exist for working with large and complex 3d segmentations.
+Suitable methods are chosen on the basis of what works best for the particular
+data and analysis being done. Comprehensive literature reviews give a detailed
+overview of available methods and their individual challenges
+\cite{seg_literature_review}. Alternatives include software applications that
+require different levels of manual
+input~\cite{software_pore3d,software_itk_snap,software_dragonfly,software_avizo}.
+Such manual approaches are however not of interest here, since they are highly
+impractical to annotate for the data sizes presented in this work. Neither do
+they form a fair comparison against our fully automated approach.
+
+Common for all techniques, is that they only work in few specialized cases and
+work poorly when applied on different data. To our knowledge, no fully automated
+open-source segmentation method exists that can accurately classify soft tissue
+close to dense implants of this type and scale. Existing options employed in the
+medical industry mostly consist of proprietary software as referenced above.
+
+This work presents a fully automatic computational method which discovers
+probabilistic models for the distortions incurred by the physical effects in
+high-resolution X-ray CT such as SRµCT to reverse them and produce accurate
+tissue classification even in regions where these effects are significant. It
+exploits two properties, which are needed to hold for the method to work: i)
+very high resolution is used to build statistical models as functions of space,
+and ii) the effects to be countered must vary continuously over space so that we
+can track how voxel frequency distributions are distorted throughout the image.
+We apply the method to the same dataset of micrometer-resolution SRµCT bone
+tomograms studied in \cite{torsten2018} and in \cite{sporring}, to achieve
+faithful tissue classification close to the titanium implant surface. The
+implementation is open-source, targets multi-CPU and multi-GPU systems, and is
+available at \href{https://github.com/jamesavery/maxibone}
 {https://github.com/jamesavery/maxibone}.
 
 %%% Local Variables:

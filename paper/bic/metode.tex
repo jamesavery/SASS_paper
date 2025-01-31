@@ -64,7 +64,7 @@ process squashes the blue peak from the histogram, leaving the two peaks marked
 by the red and orange lines as the most defined. The resulting air mask is
 shown in \Cref{fig:bone_region} (b).
 
-%We first compute a coarse bone region using a crude segmentation. Through
+% We first compute a coarse bone region using a crude segmentation. Through
 %direct geometric analysis of the implant, we determine the sample coordinate
 %system, with the origin on the back-plane of the sawed-through implants and
 %principal axes coordinate system vectors $\mathbf{u}$ pointing up towards the
@@ -116,7 +116,8 @@ However, none of the axes $x$, $y$, or $z$ separate the materials well across
 their entire range; they each capture different views of the distortions in the
 tomography.
 
-%TODO (Alle): tilpas størrelser i generering af figurer så det passer med colorbar og næste figurs størrelse
+% TODO (Alle): tilpas størrelser i generering af figurer så det passer med
+% colorbar og næste figurs størrelse
 \begin{figure*}
     \centering
 %    \begin{tabular}{cc}
@@ -215,7 +216,8 @@ with the corresponding 2D histogram in \Cref{fig:fieldhists}(b).
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=\linewidth]{generated/770c_pag_diffusion_zy.pdf}
+    \centering
+    \includegraphics[width=0.75\linewidth]{generated/770c_pag_diffusion_zy.pdf}
     \caption{A slice of the diffusion field in the ZY plane.}
     \label{fig:field-slice}
 \end{figure}
@@ -252,6 +254,18 @@ orange line in \Cref{fig:otsu}(a). This gives us a good starting point for the
 segmentation, but it is not perfect as the thresholds can vary too much across
 local field values.
 
+% Continuity argument
+In order for our probability distributions to be suitable for reliable
+segmentation,  it is important to ensure that artifacts do in fact have a
+continuous imprint.  Since the projections are acquired through rotations using
+a very small step size (1/2000 of a degree) then the reconstructed volume can
+be assumed to have smoothly/continuously varied features and also artifacts.
+Also single projections are assumed to have continuous varying artifacts
+because the projections are already heavily denoised, and it is mostly noise
+which can be discontinuous. Using these probability distributions, we can build
+a method to accurately identify materials across varying voxel values.
+
+% TODO (Alle): Større labels på akser, så det kan læses
 \begin{figure}
     \centering
     \begin{tabular}{cc}
@@ -275,14 +289,14 @@ used to extract the probability distributions for the two materials giving us
 two mappings $P0$ and $P1$ that map the voxel value and field value to the
 probability of the voxel being either bone or soft tissue. Both $P0$ and $P1$
 are shown in \Cref{fig:otsu}(b). The final segmentation is then computed by
-applying the mappings to the full tomogram. It is important to note that all of
-the steps are fully automatic and do not require any human intervention. The
-steps are summarized in \Cref{fig:flowchart}.
+applying the mappings to the full tomogram. It is important to note that all the
+steps are fully automatic and do not require any human intervention. The steps
+are summarized in \Cref{fig:flowchart}.
 
 \begin{figure}
     \centering
     %\includegraphics{steps}
-    \begin{adjustbox}{width=\linewidth}
+    \begin{adjustbox}{width=0.6\linewidth}
         \begin{tikzpicture}
             \fill[yellow!30] (-3,-3.5) rectangle (2.5,1.5);
             \fill[red!30] (-3,-3.5) rectangle (2.5,-6.5);

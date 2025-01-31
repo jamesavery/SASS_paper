@@ -10,7 +10,7 @@ comparing the results to other existing methods. Finally, we analyze the
 segmented data to study the blood vessel network in the bone region and produce
 statistics on the tissue-to-implant contact.
 
-\subsection{Qualitative verification}
+\subsection{Qualitative evaluation}
 
 Since the SRµCT tomograms are clear enough that humans can distinguish between
 blood vessels and bone, as our mammalian visual cortex automatically corrects
@@ -118,7 +118,7 @@ together with the implant voxel values that they become indistinguishable. A
 further strengthening of the analysis is needed to reach this layer. It is
 possible that the information is irretrievably lost, or perhaps it can be
 retrieved through a different method, such as deconvolution.  It also fails
-within some of the soft tissue blobs, which is due to air bubbles in the resin,
+within some soft tissue blobs, which is due to air bubbles in the resin,
 which have a very low density and therefore a very low absorption.
 
 \subsection{Quantitative evaluation}
@@ -130,14 +130,16 @@ truth does not exist, which makes quantitatively evaluating one method against
 another very hard. Furthermore, due to the very large number of voxels, using
 manual or semi-automatic methods quickly becomes impractical. One such example
 are neural networks, which need to be trained on multiple instances of similar
-data accompanied by an annotated ground truth. This is a very time consuming
+data accompanied by an annotated ground truth. This is a very time-consuming
 and expensive procedure, and does not easily translate to other data, which are
 only slightly dissimilar.
 
 % How are we going to approach it
-To ensure a reliable and consistent verification of our method, we must tackle
-a common problem: solutions are often hard to reproduce and thus
-verify~\cite{replication-crisis}. We attempt to overcome this difficulty by
+To ensure a reliable and consistent verification of our method, we must tackle a
+common problem: solutions are often hard to reproduce and thus
+verify~\cite{replication-crisis}. Furthermore, many existing evaluation
+procedures involve comparing results to manual segmentations performed by a
+human~\cite{seg_literature_review}. We attempt to overcome these difficulties by
 creating synthetic reproducible data, accompanied by a consistent reference
 level ground truth. The generated data resembles our original data and shares
 many physical qualities, but instead of being acquired at ESRF, it is simulated
@@ -145,15 +147,10 @@ using the software Novi-sim~\cite{novisim} on a consumer-grade workstation.
 Using simulations allow other researchers to not only reproduce but also modify
 our tomographic models and perform new experiments. This will both extend the
 robustness of our segmentation, and make it less specific and dependent on our
-original data.  In future experiments this also allows to extract 2D-slices of
+original data.  In future experiments this also allows extracting 2D-slices of
 synthetic data and compare with manually inspected and annotated histologies.
 
-% TODO (Alle): placeret det forkerte sted måske? I hvert fald ikke helt optimalt.
-% kan vi finde en bedre placering til dette?
-Original data and synthetic data, with STL files and ground truth have been
-made freely available \ref{sec:pubdata}.
-
-\subsubsection{Ground truth and synthetic data}
+\subsection{Ground truth and synthetic data}
 
 % How we use Novi-sim
 The presented segmentation pipeline results in a set of masks, one for each
@@ -161,7 +158,7 @@ material.  Each mask is overlayed unto a single volume representing our
 artificially constructed ground truth. By construction, it will have a perfect
 overlap, correctly identifying each material using our method.  The masks for
 each material are converted into meshes and used to generate STL files.  The
-generated STL files are transformed to synthetic tomograms using Novisim.
+generated STL files are transformed to synthetic tomograms using Novi-sim.
 While the software is set up to simulate the original experiment at ESRF, it
 will naturally not be a perfect match. The generated ground truth is now
 perfectly accurate with the input, but deviates slightly but predictably from
@@ -170,35 +167,74 @@ allows us to use reproducible synthetic data to consistently compare our
 segmentation method with other and detect in which regions they differ the
 most. Because regions very close and very far away from the implant are
 difficult, any intermediate regions should be fairly consistent across methods.
-Finally we can inspect the differing regions visually to evaluate on the
+Finally, we can inspect the differing regions visually to evaluate on the
 overall performance. This results in a drastically reduced volume needed to be
 manually inspected.
 
-% TODO (Aleksandar): how did it go then?
-% Discussion about the results and performance of the simulated data
-% Summarize the findings using a table with error measures relative to ground truth
-% So what we look at here is purely how accurate the segmentation is relative to gtruth,
-% and not anything in regard to application, i.e. one BIC-score relative to another makes
-% little sense to discuss here
-% for example, L2, L1, "typically used ml-confidence scores" weighted by model confidence
-% and other measures... see uploaded notes
-\begin{table}[]
-\caption{Score of methods using different error-measures.}
+% TODO (Aleksandar): how did it go then? Insert numbers
+\begin{table*}[]
+\caption{
+	Classification scores of studied segmentation methods on simulated
+	tomograms relative to ground truth. DS refers to the Dice-Sørensen
+	coefficient, RMSE is the Root Mean Square Deviation and VOE is the
+	Volumetric Overlap Error. Instead of only looking at the BIC, we
+	evaluate the overall quality of the segmentation as a function of the
+	distance from the implant. The distance is given as a fraction of the
+	implant radius and scores are reported as (implant, bone, blood).
+        }
 \label{tab:scores}
 \centering
-\begin{tabular}{lllll}
+\begin{tabular}{lccc}
+\bottomrule
+\multicolumn{4}{c}{\textbf{Short range}} \\
 \toprule
-Method           & M1 & M2 & M3 & M4 \\
+$d < 0.2 \times R$ & DS & RMSE & VOE \\
 \midrule
-Ours             & -- & -- & -- & -- \\
-Global threshold & -- & -- & -- & -- \\
-Otsu             & -- & -- & -- & -- \\
+Global threshold & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) \\
+Otsu's method    & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) \\
+Our method       & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) \\
+\bottomrule
+\multicolumn{4}{c}{\textbf{Mid range}} \\
+\toprule
+$ 0.2 \times R \leq d \leq 0.5 \times R$ & DS & RMSE & VOE \\
+\midrule
+Global threshold & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) \\
+Otsu's method    & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) \\
+Our method       & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) \\
+\bottomrule
+\multicolumn{4}{c}{\textbf{Long range}} \\
+\toprule
+$d > 0.5 \times R$   & DS & RMSE & VOE \\
+\midrule
+Global threshold & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) \\
+Otsu's method    & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) \\
+Our method       & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) & (00.00, 00,00, 00.00) \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-% TODO (James), omdøb nedenstående subsection til mere passende navn, egentlig
-% er det jo mere motivation og application osv.
+\Cref{tab:scores} shows all classification scores for implant, bone and blood masks
+respectively, for all studied segmentation methods. We report three different
+evaluation scores. The Dice-Sørensen (DS) coefficient measures the similarity
+of two volumes based on their overlap, where 1 means perfect overlap and 0
+means no overlap. The valid range is $[0,1]$. The RMSD gives the error of how
+much two volumes differ on average at voxel level, where 0 means perfect
+overlap and positive numbers indicate deviations. The valid range is
+$[0,\inf]$. The VOE measures the dissimilarity of two volumes based on how much
+the union of two sets differs from their intersection. Here 0 means perfect
+overlap and 1 means no overlap. The valid range is $[0,1]$.
+
+The DS is very commonly used~\cite{evaluation_review}, and intuitive to
+interpret as a simple percentage of overlap between the two sets. The VOE
+differs from the DS score by how overlapping voxels are accounted for, and is
+thus more sensitive to small differences in overlap. This can make it more
+intuitive for comparing high-resolution segmentations.
+
+% TODO (James):
+% Omdøb/ryk nedenstående subsection "Dataset analysis" til mere passende navn/sted
+% Det er jo egentlig mere motivation og application osv.
+% De to subsubsections "Blood vessel network" + "Implant contant" skal også omdøbes/rykkes
+
 \subsection{Dataset analysis}
 
 Having verified the method qualitatively and quantitatively, we can have a more
@@ -290,7 +326,8 @@ segmenting the bone and soft tissue regions and that the segmentation can be
 used to study BIC.
 
 \begin{table}
-    \caption{The mean and standard deviation of bone-to-implant contact in the old and new bone regions for each of our samples.}
+    \caption{The mean and standard deviation of bone-to-implant contact in the
+    old and new bone regions for each of our samples.}
     \label{tab:bic}
     \centering
     \begin{tabular}{lcc}
