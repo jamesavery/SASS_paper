@@ -1,8 +1,8 @@
 .PHONY: main.pdf
 SN-main.pdf: main.tex
 	pdflatex main
-	pdflatex main
 	bibtex main
+	pdflatex main
 	pdflatex main
 
 fast: main.tex
