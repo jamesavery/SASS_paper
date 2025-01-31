@@ -54,7 +54,7 @@ We will only cover the most dominant phenomena that result in noise and
 artifacts affecting the reconstructed image. Many other sources will likewise
 contribute noise and artifacts, but a full study is beyond the scope of this
 work and can be found in existing
-literature~̣\citep{noise_and_artifacts_1,noise_and_artifacts_2}. The numbers in
+literature~̣\cite{noise_and_artifacts_1,noise_and_artifacts_2}. The numbers in
 parentheses refer to corresponding arrows in \Cref{fig:slices} that illustrate
 how the mentioned phenomena are manifested in the data. Note that not all
 effects have a corresponding arrow.
@@ -74,9 +74,9 @@ effects have a corresponding arrow.
 		bone to softer tissue.  This effect is also called photon
 		starvation, due to the lowered amount of photons reaching the
 		detector through more hardened trajectories due to higher
-		absorption \citep{srnoise}. Scattering around high density
+		absorption \cite{srnoise}. Scattering around high density
 		regions also makes up a significant contribution, adding to the
-		streaking artifacts \citep{scatter_sr_ct}.
+		streaking artifacts \cite{scatter_sr_ct}.
 	\item \textbf{Cupping effect:} A commonly occurring artifact occurs
 		when beams pass homogeneous cylindrical objects. Since beams
 		passing the middle will have to traverse more material compared
@@ -85,16 +85,16 @@ effects have a corresponding arrow.
 		in what erroneously looks to be dense peripheral regions at the
 		edges. A cupping effect also arises from scattering which leads
 		to a reduction in low contrast sensitivity
-		\citep{srnoise}.
+		\cite{srnoise}.
 	\item \textbf{Phase contrast (1,5):} Phase contrast is used to enhance
 		the contrast around soft tissue where the contrast from pure
-		absorption is insufficient \citep{phasecontrast}. It can
+		absorption is insufficient \cite{phasecontrast}. It can
 		however also induce noise, such as fringes around the edges
-		between different materials within the sample\citep{srnoise}.
+		between different materials within the sample\cite{srnoise}.
 		Similar to the dark and bright streaks artifacts, these effects
 		show up as misrepresentations of the voxel values. This is
 		especially prominent at the transitional edges between
-		biological tissue and bone \citep{srnoise}.
+		biological tissue and bone \cite{srnoise}.
 	\item \textbf{Ring artifacts (2):} Looking at the XY-plane in
 		\Cref{fig:slices}(a) we see clear concentric ring artifacts
 		emanating from the center of the sample, and at strong edges of
@@ -103,7 +103,7 @@ effects have a corresponding arrow.
 		imperfections in the scanner setup and is typically come from
 		uncalibrated or defect adjacent detector elements. For
 		synchrotron radiation sources it can also occur from shifts and
-		vibrations in the monochromator crystal \citep{ringartefacts}.
+		vibrations in the monochromator crystal \cite{ringartefacts}.
 	\item \textbf{Scattering:} Lower energy rays mostly contribute noise
 		from scattering effects. A ray will propagate through a
 		material, get scattered and diffract from its initial
@@ -117,7 +117,7 @@ effects have a corresponding arrow.
 		at 50 keV, but incoherent scattering slightly dominates for
 		Titanium at 50 keV. Incoherent Compton scattering will add an
 		overall haze and reduce contrast in the image
-		\citep{Compton}\citep{xray-attenuation-10-kev-100-mev}\citep{attenuation-cross-sections}.
+		\cite{Compton}\cite{xray-attenuation-10-kev-100-mev}\cite{attenuation-cross-sections}.
 \end{itemize}
 
 \begin{figure}
@@ -130,7 +130,7 @@ effects have a corresponding arrow.
 	    (Hydroxyapatite) and air, using a mixture (78\% N$_{2}$, 21\% O, 1\%
 	    Ar). The vertical line marks 50 keV at which our data was acquired. The
 	    mass attenuation coefficients are computed using NIST XCOM
-	    \citep{NIST-XCOM}.
+	    \cite{NIST-XCOM}.
     }
 \label{fig:attenuation}
 \end{figure}
