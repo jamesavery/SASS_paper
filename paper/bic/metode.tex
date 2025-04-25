@@ -116,8 +116,6 @@ However, none of the axes $x$, $y$, or $z$ separate the materials well across
 their entire range; they each capture different views of the distortions in the
 tomography.
 
-% TODO (Alle): tilpas størrelser i generering af figurer så det passer med
-% colorbar og næste figurs størrelse
 \begin{figure*}
     \centering
 %    \begin{tabular}{cc}
@@ -265,7 +263,12 @@ because the projections are already heavily denoised, and it is mostly noise
 which can be discontinuous. Using these probability distributions, we can build
 a method to accurately identify materials across varying voxel values.
 
-% TODO (Alle): Større labels på akser, så det kan læses
+% TODO (Alle): Stort set alle figurer skal have større ticks og labels på
+% akser, så det kan læses, og de steder hvor der bruges colorbar, skal den
+% tilpasses i størrelsen... Dette er klargjort i filen article_figures.py (TH2
+% /aleksandar/) men 770c_pag skal genkøres i 1x forinden, da nogle array filer
+% mangler.
+
 \begin{figure}
     \centering
     \begin{tabular}{cc}

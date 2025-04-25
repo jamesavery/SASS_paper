@@ -120,18 +120,17 @@ effects have a corresponding arrow.
 		\cite{Compton}\cite{xray-attenuation-10-kev-100-mev}\cite{attenuation-cross-sections}.
 \end{itemize}
 
+% TODO (James): Mangler måske et par ord (kontekst) omkring hvorfor vi snakker
+% om Hydroxyapatite ift knogler? Enten i nedenstående caption eller i teksten.
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{figures/attenuation_bone.pdf}
-    \includegraphics[width=\linewidth]{figures/attenuation_air.pdf}
-    \caption{
-	    % TODO (James): Mangler måske et par ord (kontekst) omkring hvorfor vi snakker om Hydroxyapatite ift knogler?
-	    Mass attenuation coefficients for Ca$_{5}$(PO$_{4}$)$_{3}$(OH)
-	    (Hydroxyapatite) and air, using a mixture (78\% N$_{2}$, 21\% O, 1\%
-	    Ar). The vertical line marks 50 keV at which our data was acquired. The
-	    mass attenuation coefficients are computed using NIST XCOM
-	    \cite{NIST-XCOM}.
-    }
+    \includegraphics[width=\linewidth]{figures/attenuation_MMA.pdf}
+    \caption{Mass attenuation coefficients for Ca$_{5}$(PO$_{4}$)$_{3}$(OH)
+	(Hydroxyapatite) and C$_{5}$H$_{8}$O$_{2}$ (Methyl Methacrylate, MMA).
+	The vertical line marks 50 keV at which our data was acquired. The mass
+	attenuation coefficients are computed using NIST XCOM \cite{NIST-XCOM}.
+	}
 \label{fig:attenuation}
 \end{figure}
 
@@ -139,14 +138,19 @@ The absorption coefficient becomes larger with increasing density and atomic
 number of the absorbing material. Conversely, the effective absorption is
 decreased for increasing energy of the incoming X-ray beam.
 \Cref{fig:attenuation} shows the dominating photon interactions and the
-contribution to attenuation over the relevant range of energies. Relative to
-Hydroxyapatite, the mass attenuation coefficients for blood and air is
-essentially the same. The figure shows that incoherent scattering (Compton
-scattering) is the prevalent interaction for air, blood and water, with slightly
-smaller contribution from coherent scattering (Rayleigh, Thompson) and
-photoelectric absorption. For Hydroxyapatite, photoelectric absorption is about
-an order of magnitude more significant, exceeding the contribution of incoherent
-and coherent scattering. This intuitively makes sense since Hydroxyapatite has a
+contribution to attenuation over the relevant range of energies.  The blood
+vessels are perfused using resin, and here modelled using MMA. While this is a
+common choice of vascular contrast agent, many alternative cast materials
+exist, each offering different levels of quality. A full study hereof is
+outside the scope of this work, and we shall instead refer to well established
+literature~\cite{resin1,resin2,resin3,resin4,resin5}.  Relative to
+Hydroxyapatite, the mass attenuation coefficients for air, blood and water is
+lower. The figure shows that incoherent scattering (Compton scattering) is the
+prevalent interaction for air, blood and water, with slightly smaller
+contribution from coherent scattering (Rayleigh, Thompson) and photoelectric
+absorption. For Hydroxyapatite, photoelectric absorption is about an order of
+magnitude more significant, exceeding the contribution of incoherent and
+coherent scattering. This intuitively makes sense since Hydroxyapatite has a
 higher effective atomic number $Z_{bone}$~16~\cite{hydroxyapatite_absorption},
 compared to blood $Z_{blood}$~6~\cite{effective_atomic_number}.
 
