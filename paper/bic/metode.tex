@@ -230,8 +230,8 @@ EDT+diffusion field using the procedure outlined in \Cref{eq:field-comb}.
     \label{eq:field-comb}
     \begin{split}
         f_{\text{diffusion\_norm}} &= \frac{f_{\text{diffusion}} - \min (f_{\text{diffusion}})}{\max (f_{\text{diffusion}})} \\
-        f_{\text{edt\_norm}} &= \frac{f_{\text{edt}} - \min (f_{\text{edt}})}{\max (f_{\text{edt}})} \\
-        f_{\text{combined}} &= f_{\text{diffusion\_norm}} - f_{\text{edt\_norm}} \\
+        f_{\text{EDT\_norm}} &= \frac{f_{\text{EDT}} - \min (f_{\text{EDT}})}{\max (f_{\text{EDT}})} \\
+        f_{\text{combined}} &= f_{\text{diffusion\_norm}} - f_{\text{EDT\_norm}} \\
         f_{\text{combined\_norm}} &= \frac{f_{\text{combined}} + \|\min (f_{\text{combined}})\|}{\max (f_{\text{combined}})}
     \end{split}
 \end{equation}
