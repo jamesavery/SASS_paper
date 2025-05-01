@@ -268,11 +268,13 @@ intuitive for comparing high-resolution segmentations.
 
 We see in \Cref{tab:scores} that our method beats global and Otsu thresholding,
 and the difference is largest for the blood networks, which makes sense because
-they are also the most difficult. It is worth noting that the RMSE is largest
-in all cases for our method, which is due to our model being based on
-continuous probabilities rather than a binary demarcation. This means that the
-RMSE will increase even when our values are only slightly wrong, in an
-otherwise correctly predicted region.
+they are also the most difficult. It is worth noting that while our RMSE is the
+largest in all cases, it is still numerically very small. The largest
+contributions to this error comes from the outer edges of the cylinder. Here
+our model lacks sufficient amounts of data voxels to properly create reasonable
+probability distributions for all present materials. This can be improved by
+adding more information to our composite model, which is described in future
+work.
 
 % TODO (James): Omdøb/ryk nedenstående subsection "Dataset analysis" til mere
 % passende navn/sted Det er jo egentlig mere motivation og application osv.  De
