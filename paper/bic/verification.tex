@@ -1,11 +1,10 @@
 \section{Verification and analysis}
 \label{sec:verification}
-
-In this section, we present the verification of the segmentation method
-described in \Cref{sec:method}. First we qualitatively verify that our method
-is sound by comparing the segmentation results to the original tomography and
-creating an artificial ground truth. Then we quantitatively verify our method
-by generating synthetic data, evaluating it on the created ground truth, and
+In this section, we present the verification of our SASS method as described in
+\Cref{sec:method}. First we qualitatively verify that SASS is sound by
+comparing the resulting segmentation to the original tomography and creating an
+artificial ground truth. Then we quantitatively verify the SASS method by
+generating synthetic data, evaluating it on the created ground truth, and
 comparing the results to other existing methods. Finally, we analyze the
 segmented data to study the blood vessel network in the bone region and produce
 statistics on the tissue-to-implant contact.
@@ -29,11 +28,11 @@ yellow being proportional to $\Pof{1}{v,\fval}$. Grey voxels indicate low model
 probabilities of both: either due to the voxel belonging to another material or
 simply low computed confidence of the model.  By comparing the images in
 \Cref{fig:histology-comparison1} and \Cref{fig:histology-comparison2}, we see
-that the global thresholding (bottom right) fails to capture the soft tissue
+that the global thresholding (top right) fails to capture the soft tissue
 close to the implant, which further confirms the need for a more sophisticated
-method. Looking at the Otsu segmentation (top right), we see that it better
+method. Looking at the adaptive Otsu segmentation (bottom right), we see that it better
 captures the soft tissue close to the implant, but still fails even closer to
-the implant. Our method (bottom left) captures the soft tissue close to the
+the implant. SASS (bottom left) captures the soft tissue close to the
 implant, while still ensuring a good segmenting in previously well segmented
 regions.
 
@@ -42,35 +41,35 @@ regions.
     \begin{subfigure}{0.5\textwidth}
       \centering
       \includegraphics[width=\linewidth]{generated/770c_pag_segmented_yx_raw.pdf}
-      \caption{Original}
-    \end{subfigure}%
-    \begin{subfigure}{0.5\textwidth}
-      \centering
-      \includegraphics[width=\linewidth]{generated/770c_pag_global_yx_otsu.pdf}
-      \caption{Otsu segmentation}
-    \end{subfigure}
-    \\
-    \begin{subfigure}{0.5\textwidth}
-      \centering
-      \includegraphics[width=\linewidth]{generated/770c_pag_segmented_yx_colored.pdf}
-      \caption{Our segmentation}
+      \caption{Tomographic slice}
     \end{subfigure}%
     \begin{subfigure}{0.5\textwidth}
       \centering
       \includegraphics[width=\linewidth]{generated/770c_pag_global_yx.pdf}
       \caption{Global threshold}
     \end{subfigure}
+    \\
+    \begin{subfigure}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{generated/770c_pag_segmented_yx_colored.pdf}
+      \caption{SASS}
+    \end{subfigure}%
+    \begin{subfigure}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{generated/770c_pag_global_yx_otsu.pdf}
+      \caption{Adaptive Otsu}
+    \end{subfigure}
   \caption{
-	  YX-slices of the original tomography, Otsu segmentation, our
-	  segmentation, and global threshold segmentation.  For our
-	  segmentation, the voxels are colored according to the modeled
-	  probability functions $P(m\vert v,\fval)$ between 0 and 1: completely
-	  red voxels have $P(m=0\vert v,\fval) = 1$, completely yellow voxels
-	  have $P(m=1\vert v,\fval)\ = 1$, and uncertain voxels become
-	  progressively gray. Notice how the global threshold fails to segment
-	  a large region of blood vessel in the bottom right, leaving a clear
-	  streak pattern. This is due to the shifted numerical values from the
-	  streak effects mentioned in \Cref{fig:slices}.
+	  YX-slices of the original tomography, Adaptive Otsu segmentation, SASS,
+	  and global threshold segmentation. For SASS, the voxels
+	  are colored according to the modeled probability functions $P(m\vert
+	  v,\fval)$ between 0 and 1: completely red voxels have $P(m=0\vert
+	  v,\fval) = 1$, completely yellow voxels have $P(m=1\vert v,\fval)\ =
+	  1$, and uncertain voxels become progressively gray. Notice how the
+	  global threshold fails to segment a large region of blood vessel in
+	  the bottom right, leaving a clear streak pattern. This is due to the
+	  shifted numerical values from the streak effects mentioned in
+	  \Cref{fig:slices}.
     }
     \label{fig:histology-comparison1}
 \end{figure*}
@@ -80,46 +79,46 @@ regions.
     \begin{subfigure}{0.5\textwidth}
       \centering
       \includegraphics[width=\linewidth]{generated/770c_pag_segmented_zy_raw.pdf}
-      \caption{Original}
-    \end{subfigure}%
-    \begin{subfigure}{0.5\textwidth}
-      \centering
-      \includegraphics[width=\linewidth]{generated/770c_pag_global_zy_otsu.pdf}
-      \caption{Otsu segmentation}
-    \end{subfigure}
-    \\
-    \begin{subfigure}{0.5\textwidth}
-      \centering
-      \includegraphics[width=\linewidth]{generated/770c_pag_segmented_zy_colored.pdf}
-      \caption{Our segmentation}
+      \caption{Tomographic slice}
     \end{subfigure}%
     \begin{subfigure}{0.5\textwidth}
       \centering
       \includegraphics[width=\linewidth]{generated/770c_pag_global_zy.pdf}
       \caption{Global threshold}
     \end{subfigure}
+    \\
+    \begin{subfigure}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{generated/770c_pag_segmented_zy_colored.pdf}
+      \caption{SASS}
+    \end{subfigure}%
+    \begin{subfigure}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{generated/770c_pag_global_zy_otsu.pdf}
+      \caption{Adaptive Otsu}
+    \end{subfigure}
   \caption{
-	  YZ-slices of the original tomography, Otsu segmentation, our
-	  segmentation, and global threshold segmentation.  Yellow depicts bone
-	  and red depicts soft tissue. Note that our segmentation correctly
-	  classifies the materials close to the implant, and particularly in
-	  the grooves of the screw threads, whereas the global threshold and
-	  Otsu segmentation fails.
+	  YZ-slices of the original tomography, global threshold segmentation,
+	  SASS and adaptive Otsu segmentation. Yellow depicts bone and red
+	  depicts soft tissue. Note that SASS correctly classifies the
+	  materials close to the implant, and particularly in the grooves of
+	  the screw threads, whereas the global threshold and adaptive Otsu
+	  segmentation fails.
     }
     \label{fig:histology-comparison2}
 \end{figure*}
 
-We see that our segmentation is overall successful in identifying actual
-features, rather than artifacts, and classifying the internal darker regions as
-soft tissue and the lighter regions as bone. This is further confirmed in
+We see that SASS is overall successful in identifying actual features, rather
+than artifacts, and classifying the internal darker regions as soft tissue and
+the lighter regions as bone. This is further confirmed in
 \Cref{sec:blood-network}. However, extremely close to the implant (a few
 voxels), we cannot verify the segmentation, as the voxel values are so blended
 together with the implant voxel values that they become indistinguishable. A
 further strengthening of the analysis is needed to reach this layer. It is
 possible that the information is irretrievably lost, or perhaps it can be
 retrieved through a different method, such as deconvolution.  It also fails
-within some soft tissue blobs, which is due to air bubbles in the resin,
-which have a very low density and therefore a very low absorption.
+within some soft tissue blobs, which is due to air bubbles in the resin, which
+have a very low density and therefore a very low absorption.
 
 \subsection{Quantitative evaluation}
 
@@ -135,23 +134,25 @@ and expensive procedure, and does not easily translate to other data, which are
 only slightly dissimilar.
 
 % How are we going to approach it
-To ensure a reliable and consistent verification of our method, we must tackle a
-common problem: solutions are often hard to reproduce and thus
-verify~\cite{replication-crisis}. Furthermore, many existing evaluation
-procedures involve comparing results to manual segmentations performed by a
-human~\cite{seg_literature_review}. We attempt to overcome these difficulties by
-creating synthetic reproducible data, accompanied by a consistent reference
-level ground truth. The generated data resembles our original data and shares
-many physical qualities, but instead of being acquired at ESRF, it is simulated
-using the software Novi-sim~\cite{novisim} on a consumer-grade workstation. It
-is therefore not reasonable to expect the quality of the simulated tomograms to
-be identical to real data. It is more important that it resembles well enough
-to use for validation.  Using such simulations allow other researchers to not
-only reproduce but also modify our tomographic models and perform new
-experiments.  This will both extend the robustness of our segmentation, and
-make it less specific and dependent on our original data.  In future
-experiments this also allows extracting 2D-slices of synthetic data and compare
-with manually inspected and annotated histologies.
+To ensure a reliable and consistent verification of the presented SASS method,
+we must tackle the common replication problem~\cite{replication-crisis} where
+solutions are often hard to reproduce and therefore verify. Furthermore, many
+existing evaluation procedures involve comparing results to manual
+segmentations performed by a human~\cite{seg_literature_review}. We attempt to
+overcome these difficulties by creating synthetic reproducible data,
+accompanied by a consistent reference level ground truth. The generated data
+resembles our original data and shares many physical qualities, but instead of
+being acquired at ESRF, it is simulated using the software
+Novi-sim~\cite{novisim} on a consumer-grade workstation. It is therefore not
+realistic to expect the quality of the simulated tomograms to be identical to
+real data. It is more important that it captures the expected spatial
+distributions of noise and thereby resembling the real data well enough to use
+for validation.  Using such simulations allow other researchers to not only
+reproduce but also modify our tomographic models and perform new experiments.
+This will both extend the robustness of SASS, and make it less specific and
+dependent on our original data.  In future experiments this also allows
+extracting 2D-slices of synthetic data and compare with manually inspected and
+annotated histologies.
 
 \begin{figure*}
   \centering
@@ -167,27 +168,27 @@ with manually inspected and annotated histologies.
 
 % How we use Novi-sim
 The presented segmentation pipeline results in a set of masks, one for each
-material.  Each mask is overlayed unto a single volume representing our
+material. Each mask is overlayed unto a single volume representing our
 artificially constructed ground truth. By construction, it will have a perfect
-overlap, correctly identifying each material using our method.  The masks for
-each material are converted into meshes and used to generate STL files.  The
-generated STL files are transformed to synthetic tomograms using Novi-sim.
+overlap, correctly identifying each material using the SASS method.  The masks
+for each material are converted into meshes and used to generate STL files.
+The generated STL files are transformed to synthetic tomograms using Novi-sim.
 While the software is set up to simulate the original experiment at ESRF, it
 will naturally not be a perfect match. The generated ground truth is now
 perfectly accurate with the input, but deviates slightly but predictably from
 the generated tomogram due to experimental physical effects and artifacts. This
-allows us to use reproducible synthetic data to consistently compare our
-segmentation method with other and detect in which regions they differ the
-most. Because regions very close and very far away from the implant are
-difficult, any intermediate regions should be fairly consistent across methods.
-Finally, we can inspect the differing regions visually to evaluate on the
-overall performance. This results in a drastically reduced volume needed to be
-manually inspected.
+allows us to use reproducible synthetic data to consistently compare the SASS
+method with other and detect in which regions they differ the most. Because
+regions very close and very far away from the implant are difficult, any
+intermediate regions should be fairly consistent across methods.  Finally, we
+can inspect the differing regions visually to evaluate on the overall
+performance. This results in a drastically reduced volume needed to be manually
+inspected.
 
 The segmented volumes are evaluated as a function of the distance from the
 implant. We inspect regions at short, mid and long radial distances from the
 implant. This is shown in \Cref{tab:scores}. To ensure a fair comparison, both
-global and Otsu thresholding is computed on individual slices through the depth
+global and adaptive Otsu thresholding is computed on individual slices through the depth
 of the implant. The scores for all slices are then averaged for each evaluation
 metric, and it is the average value which is reported in \Cref{tab:scores}.
 This procedure serves to remove any bias of choosing specific regions where one
@@ -196,7 +197,7 @@ approach might falsely appear superior.
 \begin{figure*}
   \centering
   \includegraphics[width=\textwidth]{figures/radial_masks.pdf}
-  \caption{Three radial masks are constructed, which represent short, mid and
+  \caption{Three radial masks are computed, representing short, mid and
 	long range distance regions away from the implant. The red dot marks
 	the true implant center, which does not coincice with the cut cylinder
 	center. It is the true implant center which is used as the radial
@@ -226,24 +227,24 @@ approach might falsely appear superior.
 $d \leq 0.25 \times R$ & DS & RMSE & VOE \\
 \midrule
 Global threshold & (0.8391, 0.9058) & (0.2181, 0.1472) & (0.2744, 0.1714) \\
-Otsu's method    & (0.8620, 0.9157) & (0.2016, 0.1390) & (0.2375, 0.1550) \\
-Our method       & (0.9322, 0.9246) & (0.4452, 0.1709) & (0.1270, 0.1402) \\
+Adaptive Otsu    & (0.8620, 0.9157) & (0.2016, 0.1390) & (0.2375, 0.1550) \\
+SASS             & (0.9322, 0.9246) & (0.4452, 0.1709) & (0.1270, 0.1402) \\
 \bottomrule
 \multicolumn{4}{c}{\textbf{Mid range}} \\
 \toprule
 $ 0.25 \times R < d < 0.50 \times R$ & DS & RMSE & VOE \\
 \midrule
 Global threshold & (0.8843, 0.9499) & (0.2826, 0.2020) & (0.2060, 0.0948) \\
-Otsu's method    & (0.8930, 0.9547) & (0.2672, 0.1928) & (0.1902, 0.0862) \\
-Our method       & (0.9267, 0.9551) & (0.5375, 0.3075) & (0.1366, 0.0860) \\
+Adaptive Otsu    & (0.8930, 0.9547) & (0.2672, 0.1928) & (0.1902, 0.0862) \\
+SASS             & (0.9267, 0.9551) & (0.5375, 0.3075) & (0.1366, 0.0860) \\
 \bottomrule
 \multicolumn{4}{c}{\textbf{Long range}} \\
 \toprule
 $d \geq 0.50 \times R$   & DS & RMSE & VOE \\
 \midrule
 Global threshold & (0.8007, 0.9481) & (0.4033, 0.2689) & (0.3272, 0.0981) \\
-Otsu's method    & (0.7860, 0.9462) & (0.4293, 0.2728) & (0.3467, 0.1015) \\
-Our method       & (0.8421, 0.9481) & (0.5580, 0.4073) & (0.2727, 0.0987) \\
+Adaptive Otsu    & (0.7860, 0.9462) & (0.4293, 0.2728) & (0.3467, 0.1015) \\
+SASS             & (0.8421, 0.9481) & (0.5580, 0.4073) & (0.2727, 0.0987) \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -265,9 +266,11 @@ differs from the DS score by how overlapping voxels are accounted for, and is
 thus more sensitive to small differences in overlap. This can make it more
 intuitive for comparing high-resolution segmentations.
 
-We see in \Cref{tab:scores} that our method beats global and Otsu thresholding,
+We see in \Cref{tab:scores} that the SASS method beats global and adaptive Otsu thresholding,
 and the difference is largest for the blood networks, which makes sense because
-they are also the most difficult. It is worth noting that while our RMSE is the
+they are also the most difficult.
+% TODO: Aleksandar: check RMSE
+It is worth noting that while our RMSE is the
 largest in all cases, it is still numerically very small. The largest
 contributions to this error comes from the outer edges of the cylinder. Here
 our model lacks sufficient amounts of data voxels to properly create reasonable

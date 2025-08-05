@@ -1,14 +1,15 @@
 \section{Method}
 \label{sec:method}
+In this section, we will present the method for exploiting spatial correlation
+based on the 2D histograms of the tomographies. We will refer to this approach
+as \textit{Spatial Analysis for SRµCT Segmentation} or SASS.
 
-In this section, we will describe the method for exploiting spatial correlation
-based on the 2D histograms of the tomographies. Each scanned sample consists of
-multiple subvolumes, which are combined into a single coherent 3D image of the
-full sample. This is done by shifting along the $Z$-axis until the square 3D
-image differences are minimized over the overlap volume, producing the best
-volume match. The particular sample we will be working with has resolution
-$3360 \times 3456 \times 3456$ and with three slices shown in
-\Cref{fig:3viewsample}.
+Each scanned sample consists of multiple subvolumes, which are combined into a
+single coherent 3D image of the full sample. This is done by shifting along the
+$Z$-axis until the square 3D image differences are minimized over the overlap
+volume, producing the best volume match. The particular sample we will be
+working with has resolution $3360 \times 3456 \times 3456$ and with three
+slices shown in \Cref{fig:3viewsample}.
 
 From this volume, we first compute a 1D histogram of the voxel values, as shown
 in \Cref{fig:1d-hist}. We see that there are large overlaps between the
@@ -246,7 +247,7 @@ To decompose a 2D histogram into a sum of probability distributions that
 represent the different materials present in the tomogram, we leverage the fact
 that there are only two materials in the tomogram: bone and soft tissue. This
 means we can apply classical statistical methods to separate the two materials.
-For each row in the histogram, we apply Otsu's thresholding to find the
+For each row in the histogram, we apply adaptive Otsu's thresholding to find the
 threshold that separates the two distributions best, which is shown as the
 orange line in \Cref{fig:otsu}(a). This gives us a good starting point for the
 segmentation, but it is not perfect as the thresholds can vary too much across
@@ -270,10 +271,10 @@ a method to accurately identify materials across varying voxel values.
         (b) & \begin{tabular}{c} \includegraphics[width=0.8\linewidth]{generated/770c_pag_probabilities.pdf} \end{tabular}
     \end{tabular}
     \caption{
-        Visualization of (a) the Otsu thresholding (orange) and the fitted
-        curve (blue) applied to the combined field histogram, and (b) the
-        probability distributions for the two materials, red being soft tissue
-        and yellow being bone.
+	Visualization of (a) the adaptive Otsu thresholding (orange) and the
+	fitted curve (blue) applied to the combined field histogram, and (b)
+	the probability distributions for the two materials, red being soft
+	tissue and yellow being bone.
     }
     \label{fig:otsu}
 \end{figure}
@@ -311,7 +312,7 @@ are summarized in \Cref{fig:flowchart}.
             \node[draw, fill=black!10, rounded corners, rectangle] (edt) at (0,-4) {Compute EDT field};
             \node[draw, fill=black!10, rounded corners, rectangle] (diffusion) at (0,-5) {Compute diffusion field};
             \node[draw, fill=black!10, rounded corners, rectangle] (combined) at (0,-6) {Combine fields};
-            \node[draw, fill=black!10, rounded corners, rectangle] (otsu) at (0,-7) {Otsu thresholding};
+            \node[draw, fill=black!10, rounded corners, rectangle] (otsu) at (0,-7) {Adaptive Otsu thresholding};
             \node[draw, fill=black!10, rounded corners, rectangle] (fit) at (0,-8) {Fit curve};
             \node[draw, fill=black!10, rounded corners, rectangle] (prob) at (0,-9) {Compute probabilities};
             \node[draw, fill=black!10, rounded corners, rectangle] (segment) at (0,-10) {Segmentation};
