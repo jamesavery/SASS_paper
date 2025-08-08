@@ -2,7 +2,7 @@
 \label{sec:verification}
 In this section, we present the verification of our SASS method as described in
 \Cref{sec:method}. First we qualitatively verify that SASS is sound by
-comparing the resulting segmentation to the original tomography and creating an
+comparing the resulting segmentation to the original tomography and defining an
 artificial ground truth. Then we quantitatively verify the SASS method by
 generating synthetic data, evaluating it on the created ground truth, and
 comparing the results to other existing methods. Finally, we analyze the
@@ -168,13 +168,13 @@ annotated histologies.
 
 % How we use Novi-sim
 The presented segmentation pipeline results in a set of masks, one for each
-material. Each mask is overlayed unto a single volume representing our
-artificially constructed ground truth. By construction, it will have a perfect
-overlap, correctly identifying each material using the SASS method.  The masks
-for each material are converted into meshes and used to generate STL files.
-The generated STL files are transformed to synthetic tomograms using Novi-sim.
-While the software is set up to simulate the original experiment at ESRF, it
-will naturally not be a perfect match. The generated ground truth is now
+material. Each mask is overlayed unto a single volume forming what we define as
+our artificial ground truth. By construction, it will have a perfect overlap,
+correctly identifying each material using the SASS method on real sample data.
+The masks for each material are converted into meshes and used to generate STL
+files.  The generated STL files are used to simulate synthetic tomograms using
+Novi-sim.  While the software is set up to resemble the original experiment at
+ESRF, it will naturally not be a perfect match. The defined ground truth is now
 perfectly accurate with the input, but deviates slightly but predictably from
 the generated tomogram due to experimental physical effects and artifacts. This
 allows us to use reproducible synthetic data to consistently compare the SASS
@@ -366,11 +366,11 @@ threading of the implant, with new bone being near the small threads and old
 bone being near the large threads. The results can be seen in \Cref{tab:bic}.
 We see that the BIC is higher in the old bone region than in the new bone
 region, which is expected as the bone grows around the implant over time. This
-is further confirmed by the blood vessel network analysis, as the new bone
-region contains a higher concentration of small blood vessels, indicating that
-the bone is still growing. This shows that the method is successful in
-segmenting the bone and soft tissue regions and that the segmentation can be
-used to study BIC.
+is further confirmed by the blood vessel network analysis as seen in
+\cref{fig:blood-network}, as the new bone region contains a higher
+concentration of small blood vessels, indicating that the bone is still
+growing. This shows that the method is successful in segmenting the bone and
+soft tissue regions and that the segmentation can be used to study BIC.
 
 \begin{table}
     \caption{The mean and standard deviation of bone-to-implant contact in the
@@ -381,15 +381,42 @@ used to study BIC.
         \toprule
         Sample & Old bone & New bone \\
         \midrule
-        770\_pag & $0.5020 \pm 0.1222$ & - \\
-        770c\_pag & $0.6519 \pm 0.1055$ & $0.5638 \pm 0.0907$ \\
-        771c\_pag & $0.4517 \pm 0.1708$ & $0.5016 \pm 0.1078$ \\
-        772\_pag & $0.7012 \pm 0.1065$ & $0.5222 \pm 0.0869$ \\
-        775c\_pag & $0.2802 \pm 0.0928$ & $0.2652 \pm 0.1054$ \\
-        810c\_pag & $0.6819 \pm 0.0866$ & $0.5155 \pm 0.0897$ \\
-        811\_pag & $0.5832 \pm 0.1015$ & $0.3715 \pm 0.0935$ \\
-	simulated & $0.7523 \pm 0.0403$ & $0.7120 \pm 0.1119$ \\
+	% TODO: James: Comment in caption why 770 has no new bone numbers
+        770 & $0.5020 \pm 0.1222$ & - \\
+        770c & $0.6519 \pm 0.1055$ & $0.5638 \pm 0.0907$ \\
+        771c & $0.4517 \pm 0.1708$ & $0.5016 \pm 0.1078$ \\
+        772 & $0.7012 \pm 0.1065$ & $0.5222 \pm 0.0869$ \\
+        775c & $0.2802 \pm 0.0928$ & $0.2652 \pm 0.1054$ \\
+        810c & $0.6819 \pm 0.0866$ & $0.5155 \pm 0.0897$ \\
+        811 & $0.5832 \pm 0.1015$ & $0.3715 \pm 0.0935$ \\
         \bottomrule
     \end{tabular}
 \end{table}
 
+\begin{table}
+    \caption{
+	    The mean and standard deviation of bone-to-implant contact in the
+	    old and new bone regions for the simulation and the original sample
+	    in the same resolution as the simulation.
+	    }
+    \label{tab:bic-sim}
+    \centering
+    \begin{tabular}{lcc}
+        \toprule
+        Method & Old bone & New bone \\
+        \toprule
+	\multicolumn{3}{l}{\textbf{770c\_scaled}} \\
+	\midrule
+	% TODO: Aleksandar: insert numbers using actual comparable scale
+        Global & $0.0 \pm 0.0$ & $0.0 \pm 0.0$ \\
+        Adaptive Otsu & $0.0 \pm 0.0$ & $0.0 \pm 0.0$ \\
+        SASS & $0.0 \pm 0.0$ & $0.0 \pm 0.0$ \\
+	\toprule
+	\multicolumn{3}{l}{\textbf{770c\_simulated}} \\
+	\midrule
+	Global & $0.7523 \pm 0.0403$ & $0.7120 \pm 0.1119$ \\
+	Adaptive Otsu & $0.7523 \pm 0.0403$ & $0.7120 \pm 0.1119$ \\
+	SASS & $0.7523 \pm 0.0403$ & $0.7120 \pm 0.1119$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
