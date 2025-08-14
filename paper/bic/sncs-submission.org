@@ -1,0 +1,30 @@
+* TODO Write a cover letter
+    Introduce your work in a 1-page letter, explaining the research you did, and why it's relevant.
+
+* DONE Section:
+Computer Vision
+
+* DONE Classifications:
+ 11: Computer Vision
+ 20: Medical and Health Data Analysis
+ 24: Image Processing
+
+* TODO Suggest reviewers
+Please suggest TWO or more potential reviewers for this submission and provide specific reasons for your suggestion in the comments box for each person.
+Please note that the editorial office may not use your suggestions, but your help is appreciated and may speed up the selection of appropriate review
+
+Hey! Vi skal da bruge de to gode reviewers fra sidst!
+
+* DONE Enter comments
+Please enter any additional comments you would like to send to the publication office. These comments will not appear directly in your submission.
+
+Ingen kommentarer
+
+* TODO Keywords (3-4, separated by semicolons)
+
+* TODO Forfattere
+
+* TODO Funding information
+Kopier fra artikel
+
+
