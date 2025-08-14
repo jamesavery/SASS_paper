@@ -164,7 +164,7 @@ annotated histologies.
   \label{fig:novisimraw}
 \end{figure*}
 
-\subsection{Ground truth and synthetic data}
+\subsection{Ground truth and synthetic data evaluation}
 
 % How we use Novi-sim
 The presented segmentation pipeline results in a set of masks, one for each
@@ -284,12 +284,7 @@ materials. If we shave off the outermost layer of voxels, this error is
 reduced. While our method can be improved by adding more information to our
 composite model, this is left for, and described in future work.
 
-% TODO (James): Omdøb/ryk nedenstående subsection "Dataset analysis" til mere
-% passende navn/sted Det er jo egentlig mere motivation og application osv.  De
-% to subsubsections "Blood vessel network" + "Implant contact" skal også
-% omdøbes/rykkes
-
-\subsection{Dataset analysis}
+\subsection{Dataset evaluation}
 
 Having verified the method qualitatively and quantitatively, we can have a more
 detailed look into the segmented data. We are interested in the blood vessel
@@ -350,7 +345,7 @@ ones.
     \label{fig:blood-network}
 \end{figure}
 
-\subsubsection{Implant contact}
+\subsubsection{Blood- and bone-implant contact}
 \label{sec:contact}
 
 Tissue in contact with the implant can be studied using the EDT from the
@@ -369,8 +364,8 @@ follows:
 
 % TODO (James): Bør vi præcisere hvordan ny/gammel region er fundet? Vi bruger
 % IKKE en automatisk metode, men har håndholdte værdier til at definere
-% overgangen mellem små og store threads. Ikke desto mindre, er det ikke særligt
-% detaljeret forklaret her. Måske er det OK. Lidt voldsomt at lave plots for dette.
+% overgangen mellem små og store threads.
+% JA: vi skal vise at vi HAR en automatisk metode
 We find the old and new bone regions at different $z$ levels, based on the
 threading of the implant, with new bone being near the small threads and old
 bone being near the large threads. The results can be seen in \Cref{tab:bic}.
@@ -382,23 +377,29 @@ concentration of small blood vessels, indicating that the bone is still
 growing. This shows that the method is successful in segmenting the bone and
 soft tissue regions and that the segmentation can be used to study BIC.
 
+
+% TODO (James): Indsæt i brødtekst (Else eller Torstens artikel/phd)
+% A : Auto B med membran
+% B : Easy
+% C : Crystal
+% D : Tom
+
 \begin{table}
     \caption{The mean and standard deviation of bone-to-implant contact in the
     old and new bone regions for each of our samples.}
     \label{tab:bic}
     \centering
-    \begin{tabular}{lcc}
+    \begin{tabular}{llcc}
         \toprule
-        Sample & Old bone & New bone \\
+	Sample & Experiment & Old bone & New bone \\
         \midrule
-	% TODO: James: Comment in caption why 770 has no new bone numbers
-        770 & $0.5020 \pm 0.1222$ & - \\
-        770c & $0.6519 \pm 0.1055$ & $0.5638 \pm 0.0907$ \\
-        771c & $0.4517 \pm 0.1708$ & $0.5016 \pm 0.1078$ \\
-        772 & $0.7012 \pm 0.1065$ & $0.5222 \pm 0.0869$ \\
-        775c & $0.2802 \pm 0.0928$ & $0.2652 \pm 0.1054$ \\
-        810c & $0.6819 \pm 0.0866$ & $0.5155 \pm 0.0897$ \\
-        811 & $0.5832 \pm 0.1015$ & $0.3715 \pm 0.0935$ \\
+	770  & A & $0.5020 \pm 0.1222$ & - \\
+        770c & A & $0.6519 \pm 0.1055$ & $0.5638 \pm 0.0907$ \\
+        771c & B & $0.4517 \pm 0.1708$ & $0.5016 \pm 0.1078$ \\
+        772  & C & $0.7012 \pm 0.1065$ & $0.5222 \pm 0.0869$ \\
+        775c & A & $0.2802 \pm 0.0928$ & $0.2652 \pm 0.1054$ \\
+        810c & D & $0.6819 \pm 0.0866$ & $0.5155 \pm 0.0897$ \\
+        811  & A & $0.5832 \pm 0.1015$ & $0.3715 \pm 0.0935$ \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -407,7 +408,8 @@ soft tissue regions and that the segmentation can be used to study BIC.
     \caption{
 	    The mean and standard deviation of bone-to-implant contact in the
 	    old and new bone regions for the simulation and the original sample
-	    in the same resolution as the simulation.
+	    in the same resolution as the simulation. Sample 770 only images
+	    the old bone region.
 	    }
     \label{tab:bic-sim}
     \centering
