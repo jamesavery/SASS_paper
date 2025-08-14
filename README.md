@@ -1,1 +1,1 @@
-# Spatial Analysis for SRμCT Segmentation
+# Spatially Aware SRμCT Segmentation
